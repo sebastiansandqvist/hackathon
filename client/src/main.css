@@ -1,0 +1,78 @@
+@import 'tailwindcss';
+
+@layer base {
+  @font-face {
+    font-family: 'Barcode';
+    src: url(/fonts/barcode.ttf) format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Dot';
+    src: url(/fonts/dot.ttf) format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Quill';
+    src: url(/fonts/quill.otf) format('opentype');
+  }
+
+  @font-face {
+    font-family: 'Pixel';
+    src: url(/fonts/pixel.ttf) format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Zed';
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/zed/zed-mono.ttf) format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Zed';
+    font-style: italic;
+    font-weight: 400;
+    src: url(/fonts/zed/zed-mono-italic.ttf) format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Zed';
+    font-style: normal;
+    font-weight: 700;
+    src: url(/fonts/zed/zed-mono-bold.ttf) format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Zed';
+    font-style: italic;
+    font-weight: 700;
+    src: url(/fonts/zed/zed-mono-bolditalic.ttf) format('truetype');
+  }
+}
+
+@theme {
+  --font-family-barcode: 'Barcode', 'monospace';
+  --font-family-dot: 'Dot', 'sans-serif';
+  --font-family-quill: 'Quill', 'cursive';
+  --font-family-pixel: 'Pixel', 'monospace';
+  --font-family-mono: 'Zed', 'Iosevka', 'Monaco';
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+.bg-dots {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='16' height='16' fill='none'%3e%3crect fill='rgb(165 180 252 / 0.3)' id='pattern-circle' x='0' y='0' width='2.87' height='2.87'%3e%3c/rect%3e%3c/svg%3e");
+}
+
+.stack {
+  display: grid;
+  place-content: center;
+
+  > * {
+    grid-area: 1 / 1;
+  }
+}
