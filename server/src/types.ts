@@ -4,12 +4,17 @@ export type User = {
   anonymousName: string;
   password: string;
   sessions: { id: string; created: number }[];
+  hintDeductions: number;
   sideQuests: {
     hacking: {
       easy: number | null; // timestamp of completion
       hard: number | null;
     };
     logic: {
+      easy: number | null;
+      hard: number | null;
+    };
+    forensics: {
       easy: number | null;
       hard: number | null;
     };
@@ -43,14 +48,7 @@ export type Project = {
   votes: { userId: string; rank: number }[];
 };
 
-export type FoodGameItem = {
-  userId: string;
-  value: string;
-};
-
 export type FoodGame = {
   title: string;
-  stage: 'adding-items' | 'removing-items';
-  currentTurnUserId: string;
-  votes: FoodGameItem[];
+  items: string[];
 };

@@ -1,15 +1,17 @@
 import { z } from 'zod';
-import { publicProcedure, router } from '../../trpc';
+import { authedProcedure, publicProcedure, router } from '../../trpc';
 import { db } from '../../db';
 
 export const hackathonRouter = router({
   homepage: publicProcedure.query(() => {
     const message = db.publicMessages.at(-1)!;
     return {
+      foodGame: db.foodGame,
       times: db.times,
-      nextCheckpoint: {
-        name: 'Start coding',
-        time: db.times.codingStart,
+      // TODO: make these dynamic
+      checkpoints: {
+        current: 'codingStart',
+        next: 'codingEnd',
       },
       visibleSections: db.visibleSections,
       publicMessage: {
@@ -31,5 +33,18 @@ export const hackathonRouter = router({
     .input(z.object({ section: z.string() }))
     .mutation(({ input }) => {
       db.visibleSections.push(input.section);
+    }),
+  updateFoodGame: authedProcedure
+    .input(
+      z.object({
+        title: z.string(),
+        items: z.string().array(),
+      }),
+    )
+    .mutation(({ input, ctx }) => {
+      // TODO: figure out how to log in the tv user
+      // if (ctx.user.username !== 'tv') throw new Error('Only the TV can participate');
+      db.foodGame.title = input.title;
+      db.foodGame.items = input.items;
     }),
 });

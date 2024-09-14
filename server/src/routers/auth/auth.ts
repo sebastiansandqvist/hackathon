@@ -8,7 +8,7 @@ function cookie(sessionId: string) {
 }
 
 function generateUsername() {
-  const adjectives = ['10x', 'full-stack', 'smelly', 'failed', 'well-meaning', 'bold', 'jaded', 'sleepless', 'righteous', 'caffeinated', 'talented', 'handsome', 'noble', 'brave', 'functioning', 'tireless', 'passionate', 'loyal', 'honest', 'senior', 'elegant']; // prettier-ignore
+  const adjectives = ['10x', 'full-stack', 'smelly', 'failed', 'well-meaning', 'bold', 'jaded', 'sleepless', 'righteous', 'caffeinated', 'talented', 'handsome', 'noble', 'brave', 'functioning', 'tireless', 'passionate', 'loyal', 'honest', 'senior', 'elegant', 'hard-working']; // prettier-ignore
   const programmingLanguages = ['HTML', 'JavaScript', 'leetcode', 'TypeScript', 'Java', 'AI', 'crypto', 'Python', 'Rust', 'HTML', 'PHP', 'Ruby', 'OOP', 'functional programming', 'Assembly'] // prettier-ignore
   const character = ['programmer', 'engineer', 'hacker', 'sysadmin', 'gigachad', 'repairman', 'influencer', 'firefighter', 'archaeologist', 'intern', 'mechanic', 'professor', 'debugger', 'devotee', 'addict', 'webmaster', 'salesman', 'coder', 'engineer', 'monk', 'evangelist', 'developer', 'researcher', 'student', 'administrator', 'entrepreneur', 'investor', 'disciple', 'artisan', 'janitor']; // prettier-ignore
   return `${pickRandom(adjectives)} ${pickRandom(programmingLanguages)} ${pickRandom(character)}`;
@@ -26,6 +26,7 @@ export const authRouter = router({
         username: ctx.user.username,
         anonymousName: ctx.user.anonymousName,
         sideQuests: ctx.user.sideQuests,
+        hintDeductions: ctx.user.hintDeductions,
       };
     }
     return { isAuthed: false as const };
@@ -55,8 +56,10 @@ export const authRouter = router({
         password: await Bun.password.hash(input.password),
         sessions: [{ id: sessionId, created: Date.now() }],
         renameCounter: 0,
+        hintDeductions: 0,
         sideQuests: {
           algorithms: { easy: null, hard: null, bigboy: null },
+          forensics: { easy: null, hard: null },
           hacking: { easy: null, hard: null },
           logic: { easy: null, hard: null },
           puzzles: { easy: null, hard: null },

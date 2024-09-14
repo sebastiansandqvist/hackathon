@@ -9,12 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@solid-primitives/autofocus": "0.0.111",
     "@solid-primitives/mouse": "2.0.19",
     "@solid-primitives/resize-observer": "2.0.26",
     "@solidjs/router": "0.14.3",
     "@tanstack/solid-query": "5.53.1",
     "@trpc/client": "11.0.0-rc.490",
     "@trpc/server": "11.0.0-rc.490",
+    "s-ago": "2.2.0",
     "solid-js": "^1.8.20"
   },
   "devDependencies": {

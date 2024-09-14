@@ -29,8 +29,10 @@ try {
         id: '',
         password: '...',
         renameCounter: 0,
+        hintDeductions: 0,
         sessions: [],
         sideQuests: {
+          forensics: { easy: null, hard: null },
           hacking: { easy: null, hard: null },
           logic: { easy: null, hard: null },
           puzzles: { easy: null, hard: null },
@@ -49,14 +51,12 @@ try {
     },
     foodGame: {
       title: 'Pick the hackathon theme',
-      stage: 'adding-items',
-      currentTurnUserId: '',
-      votes: [
-        { userId: '', value: 'cooperation / asymmetry' },
-        { userId: '', value: 'technologize your non-tech hobby' },
-        { userId: '', value: 'impermanent' },
-        { userId: '', value: 'limited information' },
-        { userId: '', value: 'randomness' },
+      items: [
+        'cooperation / asymmetry',
+        'technologize your non-tech hobby',
+        'impermanent',
+        'limited information',
+        'randomness',
       ],
     },
     publicMessages: [{ createdAt: Date.now(), text: 'Welcome!', userId: '' }],

@@ -9,6 +9,7 @@ import { Hacking } from './pages/sidequests/Hacking';
 import { queryClient } from './trpc';
 
 import './main.css';
+import { Forensics } from './pages/sidequests/Forensics';
 
 render(
   () => (
@@ -17,6 +18,7 @@ render(
         <Route path="/" component={Home} />
         {/* TODO: make a tv-specific version */}
         <Route path="/tv" component={Home} />
+        <Route path="/forensics" component={Forensics} />
         <Route path="/hacking" component={Hacking} />
         <Route path="/puzzles" component={Puzzles} />
         <Route path="*404" component={NotFound} />
