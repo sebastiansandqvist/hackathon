@@ -1,5 +1,5 @@
 import { createSignal, For, Show, type Component } from 'solid-js';
-import { autofocus } from '@solid-primitives/autofocus';
+import { createAutofocus } from '@solid-primitives/autofocus';
 import { invalidate, mutate, trpc } from '../trpc';
 import { Button, ButtonPrimary } from './Button';
 import { Input } from './Input';
@@ -27,6 +27,9 @@ function NewFoodGameButton() {
 }
 
 export const FoodGame: Component<{ title: string; items: string[] }> = (props) => {
+  const [inputElement, setInputElement] = createSignal<HTMLInputElement>();
+  createAutofocus(inputElement);
+
   const [newItem, setNewItem] = createSignal('');
   const update = mutate(trpc.updateFoodGame, {
     onSettled() {
@@ -69,7 +72,7 @@ export const FoodGame: Component<{ title: string; items: string[] }> = (props) =
           <Input
             type="text"
             autofocus
-            ref={autofocus}
+            ref={setInputElement}
             disabled={update.isPending}
             value={newItem()}
             onInput={(e) => setNewItem(e.currentTarget.value)}

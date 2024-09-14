@@ -2,7 +2,14 @@ import { For, Match, Show, Switch } from 'solid-js';
 import { query, trpc } from '../trpc';
 import { Countdown } from '../components/Countdown';
 import { BlurrySection } from '../components/BlurrySection';
-import { Authenticated, AuthForm, RerollAnonymousNameButton, SignOutButton, Unauthenticated } from '../components/Auth';
+import {
+  Authenticated,
+  AuthForm,
+  NotTv,
+  RerollAnonymousNameButton,
+  SignOutButton,
+  Unauthenticated,
+} from '../components/Auth';
 import { CanvasGridBg } from '../components/CanvasGridBg';
 import { EditMessageButton } from '../components/EditMessageButton';
 import { Layout } from '../components/Layout';
@@ -39,15 +46,16 @@ export function Home() {
               </div>
             )}
           </Show>
-          <EditMessageButton />
+          <NotTv>
+            <EditMessageButton />
+          </NotTv>
         </header>
       </CanvasGridBg>
 
-      <section>
-        <Authenticated>
-          {/* TODO: do not show this if the user is tv */}
-          {({ anonymousName, username }) => (
-            <footer class="flex flex-col gap-4">
+      <Authenticated>
+        {({ anonymousName, username }) => (
+          <Show when={username !== 'tv'}>
+            <section class="flex flex-col gap-4">
               <p>
                 <span class="text-indigo-300">welcome, </span>
                 <strong>{username}</strong>
@@ -61,13 +69,13 @@ export function Home() {
                   <span class="text-indigo-300"> until you are happy with it.</span>
                 </div>
               </div>
-            </footer>
-          )}
-        </Authenticated>
-        <Unauthenticated>
-          <AuthForm />
-        </Unauthenticated>
-      </section>
+            </section>
+          </Show>
+        )}
+      </Authenticated>
+      <Unauthenticated>
+        <AuthForm />
+      </Unauthenticated>
       <BlurrySection section="timeline">
         <h2 class="font-pixel text-2xl leading-loose">timel1ne</h2>
         <Show when={home.data} fallback="..." keyed>
@@ -101,36 +109,39 @@ export function Home() {
           )}
         </Show>
       </BlurrySection>
+      <BlurrySection section="leaderboard">
+        <h2 class="font-pixel text-2xl leading-loose">lead3rboard</h2>
+      </BlurrySection>
       <BlurrySection section="side quests">
         <h2 class="font-pixel text-2xl leading-loose">side que5ts</h2>
         <ul>
           <li>
-            <A href="/hacking" class="text-indigo-300 transition hover:text-indigo-200">
-              hacking
-            </A>
-            <SideQuestPointCount quest="hacking" />
-          </li>
-          <li>
-            <A href="/logic" class="text-indigo-300 transition hover:text-indigo-200">
-              logic
-            </A>
-            <SideQuestPointCount quest="logic" />
-          </li>
-          <li>
             <A href="/algorithms" class="text-indigo-300 transition hover:text-indigo-200">
-              algorithms
+              algorithms <span class="font-dot">&gt;</span>
             </A>
             <SideQuestPointCount quest="algorithms" />
           </li>
           <li>
             <A href="/forensics" class="text-indigo-300 transition hover:text-indigo-200">
-              forensics
+              forensics <span class="font-dot">&gt;</span>
             </A>
             <SideQuestPointCount quest="forensics" />
           </li>
           <li>
+            <A href="/hacking" class="text-indigo-300 transition hover:text-indigo-200">
+              hacking <span class="font-dot">&gt;</span>
+            </A>
+            <SideQuestPointCount quest="hacking" />
+          </li>
+          <li>
+            <A href="/logic" class="text-indigo-300 transition hover:text-indigo-200">
+              logic <span class="font-dot">&gt;</span>
+            </A>
+            <SideQuestPointCount quest="logic" />
+          </li>
+          <li>
             <A href="/puzzles" class="text-indigo-300 transition hover:text-indigo-200">
-              puzzles
+              puzzles <span class="font-dot">&gt;</span>
             </A>
             <SideQuestPointCount quest="puzzles" />
           </li>
@@ -151,9 +162,6 @@ export function Home() {
         <Show when={home.data} fallback="..." keyed>
           {(data) => <FoodGame title={data.foodGame.title} items={data.foodGame.items} />}
         </Show>
-      </BlurrySection>
-      <BlurrySection section="leaderboard">
-        <h2 class="font-pixel text-2xl leading-loose">lead3rboard</h2>
       </BlurrySection>
       <div class="grid gap-2">
         <BlurrySection section="rules">

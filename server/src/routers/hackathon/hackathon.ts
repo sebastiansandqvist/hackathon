@@ -2,17 +2,31 @@ import { z } from 'zod';
 import { authedProcedure, publicProcedure, router } from '../../trpc';
 import { db } from '../../db';
 
+function calculateCheckpoints() {
+  const checkpoints = Object.entries(db.times).map(
+    ([checkpoint, time], index) => ({ checkpoint, time, index }) as const,
+  );
+
+  const currentCheckpoint =
+    checkpoints.findLast(({ time }) => {
+      return new Date(time).getTime() < Date.now();
+    }) ?? checkpoints[0]!;
+
+  const nextCheckpoint = checkpoints[currentCheckpoint.index + 1];
+
+  return {
+    current: currentCheckpoint.checkpoint as keyof typeof db.times,
+    next: nextCheckpoint?.checkpoint as keyof typeof db.times | undefined,
+  };
+}
+
 export const hackathonRouter = router({
   homepage: publicProcedure.query(() => {
     const message = db.publicMessages.at(-1)!;
     return {
       foodGame: db.foodGame,
       times: db.times,
-      // TODO: make these dynamic
-      checkpoints: {
-        current: 'codingStart',
-        next: 'codingEnd',
-      },
+      checkpoints: calculateCheckpoints(),
       visibleSections: db.visibleSections,
       publicMessage: {
         text: message.text,
@@ -42,8 +56,7 @@ export const hackathonRouter = router({
       }),
     )
     .mutation(({ input, ctx }) => {
-      // TODO: figure out how to log in the tv user
-      // if (ctx.user.username !== 'tv') throw new Error('Only the TV can participate');
+      if (ctx.user.username !== 'tv') throw new Error('Only the TV can participate');
       db.foodGame.title = input.title;
       db.foodGame.items = input.items;
     }),

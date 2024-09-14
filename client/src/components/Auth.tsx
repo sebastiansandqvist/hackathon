@@ -95,3 +95,9 @@ export const Unauthenticated: ParentComponent = (props) => {
   const auth = query('status', trpc.status);
   return <Show when={auth.data?.isAuthed === false}>{props.children}</Show>;
 };
+
+export const NotTv: ParentComponent = (props) => {
+  const auth = query('status', trpc.status);
+  const isNotTv = () => !auth.data || auth.data.isAuthed === false || auth.data.username !== 'tv';
+  return <Show when={isNotTv()}>{props.children}</Show>;
+};

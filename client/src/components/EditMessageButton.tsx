@@ -30,7 +30,7 @@ export function EditMessageButton() {
     if (!password) return;
 
     const easyPassword = 'supersecretlol';
-    const redHerring = '1503';
+    const redHerring = '1350';
     if (password !== easyPassword && password !== redHerring && !(await isHardPasswordValid(password))) {
       return alert('incorrect password');
     }
