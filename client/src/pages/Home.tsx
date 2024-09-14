@@ -19,8 +19,6 @@ import { TimelineDate } from '../components/TimelineDate';
 import { FoodGame } from '../components/FoodGame';
 import { Canvas } from '../components/Canvas';
 
-const fontHeight = 16 as const;
-
 type Progress = RouterOutput['homepage']['sideQuestProgress'][0]['progress'];
 type Times = RouterOutput['homepage']['times'];
 const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> = (props) => {
@@ -29,55 +27,74 @@ const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> = (prop
   const hackathonEnd = new Date(props.times.codingEnd).getTime();
   const easyPuzzleComplete = new Date('2024-10-19T19:30:00.000Z').getTime();
 
-  const draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
-    ctx.font = `${fontHeight}px Zed`;
-    const fontWidth = ctx.measureText(' ').width;
+  const categories = ['algorithms', 'forensics', 'hacking', 'logic', 'puzzles'] as const;
+  const difficultyLevels = ['easy', 'hard'] as const;
 
+  const draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
+    const now = performance.now();
     const drawingArea = canvas.getBoundingClientRect();
-    ctx.fillStyle = '#312e81';
+
+    // clear the background
+    ctx.fillStyle = '#020617';
     ctx.fillRect(0, 0, drawingArea.width, drawingArea.height);
 
-    const charactersFittingInWidth = Math.floor(drawingArea.width / fontWidth);
-    const range = hackathonEnd - hackathonStart;
-    const easyPuzzleCompletedPercent = (easyPuzzleComplete - hackathonStart) / range;
-    for (let x = 0; x < charactersFittingInWidth; x++) {
-      ctx.fillStyle = 'white';
-      // const charStartPercent = x / charactersFittingInWidth;
-      // const charEndPercent = (x + 1) / charactersFittingInWidth;
-      // const [start, end] = [charStartPercent, charEndPercent];
-      // const easyPuzzleWithinRange = easyPuzzleCompletedPercent >= start && easyPuzzleCompletedPercent < end;
-      ctx.textBaseline = 'top';
-      ctx.fillText('-', x * fontWidth, 0);
+    // draw moving dots
+    const pixelsPerSecond = 4;
+    const pixelsBetweenDots = 10;
+    const radius = 1;
+    for (let i = 0; i < Math.ceil(drawingArea.width / pixelsBetweenDots) + 1; i++) {
+      const xOffset = ((now * pixelsPerSecond) / 1000) % pixelsBetweenDots;
+      const x = i * pixelsBetweenDots - xOffset;
+      const y = drawingArea.height / 2 - radius;
+      ctx.fillStyle = '#a5b4fc';
+      ctx.beginPath();
+      ctx.roundRect(x, y, radius * 2, radius * 2, radius);
+      ctx.save();
+      ctx.globalAlpha = 0.75;
+      ctx.fill();
+      ctx.restore();
     }
 
-    const padding = 4;
-    //draw backgrounds
+    //draw char backgrounds
+    const padding = 2;
+    const fontHeight = 16 as const;
+    const fontWidth = ctx.measureText(' ').width;
+    const range = hackathonEnd - hackathonStart;
+    const easyPuzzleCompletedPercent = (easyPuzzleComplete - hackathonStart) / range;
+
     ctx.save();
     ctx.translate(-fontWidth / 2, 0);
-    ctx.fillStyle = '#312e81';
-    ctx.fillRect(
-      easyPuzzleCompletedPercent * drawingArea.width - padding,
-      0 - padding,
-      fontWidth + padding * 2,
-      fontHeight + padding * 2,
-    );
+    ctx.fillStyle = '#020617';
+    for (const category of categories) {
+      for (const difficulty of difficultyLevels) {
+        const isoDate = props.progress[category][difficulty];
+        if (!isoDate) continue;
+        const timestamp = new Date(isoDate).getTime();
+        const percent = Math.abs(timestamp - hackathonStart) / range;
+        const x = Math.floor(percent * drawingArea.width);
+        ctx.fillRect(x - padding, 0 - padding, fontWidth + padding * 2, fontHeight + padding * 2);
+      }
+    }
     ctx.restore();
 
-    // draw completions
+    // draw characters
+    ctx.font = `bold ${fontHeight}px Zed`;
     ctx.save();
     ctx.translate(-fontWidth / 2, 0);
-    ctx.fillStyle = 'white';
-    ctx.fillText('x', easyPuzzleCompletedPercent * drawingArea.width, 0);
+
+    for (const category of categories) {
+      for (const difficulty of difficultyLevels) {
+        const isoDate = props.progress[category][difficulty];
+        if (!isoDate) continue;
+        const timestamp = new Date(isoDate).getTime();
+        const percent = Math.abs(timestamp - hackathonStart) / range;
+        const x = Math.floor(percent * drawingArea.width);
+        ctx.fillStyle = difficulty === 'easy' ? '#38bdf8' : '#34d399';
+        ctx.fillText(category[0] ?? '', x, 14);
+      }
+    }
+
     ctx.restore();
-
-    // if (easyPuzzleCompletion) {
-    //   const x = drawingArea.width * progress;
-
-    //   ctx.fillStyle = 'red';
-    //   ctx.beginPath();
-    //   ctx.arc(x, drawingArea.height / 2, 10, 0, Math.PI * 2);
-    //   ctx.fill();
-    // }
   };
   return <Canvas draw={draw} />;
 };
@@ -183,11 +200,11 @@ export function Home() {
         <h2 class="font-pixel text-2xl leading-loose">lead3rboard</h2>
         <Show when={home.data} fallback="..." keyed>
           {(data) => (
-            <div>
+            <div class="grid gap-4">
               <For each={data.sideQuestProgress}>
                 {(progress) => (
-                  <div class="grid grid-rows-[auto_16px]">
-                    <div>{progress.anonymousName}</div>
+                  <div class="grid grid-rows-[auto_20px] gap-1">
+                    <p class="font-bold text-indigo-200">{progress.anonymousName}</p>
                     <LeaderboardCanvas progress={progress.progress} times={data.times} />
                   </div>
                 )}
