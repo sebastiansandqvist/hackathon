@@ -14,7 +14,7 @@ export function Forensics() {
         <h1 class="font-quill text-8xl">Forensics – Part 2</h1>
         <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">TODO:</h2>
         <p>(todo)</p>
-        <img src="/images/poirot.bmp" />
+        <img src="/images/poirot.bmp" class="w-[400px]" />
         <ul class="grid list-outside list-disc gap-4 pt-4 px-10 text-indigo-100 marker:text-indigo-300/75">
           <li>todo</li>
         </ul>
