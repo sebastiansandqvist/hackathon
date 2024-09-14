@@ -68,6 +68,14 @@ body,
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='16' height='16' fill='none'%3e%3crect fill='rgb(165 180 252 / 0.3)' id='pattern-circle' x='0' y='0' width='2.87' height='2.87'%3e%3c/rect%3e%3c/svg%3e");
 }
 
+.pixelated {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  -ms-interpolation-mode: nearest-neighbor;
+  image-rendering: pixelated;
+}
+
 .stack {
   display: grid;
   place-content: center;

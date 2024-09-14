@@ -6,10 +6,10 @@ import { Home } from './pages/Home';
 import { NotFound } from './pages/NotFound';
 import { Puzzles } from './pages/sidequests/Puzzles';
 import { Hacking } from './pages/sidequests/Hacking';
+import { Forensics } from './pages/sidequests/Forensics';
 import { queryClient } from './trpc';
 
 import './main.css';
-import { Forensics } from './pages/sidequests/Forensics';
 
 render(
   () => (

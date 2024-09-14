@@ -58,4 +58,40 @@ export const sideQuestRouter = router({
       }
       ctx.user.sideQuests.puzzles[input.difficulty] = Date.now();
     }),
+  submitSolution: authedProcedure
+    .input(
+      z.object({
+        category: z.enum(['algorithms', 'forensics', 'hacking', 'logic', 'puzzles']),
+        difficulty: z.enum(['easy', 'hard']),
+        solution: z.string(),
+      }),
+    )
+    .mutation(({ input, ctx }) => {
+      const solution = {
+        algorithms: {
+          easy: 'TODO',
+          hard: 'TODO',
+        },
+        forensics: {
+          easy: 'TODO',
+          hard: 'TODO',
+        },
+        hacking: {
+          easy: 'TODO',
+          hard: 'TODO',
+        },
+        logic: {
+          easy: 'TODO',
+          hard: 'TODO',
+        },
+        puzzles: {
+          easy: env.PUZZLE_EASY_ANSWER,
+          hard: env.PUZZLE_HARD_ANSWER,
+        },
+      };
+      if (input.solution !== solution[input.category][input.difficulty]) {
+        throw new Error('Incorrect');
+      }
+      ctx.user.sideQuests[input.category][input.difficulty] = Date.now();
+    }),
 });

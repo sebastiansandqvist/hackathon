@@ -1,48 +1,11 @@
+import { createSignal, Show } from 'solid-js';
 import { A } from '@solidjs/router';
 import { Layout } from '../../components/Layout';
 import { ButtonPrimary } from '../../components/Button';
 import { CanvasGridBg } from '../../components/CanvasGridBg';
 import { Authenticated, Unauthenticated } from '../../components/Auth';
-import { Input } from '../../components/Input';
-import { createSignal, For, Show, type Component } from 'solid-js';
 import { invalidate, mutate, trpc } from '../../trpc';
-
-const MultiCharInput: Component<{ chars: number; value: string; onInput: (value: string) => void }> = (props) => {
-  const inputs = Array.from({ length: props.chars }, () => {
-    const [value, setValue] = createSignal('');
-    const [element, setElement] = createSignal<HTMLInputElement>();
-    return { value, setValue, element, setElement };
-  });
-  return (
-    <fieldset class="flex gap-1">
-      <For each={inputs}>
-        {(input, i) => (
-          <input
-            ref={input.setElement}
-            value={input.value()}
-            onKeyUp={(e) => {
-              if (e.key === 'Backspace') {
-                input.setValue('');
-                inputs[i() - 1]?.element()?.focus();
-                return;
-              }
-              const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-              console.log(e);
-              console.log(e.key);
-              const value = e.currentTarget.value;
-              input.setValue(e.currentTarget.value);
-              const direction = value ? 1 : -1;
-              inputs[i() + direction]?.element()?.focus();
-            }}
-            type="text"
-            max={1}
-            class="w-[1ch] border-0 border-b border-dotted border-indigo-500 py-0.5 text-center italic outline-none transition placeholder:text-indigo-400/75 focus:border-solid"
-          />
-        )}
-      </For>
-    </fieldset>
-  );
-};
+import { MultiCharInput } from '../../components/Input';
 
 function EasyPuzzle() {
   return (
@@ -64,6 +27,7 @@ function EasyPuzzle() {
 
 function PuzzleForm(props: { difficulty: 'easy' | 'hard' }) {
   const [solution, setSolution] = createSignal('');
+  const characterCount = { easy: 6, hard: 12 };
   const submitPuzzle = mutate(trpc.submitPuzzle, {
     onError(err: Error) {
       alert(err.message ?? 'Unable to submit solution');
@@ -85,14 +49,8 @@ function PuzzleForm(props: { difficulty: 'easy' | 'hard' }) {
   };
   return (
     <div>
-      <MultiCharInput chars={3} value="hello" onInput={() => {}} />
       <form class="flex gap-4" onSubmit={handleSubmit}>
-        <Input
-          type="text"
-          placeholder="solution"
-          value={solution()}
-          onInput={(e) => setSolution(e.currentTarget.value)}
-        />
+        <MultiCharInput chars={characterCount[props.difficulty]} onInput={setSolution} />
         <ButtonPrimary type="submit" disabled={submitPuzzle.isPending}>
           <Show when={props.difficulty === 'easy'} fallback="submit">
             hard puzzle <span class="not-italic">&rarr;</span>
