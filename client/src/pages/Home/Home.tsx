@@ -1,7 +1,8 @@
-import { For, Match, Show, Switch, type Component } from 'solid-js';
-import { query, trpc, type RouterOutput } from '../trpc';
-import { Countdown } from '../components/Countdown';
-import { BlurrySection } from '../components/BlurrySection';
+import { For, Show } from 'solid-js';
+import { A } from '@solidjs/router';
+import { query, trpc } from '../../trpc';
+import { Countdown } from './components/Countdown';
+import { BlurrySection } from '../../components/BlurrySection';
 import {
   Authenticated,
   AuthForm,
@@ -9,101 +10,14 @@ import {
   RerollAnonymousNameButton,
   SignOutButton,
   Unauthenticated,
-} from '../components/Auth';
-import { CanvasGridBg } from '../components/CanvasGridBg';
-import { EditMessageButton } from '../components/EditMessageButton';
-import { Layout } from '../components/Layout';
-import { A } from '@solidjs/router';
-import { SideQuestPointCount } from '../components/SideQuestPointCount';
-import { TimelineDate } from '../components/TimelineDate';
-import { FoodGame } from '../components/FoodGame';
-import { Canvas } from '../components/Canvas';
-
-type Progress = RouterOutput['homepage']['sideQuestProgress'][0]['progress'];
-type Times = RouterOutput['homepage']['times'];
-const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> = (props) => {
-  const currentTime = new Date('2024-10-18T23:00:00.000Z').getTime();
-  const hackathonStart = new Date(props.times.codingStart).getTime();
-  const hackathonEnd = new Date(props.times.codingEnd).getTime();
-  const easyPuzzleComplete = new Date('2024-10-19T19:30:00.000Z').getTime();
-
-  const categories = ['algorithms', 'forensics', 'hacking', 'logic', 'puzzles'] as const;
-  const difficultyLevels = ['easy', 'hard'] as const;
-
-  const draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
-    const now = performance.now();
-    const drawingArea = canvas.getBoundingClientRect();
-
-    // clear the background
-    ctx.fillStyle = '#020617';
-    ctx.fillRect(0, 0, drawingArea.width, drawingArea.height);
-
-    // draw moving dots
-    const pixelsPerSecond = 4;
-    const pixelsBetweenDots = 10;
-    const radius = 1;
-    for (let i = 0; i < Math.ceil(drawingArea.width / pixelsBetweenDots) + 1; i++) {
-      const xOffset = ((now * pixelsPerSecond) / 1000) % pixelsBetweenDots;
-      const x = i * pixelsBetweenDots - xOffset;
-      const y = drawingArea.height / 2 - radius;
-      ctx.fillStyle = '#a5b4fc';
-      ctx.beginPath();
-      ctx.roundRect(x, y, radius * 2, radius * 2, radius);
-      ctx.save();
-      ctx.globalAlpha = 0.75;
-      ctx.fill();
-      ctx.restore();
-    }
-
-    //draw char backgrounds
-    const padding = 2;
-    const fontHeight = 16 as const;
-    const fontWidth = ctx.measureText(' ').width;
-    const range = hackathonEnd - hackathonStart;
-    const easyPuzzleCompletedPercent = (easyPuzzleComplete - hackathonStart) / range;
-
-    ctx.save();
-    ctx.translate(-fontWidth / 2, 0);
-    ctx.fillStyle = '#020617';
-    for (const category of categories) {
-      for (const difficulty of difficultyLevels) {
-        const isoDate = props.progress[category][difficulty];
-        if (!isoDate) continue;
-        const timestamp = new Date(isoDate).getTime();
-        const percent = Math.abs(timestamp - hackathonStart) / range;
-        const x = Math.floor(percent * drawingArea.width);
-        ctx.fillRect(x - padding, 0 - padding, fontWidth + padding * 2, fontHeight + padding * 2);
-      }
-    }
-    ctx.restore();
-
-    // draw characters
-    ctx.font = `bold ${fontHeight}px Zed`;
-    ctx.save();
-    ctx.translate(-fontWidth / 2, 0);
-
-    for (const category of categories) {
-      for (const difficulty of difficultyLevels) {
-        const isoDate = props.progress[category][difficulty];
-        if (!isoDate) continue;
-        const timestamp = new Date(isoDate).getTime();
-        const percent = Math.abs(timestamp - hackathonStart) / range;
-        const x = Math.floor(percent * drawingArea.width);
-        ctx.fillStyle = difficulty === 'easy' ? '#38bdf8' : '#34d399';
-        ctx.fillText(category[0] ?? '', x, 14);
-      }
-    }
-
-    ctx.restore();
-  };
-  return <Canvas draw={draw} />;
-};
-{
-  /*
-  short       :-------------|----------F-x------Px-x----
-  longestName :---------p-P-|----------S-H-------x-x----
-  ^ Oct 18 7pm                                ^ Oct 20 3pm */
-}
+} from '../../components/Auth';
+import { CanvasGridBg } from '../../components/CanvasGridBg';
+import { EditMessageButton } from './components/EditMessageButton';
+import { Layout } from '../../components/Layout';
+import { SideQuestPointCount } from './components/SideQuestPointCount';
+import { TimelineDate } from './components/TimelineDate';
+import { FoodGame } from './components/FoodGame';
+import { LeaderboardCanvas } from './components/Leaderboard';
 
 export function Home() {
   const home = query('homepage', trpc.homepage); // TODO: make this a subscription

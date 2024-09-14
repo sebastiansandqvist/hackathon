@@ -1,9 +1,9 @@
 import { createSignal, For, Show, type Component } from 'solid-js';
 import { createAutofocus } from '@solid-primitives/autofocus';
-import { invalidate, mutate, trpc } from '../trpc';
-import { Button, ButtonPrimary } from './Button';
-import { Input } from './Input';
-import { TvOnly } from './Auth';
+import { invalidate, mutate, trpc } from '../../../trpc';
+import { Button, ButtonPrimary } from '../../../components/Button';
+import { Input } from '../../../components/Input';
+import { TvOnly } from '../../../components/Auth';
 
 function NewFoodGameButton() {
   const update = mutate(trpc.updateFoodGame, {

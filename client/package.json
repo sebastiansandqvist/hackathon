@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@solid-primitives/autofocus": "0.0.111",
+    "@solid-primitives/clipboard": "1.5.10",
     "@solid-primitives/mouse": "2.0.19",
     "@solid-primitives/resize-observer": "2.0.26",
     "@solidjs/router": "0.14.3",

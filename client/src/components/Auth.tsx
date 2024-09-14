@@ -20,6 +20,7 @@ export function RerollAnonymousNameButton() {
   const reroll = mutate(trpc.changeAnonUsername, {
     onSettled() {
       invalidate('status');
+      invalidate('homepage');
     },
   });
   return (

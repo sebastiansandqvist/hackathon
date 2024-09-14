@@ -1,15 +1,5 @@
-import { mutate, trpc, invalidate } from '../trpc';
-import { ButtonSecondary } from './Button';
-
-/*
-"preferred_line_length": 120,
-"prettier": {
-  "quoteProps": "consistent",
-  "singleQuote": true,
-  "allowed": true,
-  "plugins": ["prettier-plugin-tailwindcss"]
-},
-*/
+import { mutate, trpc, invalidate } from '../../../trpc';
+import { ButtonSecondary } from '../../../components/Button';
 
 async function hash(message: string): Promise<string> {
   const data = new TextEncoder().encode(message);
