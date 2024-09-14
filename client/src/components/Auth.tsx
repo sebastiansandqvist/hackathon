@@ -101,3 +101,9 @@ export const NotTv: ParentComponent = (props) => {
   const isNotTv = () => !auth.data || auth.data.isAuthed === false || auth.data.username !== 'tv';
   return <Show when={isNotTv()}>{props.children}</Show>;
 };
+
+export const TvOnly: ParentComponent = (props) => {
+  const auth = query('status', trpc.status);
+  const isTv = () => auth.data?.isAuthed && auth.data.username === 'tv';
+  return <Show when={isTv()}>{props.children}</Show>;
+};

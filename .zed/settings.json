@@ -1,0 +1,9 @@
+{
+  "preferred_line_length": 120,
+  "prettier": {
+    "quoteProps": "consistent",
+    "singleQuote": true,
+    "allowed": true,
+    "plugins": ["prettier-plugin-tailwindcss"]
+  }
+}

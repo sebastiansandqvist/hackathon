@@ -26,7 +26,9 @@ export const sideQuestRouter = router({
           throw new Error('Incorrect hard-mode password');
         }
         if (img.src) {
-          ctx.user.sideQuests.hacking.hard = Date.now();
+          if (!ctx.user.sideQuests.hacking.hard) {
+            ctx.user.sideQuests.hacking.hard = Date.now();
+          }
           imgUrl = img.src;
           text = doc.body.textContent ?? text;
         }

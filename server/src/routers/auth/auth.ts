@@ -21,12 +21,13 @@ for (let i = 0; i < 10; i++) {
 export const authRouter = router({
   status: maybeAuthedProcedure.query(({ ctx }) => {
     if ('user' in ctx) {
+      const user = ctx.user!;
       return {
         isAuthed: true as const,
-        username: ctx.user.username,
-        anonymousName: ctx.user.anonymousName,
-        sideQuests: ctx.user.sideQuests,
-        hintDeductions: ctx.user.hintDeductions,
+        username: user.username,
+        anonymousName: user.anonymousName,
+        sideQuests: user.sideQuests,
+        hintDeductions: user.hintDeductions,
       };
     }
     return { isAuthed: false as const };

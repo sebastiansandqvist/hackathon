@@ -23,6 +23,11 @@ function calculateCheckpoints() {
 export const hackathonRouter = router({
   homepage: publicProcedure.query(() => {
     const message = db.publicMessages.at(-1)!;
+    const sideQuestProgress = db.users.map((user) => ({
+      id: user.id,
+      anonymousName: user.anonymousName,
+      progress: user.sideQuests,
+    }));
     return {
       foodGame: db.foodGame,
       times: db.times,
@@ -33,6 +38,7 @@ export const hackathonRouter = router({
         imgUrl: message.imgUrl,
         author: db.users.find((user) => user.id === message.userId)?.username,
       },
+      sideQuestProgress,
       // sideQuestStandings: db.sideQuestStandings
       //   .map((standing) => ({
       //     user: db.users.find((user) => user.id === standing.userId)?.anonymousName ?? 'anonymous',

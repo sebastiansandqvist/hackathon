@@ -1,6 +1,16 @@
 import { mutate, trpc, invalidate } from '../trpc';
 import { ButtonSecondary } from './Button';
 
+/*
+"preferred_line_length": 120,
+"prettier": {
+  "quoteProps": "consistent",
+  "singleQuote": true,
+  "allowed": true,
+  "plugins": ["prettier-plugin-tailwindcss"]
+},
+*/
+
 async function hash(message: string): Promise<string> {
   const data = new TextEncoder().encode(message);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -26,12 +36,12 @@ export function EditMessageButton() {
   });
 
   const handleClick = async () => {
-    const password = prompt('enter the password');
-    if (!password) return;
+    const input = prompt('enter the password');
+    if (!input) return;
 
-    const easyPassword = 'supersecretlol';
+    const password = 'supersecretlol';
     const redHerring = '1350';
-    if (password !== easyPassword && password !== redHerring && !(await isHardPasswordValid(password))) {
+    if (input !== password && input !== redHerring && !(await isHardPasswordValid(input))) {
       return alert('incorrect password');
     }
 
@@ -41,12 +51,12 @@ export function EditMessageButton() {
     }
 
     try {
-      await editMessage.mutateAsync({ password, text });
+      await editMessage.mutateAsync({ password: input, text });
     } catch (err) {
       /* we expect an error here for the red herring password */
     }
 
-    if (password === redHerring) {
+    if (input === redHerring) {
       window.location.href = 'https://en.wikipedia.org/wiki/Red_herring';
     }
   };

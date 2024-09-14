@@ -1,5 +1,5 @@
-import { For, Match, Show, Switch } from 'solid-js';
-import { query, trpc } from '../trpc';
+import { For, Match, Show, Switch, type Component } from 'solid-js';
+import { query, trpc, type RouterOutput } from '../trpc';
 import { Countdown } from '../components/Countdown';
 import { BlurrySection } from '../components/BlurrySection';
 import {
@@ -17,6 +17,76 @@ import { A } from '@solidjs/router';
 import { SideQuestPointCount } from '../components/SideQuestPointCount';
 import { TimelineDate } from '../components/TimelineDate';
 import { FoodGame } from '../components/FoodGame';
+import { Canvas } from '../components/Canvas';
+
+const fontHeight = 16 as const;
+
+type Progress = RouterOutput['homepage']['sideQuestProgress'][0]['progress'];
+type Times = RouterOutput['homepage']['times'];
+const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> = (props) => {
+  const currentTime = new Date('2024-10-18T23:00:00.000Z').getTime();
+  const hackathonStart = new Date(props.times.codingStart).getTime();
+  const hackathonEnd = new Date(props.times.codingEnd).getTime();
+  const easyPuzzleComplete = new Date('2024-10-19T19:30:00.000Z').getTime();
+
+  const draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
+    ctx.font = `${fontHeight}px Zed`;
+    const fontWidth = ctx.measureText(' ').width;
+
+    const drawingArea = canvas.getBoundingClientRect();
+    ctx.fillStyle = '#312e81';
+    ctx.fillRect(0, 0, drawingArea.width, drawingArea.height);
+
+    const charactersFittingInWidth = Math.floor(drawingArea.width / fontWidth);
+    const range = hackathonEnd - hackathonStart;
+    const easyPuzzleCompletedPercent = (easyPuzzleComplete - hackathonStart) / range;
+    for (let x = 0; x < charactersFittingInWidth; x++) {
+      ctx.fillStyle = 'white';
+      // const charStartPercent = x / charactersFittingInWidth;
+      // const charEndPercent = (x + 1) / charactersFittingInWidth;
+      // const [start, end] = [charStartPercent, charEndPercent];
+      // const easyPuzzleWithinRange = easyPuzzleCompletedPercent >= start && easyPuzzleCompletedPercent < end;
+      ctx.textBaseline = 'top';
+      ctx.fillText('-', x * fontWidth, 0);
+    }
+
+    const padding = 4;
+    //draw backgrounds
+    ctx.save();
+    ctx.translate(-fontWidth / 2, 0);
+    ctx.fillStyle = '#312e81';
+    ctx.fillRect(
+      easyPuzzleCompletedPercent * drawingArea.width - padding,
+      0 - padding,
+      fontWidth + padding * 2,
+      fontHeight + padding * 2,
+    );
+    ctx.restore();
+
+    // draw completions
+    ctx.save();
+    ctx.translate(-fontWidth / 2, 0);
+    ctx.fillStyle = 'white';
+    ctx.fillText('x', easyPuzzleCompletedPercent * drawingArea.width, 0);
+    ctx.restore();
+
+    // if (easyPuzzleCompletion) {
+    //   const x = drawingArea.width * progress;
+
+    //   ctx.fillStyle = 'red';
+    //   ctx.beginPath();
+    //   ctx.arc(x, drawingArea.height / 2, 10, 0, Math.PI * 2);
+    //   ctx.fill();
+    // }
+  };
+  return <Canvas draw={draw} />;
+};
+{
+  /*
+  short       :-------------|----------F-x------Px-x----
+  longestName :---------p-P-|----------S-H-------x-x----
+  ^ Oct 18 7pm                                ^ Oct 20 3pm */
+}
 
 export function Home() {
   const home = query('homepage', trpc.homepage); // TODO: make this a subscription
@@ -111,6 +181,20 @@ export function Home() {
       </BlurrySection>
       <BlurrySection section="leaderboard">
         <h2 class="font-pixel text-2xl leading-loose">lead3rboard</h2>
+        <Show when={home.data} fallback="..." keyed>
+          {(data) => (
+            <div>
+              <For each={data.sideQuestProgress}>
+                {(progress) => (
+                  <div class="grid grid-rows-[auto_16px]">
+                    <div>{progress.anonymousName}</div>
+                    <LeaderboardCanvas progress={progress.progress} times={data.times} />
+                  </div>
+                )}
+              </For>
+            </div>
+          )}
+        </Show>
       </BlurrySection>
       <BlurrySection section="side quests">
         <h2 class="font-pixel text-2xl leading-loose">side que5ts</h2>
