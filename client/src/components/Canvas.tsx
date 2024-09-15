@@ -26,6 +26,7 @@ export const Canvas: Component<{
   createEffect(() => {
     const canvas = canvasElement()!;
     const ctx = canvas.getContext('2d')!;
+    props.draw(canvas, ctx);
     function drawLoop() {
       props.draw(canvas, ctx);
       raf = requestAnimationFrame(drawLoop);

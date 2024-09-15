@@ -1,9 +1,7 @@
 import { createSignal, For, Show, type Component } from 'solid-js';
-import { createAutofocus } from '@solid-primitives/autofocus';
 import { invalidate, mutate, trpc } from '../../../trpc';
 import { Button, ButtonPrimary } from '../../../components/Button';
 import { Input } from '../../../components/Input';
-import { TvOnly } from '../../../components/Auth';
 
 function NewFoodGameButton() {
   const update = mutate(trpc.updateFoodGame, {
@@ -13,26 +11,22 @@ function NewFoodGameButton() {
   });
 
   return (
-    <TvOnly>
-      <ButtonPrimary
-        disabled={update.isPending}
-        onClick={() => {
-          const title = prompt('title');
-          const firstItem = prompt('first item');
-          if (!title || !firstItem) return;
-          update.mutate({ title, items: [firstItem] });
-        }}
-      >
-        New vote
-      </ButtonPrimary>
-    </TvOnly>
+    <ButtonPrimary
+      disabled={update.isPending}
+      onClick={() => {
+        const title = prompt('title');
+        const firstItem = prompt('first item');
+        if (!title || !firstItem) return;
+        update.mutate({ title, items: [firstItem] });
+      }}
+    >
+      New vote
+    </ButtonPrimary>
   );
 }
 
-export const FoodGame: Component<{ title: string; items: string[] }> = (props) => {
+export const FoodGame: Component<{ title: string; items: string[]; tv?: boolean }> = (props) => {
   const [inputElement, setInputElement] = createSignal<HTMLInputElement>();
-  createAutofocus(inputElement);
-
   const [newItem, setNewItem] = createSignal('');
   const update = mutate(trpc.updateFoodGame, {
     onSettled() {
@@ -44,14 +38,21 @@ export const FoodGame: Component<{ title: string; items: string[] }> = (props) =
   });
 
   return (
-    <Show when={props.items.length > 0} fallback={<NewFoodGameButton />}>
+    <Show
+      when={props.items.length > 0}
+      fallback={
+        <Show when={props.tv}>
+          <NewFoodGameButton />
+        </Show>
+      }
+    >
       <div class="grid gap-2">
         <h3 class="mt-2 uppercase tracking-widest text-indigo-300/75">{props.title}</h3>
         <For each={props.items}>
           {(item, i) => (
             <div class="flex items-center gap-2">
               <span class="text-indigo-200">{item}</span>
-              <TvOnly>
+              <Show when={props.tv}>
                 <Button
                   disabled={update.isPending}
                   onClick={() => {
@@ -63,21 +64,21 @@ export const FoodGame: Component<{ title: string; items: string[] }> = (props) =
                 >
                   <span class="not-italic">❌</span>
                 </Button>
-              </TvOnly>
+              </Show>
             </div>
           )}
         </For>
-        <TvOnly>
+        <Show when={props.tv}>
           <form
             onSubmit={async (e) => {
               e.preventDefault();
               await update.mutateAsync({ title: props.title, items: [...props.items, newItem()] });
               setNewItem('');
+              inputElement()?.focus();
             }}
           >
             <Input
               type="text"
-              autofocus
               ref={setInputElement}
               disabled={update.isPending}
               value={newItem()}
@@ -87,7 +88,7 @@ export const FoodGame: Component<{ title: string; items: string[] }> = (props) =
               <span class="not-italic">+</span>
             </ButtonPrimary>
           </form>
-        </TvOnly>
+        </Show>
       </div>
     </Show>
   );
