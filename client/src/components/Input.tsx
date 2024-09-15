@@ -4,6 +4,7 @@ export const Input: Component<JSX.InputHTMLAttributes<HTMLInputElement>> = (prop
   <input
     {...props}
     class="border-0 border-b border-dotted border-indigo-500 py-0.5 italic outline-none transition placeholder:text-indigo-400/75 focus:border-solid"
+    classList={{ [props.class ?? '']: true }}
   >
     {props.children}
   </input>

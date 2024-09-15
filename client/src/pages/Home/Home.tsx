@@ -19,6 +19,7 @@ import { SideQuestPointCount } from './components/SideQuestPointCount';
 import { TimelineDate } from './components/TimelineDate';
 import { FoodGame } from './components/FoodGame';
 import { LeaderboardCanvas, LeaderboardCanvasMetadata } from './components/Leaderboard';
+import { SectionHeading, Uppercase } from '../../components/Text';
 
 export function Home() {
   const homeData = query('homepage', trpc.homepage, {
@@ -49,7 +50,7 @@ export function Home() {
           <Show when={home()} keyed>
             {(data) => (
               <div class="grid gap-2">
-                <h1 class="font-pixel text-2xl leading-loose">{data.publicMessage.text}</h1>
+                <h1 class="font-pixel text-2xl">{data.publicMessage.text}</h1>
                 <Show when={data.publicMessage.imgUrl}>
                   <img src={data.publicMessage.imgUrl} class="max-h-64 max-w-full" />
                 </Show>
@@ -104,7 +105,7 @@ export function Home() {
         <AuthForm />
       </Unauthenticated>
       <BlurrySection section="timeline">
-        <h2 class="font-pixel text-2xl leading-loose">timel1ne</h2>
+        <SectionHeading>timel1ne</SectionHeading>
         <Show when={home()} fallback="..." keyed>
           {(data) => (
             <div class="grid gap-2">
@@ -137,7 +138,7 @@ export function Home() {
         </Show>
       </BlurrySection>
       <BlurrySection section="leaderboard">
-        <h2 class="font-pixel text-2xl leading-loose">lead3rboard</h2>
+        <SectionHeading>lead3rboard</SectionHeading>
         <Show when={home()} fallback="..." keyed>
           {(data) => (
             <div class="grid gap-4">
@@ -158,7 +159,7 @@ export function Home() {
       </BlurrySection>
       <NotTv>
         <BlurrySection section="side quests">
-          <h2 class="font-pixel text-2xl leading-loose">side que5ts</h2>
+          <SectionHeading>side que5ts</SectionHeading>
           <ul>
             <li>
               <A href="/algorithms" class="text-indigo-300 transition hover:text-indigo-200">
@@ -206,7 +207,7 @@ export function Home() {
 
       <TvOnly>
         <BlurrySection section="food game">
-          <h2 class="font-pixel text-2xl leading-loose">f0od game!</h2>
+          <SectionHeading>f0od game!</SectionHeading>
           <FoodGame title={home()?.foodGame.title ?? ''} items={home()?.foodGame.items ?? []} tv />
         </BlurrySection>
       </TvOnly>
@@ -214,7 +215,7 @@ export function Home() {
       <NotTv>
         <Show when={home() && home()!.foodGame.items.length > 0}>
           <BlurrySection section="food game">
-            <h2 class="font-pixel text-2xl leading-loose">f0od game!</h2>
+            <SectionHeading>f0od game!</SectionHeading>
             <FoodGame title={home()?.foodGame.title ?? ''} items={home()?.foodGame.items ?? []} />
           </BlurrySection>
         </Show>
@@ -223,8 +224,10 @@ export function Home() {
       <NotTv>
         <div class="grid gap-2">
           <BlurrySection section="rules">
-            <h2 class="font-pixel text-2xl leading-loose">info</h2>
-            <h3 class="mt-2 uppercase tracking-widest text-indigo-300/75">hackathon rules</h3>
+            <SectionHeading>info</SectionHeading>
+            <Uppercase as="h3" class="mt-2">
+              hackathon rules
+            </Uppercase>
             <ol class="grid list-outside list-decimal gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
               <li>you can work solo or in teams, or just contribute to random projects.</li>
               <li>
@@ -235,7 +238,9 @@ export function Home() {
             </ol>
           </BlurrySection>
           <BlurrySection section="points">
-            <h3 class="mt-2 uppercase tracking-widest text-indigo-300/75">points</h3>
+            <Uppercase as="h3" class="mt-2">
+              points
+            </Uppercase>
             <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
               <li>the person with the most points wins the hackathon.</li>
               <li>each easy side quest is worth 1 point.</li>
@@ -244,7 +249,9 @@ export function Home() {
             </ul>
           </BlurrySection>
           <BlurrySection section="voting">
-            <h3 class="mt-2 uppercase tracking-widest text-indigo-300/75">voting</h3>
+            <Uppercase as="h3" class="mt-2">
+              voting
+            </Uppercase>
             <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
               <li>after demos, voting opens on this site.</li>
               <li>everyone anonymously ranks the other projects.</li>
@@ -258,7 +265,9 @@ export function Home() {
             </ul>
           </BlurrySection>
           <BlurrySection section="prizes">
-            <h3 class="mt-2 uppercase tracking-widest text-indigo-300/75">prizes</h3>
+            <Uppercase as="h3" class="mt-2">
+              prizes
+            </Uppercase>
             <ul class="grid list-outside list-disc gap-4 pt-4 px-10 text-indigo-100 marker:text-indigo-300/75">
               <li>tbd</li>
             </ul>

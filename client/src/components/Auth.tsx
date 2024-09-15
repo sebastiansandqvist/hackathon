@@ -50,9 +50,9 @@ export function AuthForm() {
   return (
     <div class="grid">
       <h2 class="font-pixel text-2xl leading-loose">sign in / up</h2>
-      <form onSubmit={handleSubmit} class="flex gap-4">
+      <form onSubmit={handleSubmit} class="flex flex-wrap gap-4">
         <Input
-          classList={{ 'w-36': true }}
+          class="w-36"
           type="text"
           placeholder="first name"
           disabled={authenticate.isPending}
@@ -60,7 +60,7 @@ export function AuthForm() {
           onInput={(e) => setUsername(e.currentTarget.value.toLowerCase())}
         />
         <Input
-          classList={{ 'w-64': true }}
+          class="w-64"
           type="password"
           placeholder="a password you'll remember"
           disabled={authenticate.isPending}

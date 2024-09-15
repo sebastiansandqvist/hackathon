@@ -3,18 +3,19 @@ import { Layout } from '../../components/Layout';
 import { ButtonPrimary } from '../../components/Button';
 import { Authenticated } from '../../components/Auth';
 import { Show } from 'solid-js';
+import { Title, Uppercase } from '../../components/Text';
 
 export function Hacking() {
   return (
     <Layout>
       <div class="grid gap-4">
-        <h1 class="font-quill text-8xl">Hacking – Part 1</h1>
-        <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">Background:</h2>
+        <Title>Hacking – Part 1</Title>
+        <Uppercase>background:</Uppercase>
         <p class="text-indigo-100">
           oh no! someone appears to have used a hard-coded password in the homepage message editor. show them why that's
           a bad idea by leaving your own message for everyone to see.
         </p>
-        <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">Your objective, for 1 point:</h2>
+        <Uppercase>your objective, for 1 point:</Uppercase>
         <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
           <li>locate the password</li>
           <li>edit the homepage message</li>
@@ -22,14 +23,14 @@ export function Hacking() {
         <Authenticated>
           {({ sideQuests }) => (
             <Show when={sideQuests.hacking.easy}>
-              <h1 class="font-quill text-8xl">Hacking – Part 2</h1>
-              <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">Background:</h2>
+              <Title>Hacking – Part 2</Title>
+              <Uppercase>background:</Uppercase>
               <p class="text-indigo-100">
                 the admins learned a bit about security and used hashing to keep their password safe. but maybe they're
                 not as good as they think. through social engineering, we got them to brag about the security practices
                 they're using to keep their password safe.
               </p>
-              <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">here's what we've learned:</h2>
+              <Uppercase>here's what we've learned:</Uppercase>
               <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
                 <li>they rotate their password every week</li>
                 <li>the password is always at least 8 characters long</li>
@@ -40,7 +41,7 @@ export function Hacking() {
                   </a>
                 </li>
               </ul>
-              <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">Your objective, for 2 points:</h2>
+              <Uppercase>your objective, for 2 points:</Uppercase>
               <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
                 <li>locate the hashed admin password</li>
                 <li>identify the hashing algorithm in use</li>

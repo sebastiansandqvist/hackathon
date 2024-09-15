@@ -65,7 +65,7 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
 
     // draw characters
 
-    const drawCategories = (mouseOver: boolean) => {
+    const drawCategories = ({ mouseOver }: { mouseOver: boolean }) => {
       ctx.save();
       ctx.translate(-fontWidth / 2, 0);
       for (const category of categories) {
@@ -86,9 +86,9 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
             const text = `${category} (${difficulty})`;
             const textWidth = ctx.measureText(text).width;
             ctx.fillStyle = '#2c304d';
-            ctx.fillRect(x, 0, textWidth, fontHeight + 2);
+            ctx.fillRect(x - 2, 0, textWidth + 6, drawingArea.height);
             ctx.fillStyle = difficulty === 'easy' ? '#38bdf8' : '#34d399';
-            ctx.fillText(text, x + padding, 14);
+            ctx.fillText(text, x + padding, 15);
           } else {
             if (mouseOver) continue;
             ctx.font = `normal 600 ${fontHeight}px Zed`;
@@ -100,17 +100,17 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
       ctx.restore();
     };
 
-    drawCategories(false);
+    drawCategories({ mouseOver: false });
 
     // draw a vertical line at the current time
     const currentTimePercent = (currentTime - hackathonStart) / range;
     const currentTimeX = Math.floor(currentTimePercent * drawingArea.width);
-    ctx.fillStyle = '#2563eb';
+    ctx.fillStyle = '#3b82f6';
     ctx.fillRect(currentTimeX, 0, 1, drawingArea.height);
 
     // ensure that we draw the mouseover pass after the default 1-letter pass
     // and after the "now" line
-    drawCategories(true);
+    drawCategories({ mouseOver: true });
   };
 
   return (
@@ -167,14 +167,14 @@ export const LeaderboardCanvasMetadata: Component<{ times: Times }> = (props) =>
         const currentTimePercent = (currentTime - start.getTime()) / range;
         const currentTimeX = Math.floor(currentTimePercent * drawingArea.width);
         ctx.font = '12px Zed';
-        ctx.fillStyle = '#2563eb';
+        ctx.fillStyle = '#3b82f6';
         ctx.fillRect(currentTimeX, 0, 1, 14);
         ctx.textBaseline = 'top';
         ctx.textAlign = 'center';
         ctx.fillText('now', currentTimeX, drawingArea.height - 12);
 
         ctx.font = '10px Zed';
-        ctx.fillStyle = '#6366f1';
+        ctx.fillStyle = '#7e89bf';
         ctx.textAlign = 'left';
 
         // draw a line for the start time and label it "start"

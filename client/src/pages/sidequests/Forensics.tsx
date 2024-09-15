@@ -4,12 +4,13 @@ import { ButtonPrimary } from '../../components/Button';
 import { Authenticated, Unauthenticated } from '../../components/Auth';
 import { Show } from 'solid-js';
 import { AnswerForm } from './components/AnswerForm';
+import { Title, Uppercase } from '../../components/Text';
 
 function EasyForensics() {
   return (
     <>
-      <h1 class="font-quill text-8xl">Forensics – Part 1</h1>
-      <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">image analysis:</h2>
+      <Title>Forensics – Part 1</Title>
+      <Uppercase>image analysis:</Uppercase>
       <p class="text-indigo-100">on what island was this picture taken?</p>
       <img src="/images/holmes.jpg" class="w-[400px] max-w-full" />
     </>
@@ -36,8 +37,8 @@ export function Forensics() {
                 when={sideQuests.forensics.easy}
                 fallback={<AnswerForm answerCharCount={4} difficulty="easy" category="forensics" />}
               >
-                <h1 class="font-quill text-8xl">Forensics – Part 2</h1>
-                <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">Background:</h2>
+                <Title>Forensics – Part 2</Title>
+                <Uppercase>Background:</Uppercase>
                 <p class="text-indigo-100">
                   there is secret loot hidden somewhere in the house. where? the answer is hidden in this image using{' '}
                   <a href="https://en.wikipedia.org/wiki/Steganography" class="underline transition hover:text-white">
@@ -46,7 +47,7 @@ export function Forensics() {
                   .
                 </p>
                 <img src="/images/poirot.bmp" class="pixelated w-[400px] max-w-full" />
-                <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">vital info:</h2>
+                <Uppercase>vital info:</Uppercase>
                 <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
                   <li>it's an 8-bit .bmp image</li>
                   <li>the first 54 bytes are the image header. ignore them.</li>
@@ -56,7 +57,7 @@ export function Forensics() {
                   </li>
                   <li>you'll need to convert those bits to a string.</li>
                 </ul>
-                <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">to solve this challenge:</h2>
+                <Uppercase>to solve this challenge:</Uppercase>
                 <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
                   <li>read the image data into a Uint8Array</li>
                   <li>skip over the header bytes</li>

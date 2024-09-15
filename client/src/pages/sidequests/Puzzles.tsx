@@ -1,21 +1,20 @@
-import { createSignal, Show } from 'solid-js';
+import { Show } from 'solid-js';
 import { A } from '@solidjs/router';
 import { writeClipboard } from '@solid-primitives/clipboard';
 import { Layout } from '../../components/Layout';
 import { ButtonPrimary, ButtonSecondary } from '../../components/Button';
 import { CanvasGridBg } from '../../components/CanvasGridBg';
 import { Authenticated, Unauthenticated } from '../../components/Auth';
-import { invalidate, mutate, trpc } from '../../trpc';
-import { MultiCharInput } from '../../components/Input';
 import { AnswerForm } from './components/AnswerForm';
+import { Title, Uppercase } from '../../components/Text';
 
 function EasyPuzzle() {
   return (
     <div class="grid gap-4">
-      <h1 class="font-quill text-8xl">First Puzzle</h1>
-      <p class="mt-2 uppercase tracking-widest text-indigo-300/75">
+      <Title>First Puzzle</Title>
+      <Uppercase>
         <q>out of place(holder)</q>
-      </p>
+      </Uppercase>
       <p class="text-indigo-200">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
         magna aliqua. Ut enim ad minim veniams, quis nostrud exercitation ullamco laboris nisi ut aliquip ex eay commodo
@@ -57,13 +56,13 @@ export function Puzzles() {
               fallback={<AnswerForm category="puzzles" answerCharCount={6} difficulty="easy" />}
             >
               <div class="grid gap-4">
-                <h1 class="font-quill text-8xl">Hard Puzzle</h1>
-                <p class="mt-2 uppercase tracking-widest text-indigo-300/75">a novice asked the master:</p>
+                <Title>Hard Puzzle</Title>
+                <Uppercase>a novice asked the master:</Uppercase>
                 <p class="text-indigo-200">
                   "here is a programmer that never designs, documents or tests his programs. yet all who know him
                   consider him one oF the best progrAmmers in the world. why is this?"
                 </p>
-                <p class="mt-2 uppercase tracking-widest text-indigo-300/75">the master replied:</p>
+                <Uppercase>the master replied:</Uppercase>
                 <p class="text-indigo-200">
                   "that programmer has mastered the tao. he has gone beyond the need for design.
                 </p>
