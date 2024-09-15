@@ -26,22 +26,25 @@ export function Forensics() {
         <Authenticated>
           {({ sideQuests }) => (
             <>
-              <Show when={sideQuests.puzzles.hard || !sideQuests.puzzles.easy}>
+              <Show when={sideQuests.forensics.hard || !sideQuests.forensics.easy}>
                 <EasyForensics />
-                <Show when={sideQuests.puzzles.easy}>
+                <Show when={sideQuests.forensics.easy}>
                   <hr class="border-indigo-500/30" />
                 </Show>
               </Show>
-              <Show when={sideQuests.puzzles.easy} fallback={<AnswerForm answerCharCount={4} difficulty="easy" />}>
+              <Show
+                when={sideQuests.forensics.easy}
+                fallback={<AnswerForm answerCharCount={4} difficulty="easy" category="forensics" />}
+              >
                 <h1 class="font-quill text-8xl">Forensics – Part 2</h1>
                 <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">TODO:</h2>
-                <p>(todo)</p>
+                <p></p>
                 <img src="/images/poirot.bmp" class="pixelated w-[400px]" />
                 <ul class="grid list-outside list-disc gap-4 pt-4 px-10 text-indigo-100 marker:text-indigo-300/75">
                   <li>todo</li>
                 </ul>
-                <Show when={!sideQuests.puzzles.hard}>
-                  <AnswerForm answerCharCount={10} difficulty="hard" />
+                <Show when={!sideQuests.forensics.hard}>
+                  <AnswerForm answerCharCount={10} difficulty="hard" category="forensics" />
                 </Show>
               </Show>
             </>

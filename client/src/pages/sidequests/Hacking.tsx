@@ -43,9 +43,11 @@ export function Hacking() {
               <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">Your objective, for 2 points:</h2>
               <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
                 <li>locate the hashed admin password</li>
+                <li>identify the hashing algorithm in use</li>
                 <li>crack the password</li>
                 <li>
-                  add an HTML image to the homepage using the cracked password. for example,
+                  as admins are the only ones who can add images, you'll need to add an HTML image to the homepage using
+                  the cracked password. any image from the web will do! for example,
                   <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
                     &lt;img src="https://wikipedia.org/.../example.png" /&gt;
                   </code>

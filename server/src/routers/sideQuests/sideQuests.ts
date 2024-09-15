@@ -46,23 +46,6 @@ export const sideQuestRouter = router({
         text,
       });
     }),
-  submitPuzzle: authedProcedure
-    .input(
-      z.object({
-        difficulty: z.enum(['easy', 'hard']),
-        solution: z.string(),
-      }),
-    )
-    .mutation(({ input, ctx }) => {
-      const solution = {
-        easy: env.PUZZLE_EASY_ANSWER,
-        hard: env.PUZZLE_HARD_ANSWER,
-      };
-      if (input.solution !== solution[input.difficulty]) {
-        throw new Error('Incorrect');
-      }
-      ctx.user.sideQuests.puzzles[input.difficulty] = Date.now();
-    }),
   submitSolution: authedProcedure
     .input(
       z.object({
@@ -73,26 +56,11 @@ export const sideQuestRouter = router({
     )
     .mutation(({ input, ctx }) => {
       const solution = {
-        algorithms: {
-          easy: 'TODO',
-          hard: 'TODO',
-        },
-        forensics: {
-          easy: 'TODO',
-          hard: 'TODO',
-        },
-        hacking: {
-          easy: 'TODO',
-          hard: 'TODO',
-        },
-        logic: {
-          easy: 'TODO',
-          hard: 'TODO',
-        },
-        puzzles: {
-          easy: env.PUZZLE_EASY_ANSWER,
-          hard: env.PUZZLE_HARD_ANSWER,
-        },
+        algorithms: { easy: 'TODO', hard: 'TODO' },
+        forensics: { easy: 'TODO', hard: 'TODO' },
+        hacking: { easy: 'TODO', hard: 'TODO' },
+        logic: { easy: 'TODO', hard: 'TODO' },
+        puzzles: { easy: env.PUZZLE_EASY_ANSWER, hard: env.PUZZLE_HARD_ANSWER },
       };
       if (input.solution !== solution[input.category][input.difficulty]) {
         throw new Error('Incorrect');
