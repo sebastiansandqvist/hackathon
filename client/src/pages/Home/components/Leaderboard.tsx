@@ -1,11 +1,19 @@
-import type { Component } from 'solid-js';
+import { createEffect, type Component } from 'solid-js';
 import { Canvas } from '../../../components/Canvas';
 import type { RouterOutput } from '../../../trpc';
+import { createMousePosition } from '@solid-primitives/mouse';
 
 type Progress = RouterOutput['homepage']['sideQuestProgress'][0]['progress'];
 type Times = RouterOutput['homepage']['times'];
 
 export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> = (props) => {
+  let parent: HTMLDivElement;
+  const pos = createMousePosition(() => parent);
+
+  createEffect(() => {
+    console.log(pos.x);
+  });
+
   const hackathonStart = new Date(props.times.codingStart).getTime();
   const hackathonEnd = new Date(props.times.codingEnd).getTime();
 
@@ -60,31 +68,60 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
     ctx.restore();
 
     // draw characters
-    ctx.font = `bold ${fontHeight}px Zed`;
-    ctx.save();
-    ctx.translate(-fontWidth / 2, 0);
 
-    for (const category of categories) {
-      for (const difficulty of difficultyLevels) {
-        const isoDate = props.progress[category][difficulty];
-        if (!isoDate) continue;
-        const timestamp = new Date(isoDate).getTime();
-        const percent = Math.abs(timestamp - hackathonStart) / range;
-        const x = Math.floor(percent * drawingArea.width);
-        ctx.fillStyle = difficulty === 'easy' ? '#38bdf8' : '#34d399';
-        ctx.fillText(category[0] ?? '', x, 14);
+    const drawCategories = (mouseOver: boolean) => {
+      ctx.save();
+      ctx.translate(-fontWidth / 2, 0);
+      for (const category of categories) {
+        for (const difficulty of difficultyLevels) {
+          const isoDate = props.progress[category][difficulty];
+          if (!isoDate) continue;
+          const timestamp = new Date(isoDate).getTime();
+          const percent = Math.abs(timestamp - hackathonStart) / range;
+          const x = Math.floor(percent * drawingArea.width);
+          const rightEdge = x + fontWidth * 4;
+          const mouseX = pos.x - drawingArea.x + fontWidth / 2;
+          const isMouseOver = mouseX >= x && mouseX <= rightEdge && pos.isInside;
+
+          if (isMouseOver) {
+            if (!mouseOver) continue;
+            // TODO: fit this in the bounding box if it goes off the right edge
+            ctx.font = `14px Zed`;
+            const text = `${category} (${difficulty})`;
+            const textWidth = ctx.measureText(text).width;
+            ctx.fillStyle = '#2c304d';
+            ctx.fillRect(x, 0, textWidth, fontHeight + 2);
+            ctx.fillStyle = difficulty === 'easy' ? '#38bdf8' : '#34d399';
+            ctx.fillText(text, x + padding, 14);
+          } else {
+            if (mouseOver) continue;
+            ctx.font = `normal 600 ${fontHeight}px Zed`;
+            ctx.fillStyle = difficulty === 'easy' ? '#38bdf8' : '#34d399';
+            ctx.fillText(category[0] ?? '', x, 14);
+          }
+        }
       }
-    }
+      ctx.restore();
+    };
 
-    ctx.restore();
+    drawCategories(false);
 
     // draw a vertical line at the current time
     const currentTimePercent = (currentTime - hackathonStart) / range;
     const currentTimeX = Math.floor(currentTimePercent * drawingArea.width);
     ctx.fillStyle = '#6366f1';
     ctx.fillRect(currentTimeX, 0, 1.5, drawingArea.height);
+
+    // ensure that we draw the mouseover pass after the default 1-letter pass
+    // and after the "now" line
+    drawCategories(true);
   };
-  return <Canvas draw={draw} />;
+
+  return (
+    <div ref={parent!} class="h-full">
+      <Canvas draw={draw} />
+    </div>
+  );
 };
 
 function allMidnightsBetween(start: Date, end: Date) {
@@ -103,16 +140,17 @@ function allMidnightsBetween(start: Date, end: Date) {
 export const LeaderboardCanvasMetadata: Component<{ times: Times }> = (props) => {
   const start = new Date(props.times.codingStart);
   const end = new Date(props.times.codingEnd);
+  const range = end.getTime() - start.getTime();
   const midnights = allMidnightsBetween(start, end);
 
   return (
     <Canvas
       draw={(canvas, ctx) => {
         const drawingArea = canvas.getBoundingClientRect();
-        const currentTime = new Date('2024-10-19T08:00:00.000Z').getTime();
-        const range = end.getTime() - start.getTime();
+        ctx.clearRect(0, 0, drawingArea.width, drawingArea.height);
 
         // draw a vertical line at the current time
+        const currentTime = new Date('2024-10-19T08:00:00.000Z').getTime();
         const currentTimePercent = (currentTime - start.getTime()) / range;
         const currentTimeX = Math.floor(currentTimePercent * drawingArea.width);
         ctx.font = '12px Zed';
