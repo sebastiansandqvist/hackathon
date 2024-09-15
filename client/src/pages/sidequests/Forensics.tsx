@@ -10,7 +10,7 @@ function EasyForensics() {
     <>
       <h1 class="font-quill text-8xl">Forensics – Part 1</h1>
       <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">Metadata analysis:</h2>
-      <p>on what island was this picture taken?</p>
+      <p class="text-indigo-100">on what island was this picture taken?</p>
       <img src="/images/holmes.jpg" />
     </>
   );
@@ -37,14 +37,74 @@ export function Forensics() {
                 fallback={<AnswerForm answerCharCount={4} difficulty="easy" category="forensics" />}
               >
                 <h1 class="font-quill text-8xl">Forensics – Part 2</h1>
-                <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">TODO:</h2>
-                <p></p>
+                <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">Background:</h2>
+                <p class="text-indigo-100">
+                  there is secret loot hidden somewhere in the house. where? the answer is hidden in this image using{' '}
+                  <a href="https://en.wikipedia.org/wiki/Steganography" class="underline transition hover:text-white">
+                    steganography
+                  </a>
+                  .
+                </p>
                 <img src="/images/poirot.bmp" class="pixelated w-[400px]" />
-                <ul class="grid list-outside list-disc gap-4 pt-4 px-10 text-indigo-100 marker:text-indigo-300/75">
-                  <li>todo</li>
+                <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">vital info:</h2>
+                <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
+                  <li>it's an 8-bit .bmp image</li>
+                  <li>the first 54 bytes are the image header. ignore them.</li>
+                  <li>
+                    the remaining bytes are the image data. the message is hidden in the first 55 bytes (440 bits) of
+                    image data.
+                  </li>
+                  <li>you'll need to convert those bits to a string.</li>
+                </ul>
+                <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">to solve this challenge:</h2>
+                <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
+                  <li>read the image data into a Uint8Array</li>
+                  <li>skip over the header bytes</li>
+                  <li>
+                    from the relevant image data bytes, extract the least significant bits. for example:
+                    <pre class="italic text-indigo-300">
+                      <code>
+                        {`
+function extractLSBs(data: Uint8Array, bitCount: number) {
+  const bits: number[] = [];
+  for (let i = 0; i < bitCount; i++) {
+    const bit = data[i] & 1;
+    bits.push(bit);
+  }
+  return bits;
+}`}
+                      </code>
+                    </pre>
+                  </li>
+                  <li>
+                    convert the bits to a string. for example:
+                    <pre class="italic text-indigo-300">
+                      <code>
+                        {`
+function bitsToString(bits: number[]) {
+  let result = '';
+  for (let i = 0; i < bits.length; i += 8) {
+    const byteBits = bits.slice(i, i + 8);
+    const byte = bitsToByte(byteBits);
+    result += String.fromCharCode(byte);
+  }
+  return result;
+}
+
+function bitsToByte(bits: number[]) {
+  let byte = 0;
+  for (let i = 0; i < bits.length; i++) {
+    byte = (byte << 1) | bits[i];
+  }
+  return byte;
+}`}
+                      </code>
+                    </pre>
+                  </li>
+                  <li>enter the final word from the decoded message below</li>
                 </ul>
                 <Show when={!sideQuests.forensics.hard}>
-                  <AnswerForm answerCharCount={10} difficulty="hard" category="forensics" />
+                  <AnswerForm answerCharCount={9} difficulty="hard" category="forensics" />
                 </Show>
               </Show>
             </>
