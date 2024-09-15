@@ -20,7 +20,7 @@ function NewFoodGameButton() {
         update.mutate({ title, items: [firstItem] });
       }}
     >
-      New vote
+      new vote
     </ButtonPrimary>
   );
 }

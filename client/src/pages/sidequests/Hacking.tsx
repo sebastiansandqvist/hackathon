@@ -59,7 +59,7 @@ export function Hacking() {
         <footer class="border-t border-indigo-500/30 pt-8">
           <A href="/">
             <ButtonPrimary>
-              <span class="not-italic">&larr;</span> back
+              <span class="font-dot not-italic">&lt;</span> back
             </ButtonPrimary>
           </A>
         </footer>

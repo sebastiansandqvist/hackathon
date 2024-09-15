@@ -9,9 +9,9 @@ function EasyForensics() {
   return (
     <>
       <h1 class="font-quill text-8xl">Forensics – Part 1</h1>
-      <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">Metadata analysis:</h2>
+      <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">image analysis:</h2>
       <p class="text-indigo-100">on what island was this picture taken?</p>
-      <img src="/images/holmes.jpg" />
+      <img src="/images/holmes.jpg" class="w-[400px] max-w-full" />
     </>
   );
 }
@@ -45,7 +45,7 @@ export function Forensics() {
                   </a>
                   .
                 </p>
-                <img src="/images/poirot.bmp" class="pixelated w-[400px]" />
+                <img src="/images/poirot.bmp" class="pixelated w-[400px] max-w-full" />
                 <h2 class="mt-2 uppercase tracking-widest text-indigo-300/75">vital info:</h2>
                 <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
                   <li>it's an 8-bit .bmp image</li>
@@ -115,7 +115,7 @@ function bitsToByte(bits: number[]) {
       <footer class="border-t border-indigo-500/30 pt-8">
         <A href="/">
           <ButtonPrimary>
-            <span class="not-italic">&larr;</span> back
+            <span class="font-dot not-italic">&lt;</span> back
           </ButtonPrimary>
         </A>
       </footer>
