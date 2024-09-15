@@ -1,6 +1,12 @@
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import { createTRPCClient, httpBatchLink, type Resolver } from '@trpc/client';
-import { createMutation, createQuery, QueryClient, type CreateMutationOptions } from '@tanstack/solid-query';
+import {
+  createMutation,
+  createQuery,
+  QueryClient,
+  type CreateMutateAsyncFunction,
+  type CreateMutationOptions,
+} from '@tanstack/solid-query';
 import type { AppRouter } from '../../server/src/index';
 
 export type RouterInput = inferRouterInputs<AppRouter>;
@@ -33,15 +39,15 @@ export function mutate<
     transformer: boolean;
     errorShape: any;
   },
-  Output,
 >(
   { mutate }: { mutate: Resolver<Input> },
-  options: ReturnType<CreateMutationOptions<Output, Error, Parameters<typeof mutate>[0], Output>>,
+  options: ReturnType<CreateMutationOptions<Input['output'], Error, Parameters<typeof mutate>[0], Input['output']>>,
 ) {
-  return createMutation(() => ({
+  const mutation = createMutation(() => ({
     mutationFn: (data: Parameters<typeof mutate>[0]) => mutate(data),
     ...options,
   }));
+  return mutation;
 }
 
 export function invalidate(endpoint: keyof typeof trpc) {
@@ -55,7 +61,6 @@ export function query<
     transformer: boolean;
     errorShape: any;
   },
-  Output,
 >(
   key: keyof typeof trpc,
   { query }: { query: Resolver<Input> },
@@ -66,6 +71,10 @@ export function query<
   return createQuery(() => ({
     ...(options ?? {}),
     queryKey: [key],
+    reconcile(oldData, newData) {
+      if (JSON.stringify(oldData) === JSON.stringify(newData)) return oldData;
+      return newData;
+    },
     queryFn: (data: Parameters<typeof query>[0]) => query(data),
   }));
 }

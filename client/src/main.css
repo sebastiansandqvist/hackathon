@@ -4,21 +4,25 @@
   @font-face {
     font-family: 'Barcode';
     src: url(/fonts/barcode.ttf) format('truetype');
+    font-display: swap;
   }
 
   @font-face {
     font-family: 'Dot';
     src: url(/fonts/dot.ttf) format('truetype');
+    font-display: swap;
   }
 
   @font-face {
     font-family: 'Quill';
     src: url(/fonts/quill.otf) format('opentype');
+    font-display: swap;
   }
 
   @font-face {
     font-family: 'Pixel';
     src: url(/fonts/pixel.ttf) format('truetype');
+    font-display: swap;
   }
 
   @font-face {
@@ -26,6 +30,7 @@
     font-style: normal;
     font-weight: 400;
     src: url(/fonts/zed/zed-mono.ttf) format('truetype');
+    font-display: swap;
   }
 
   @font-face {
@@ -33,6 +38,7 @@
     font-style: italic;
     font-weight: 400;
     src: url(/fonts/zed/zed-mono-italic.ttf) format('truetype');
+    font-display: swap;
   }
 
   @font-face {
@@ -40,6 +46,7 @@
     font-style: normal;
     font-weight: 700;
     src: url(/fonts/zed/zed-mono-bold.ttf) format('truetype');
+    font-display: swap;
   }
 
   @font-face {
@@ -47,6 +54,7 @@
     font-style: italic;
     font-weight: 700;
     src: url(/fonts/zed/zed-mono-bolditalic.ttf) format('truetype');
+    font-display: swap;
   }
 }
 

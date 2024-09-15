@@ -22,32 +22,18 @@ import { LeaderboardCanvas, LeaderboardCanvasMetadata } from './components/Leade
 import { SectionHeading, Uppercase } from '../../components/Text';
 
 export function Home() {
-  const homeData = query('homepage', trpc.homepage, {
-    refetchInterval: 10000,
-  });
-
-  const [home, setHome] = createSignal(homeData.data);
-
-  // only update the home signal if the data has actually changed.
-  // the reference will change frequetly due to the refetchInterval.
-  createEffect(() => {
-    const prev = home();
-    const next = homeData.data;
-    if (prev !== next) {
-      if (JSON.stringify(prev) !== JSON.stringify(next)) {
-        setHome(next);
-      }
-    }
+  const home = query('homepage', trpc.homepage, {
+    refetchInterval: 5000,
   });
 
   return (
     <Layout>
-      <Show when={home()} keyed>
+      <Show when={home.data} keyed>
         {(data) => <Countdown time={new Date(data.times.codingStart)} />}
       </Show>
       <CanvasGridBg>
         <header class="flex items-center justify-between gap-4 p-8">
-          <Show when={home()} keyed>
+          <Show when={home.data} keyed>
             {(data) => (
               <div class="grid gap-2">
                 <h1 class="font-pixel text-2xl">{data.publicMessage.text}</h1>
@@ -106,7 +92,7 @@ export function Home() {
       </Unauthenticated>
       <BlurrySection section="timeline">
         <SectionHeading>timel1ne</SectionHeading>
-        <Show when={home()} fallback="..." keyed>
+        <Show when={home.data} fallback="..." keyed>
           {(data) => (
             <div class="grid gap-2">
               <TimelineDate
@@ -139,7 +125,7 @@ export function Home() {
       </BlurrySection>
       <BlurrySection section="leaderboard">
         <SectionHeading>lead3rboard</SectionHeading>
-        <Show when={home()} fallback="..." keyed>
+        <Show when={home.data} fallback="..." keyed>
           {(data) => (
             <div class="grid gap-4">
               <For each={data.sideQuestProgress}>
@@ -208,15 +194,15 @@ export function Home() {
       <TvOnly>
         <BlurrySection section="food game">
           <SectionHeading>f0od game!</SectionHeading>
-          <FoodGame title={home()?.foodGame.title ?? ''} items={home()?.foodGame.items ?? []} tv />
+          <FoodGame title={home.data?.foodGame.title ?? ''} items={home.data?.foodGame.items ?? []} tv />
         </BlurrySection>
       </TvOnly>
 
       <NotTv>
-        <Show when={home() && home()!.foodGame.items.length > 0}>
+        <Show when={home.data && home.data!.foodGame.items.length > 0}>
           <BlurrySection section="food game">
             <SectionHeading>f0od game!</SectionHeading>
-            <FoodGame title={home()?.foodGame.title ?? ''} items={home()?.foodGame.items ?? []} />
+            <FoodGame title={home.data?.foodGame.title ?? ''} items={home.data?.foodGame.items ?? []} />
           </BlurrySection>
         </Show>
       </NotTv>
