@@ -20,7 +20,9 @@ import { FoodGame } from './components/FoodGame';
 import { LeaderboardCanvas, LeaderboardCanvasMetadata } from './components/Leaderboard';
 
 export function Home() {
-  const home = query('homepage', trpc.homepage); // TODO: make this a subscription
+  const home = query('homepage', trpc.homepage, {
+    refetchInterval: 10000,
+  });
 
   return (
     <Layout>

@@ -55,8 +55,16 @@ export function query<
     transformer: boolean;
     errorShape: any;
   },
->(key: keyof typeof trpc, { query }: { query: Resolver<Input> }) {
+  Output,
+>(
+  key: keyof typeof trpc,
+  { query }: { query: Resolver<Input> },
+  options?: {
+    refetchInterval?: number;
+  },
+) {
   return createQuery(() => ({
+    ...(options ?? {}),
     queryKey: [key],
     queryFn: (data: Parameters<typeof query>[0]) => query(data),
   }));
