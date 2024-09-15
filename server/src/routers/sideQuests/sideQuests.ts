@@ -8,6 +8,11 @@ export const sideQuestRouter = router({
   hackThePublicMessage: authedProcedure
     .input(z.object({ password: z.string(), text: z.string() }))
     .mutation(({ input, ctx }) => {
+      const redHerring = '1350';
+      if (input.password === redHerring) {
+        return { redirect: 'https://en.wikipedia.org/wiki/Red_herring' };
+      }
+
       const password = 'supersecretlol';
       if (input.password !== password && input.password !== env.HACKING_HARD_PASSWORD) {
         throw new Error('Incorrect password');

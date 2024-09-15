@@ -7,6 +7,7 @@ import { CanvasGridBg } from '../../components/CanvasGridBg';
 import { Authenticated, Unauthenticated } from '../../components/Auth';
 import { invalidate, mutate, trpc } from '../../trpc';
 import { MultiCharInput } from '../../components/Input';
+import { AnswerForm } from './components/AnswerForm';
 
 function EasyPuzzle() {
   return (
@@ -36,42 +37,6 @@ sereNe and elegant, their purpose self-evident.
 truly, he has entered the mystery of tao."
 `;
 
-function PuzzleForm(props: { difficulty: 'easy' | 'hard' }) {
-  const [solution, setSolution] = createSignal('');
-  const characterCount = { easy: 6, hard: 12 };
-  const submitPuzzle = mutate(trpc.submitPuzzle, {
-    onError(err: Error) {
-      alert(err.message ?? 'Unable to submit solution');
-    },
-    onSettled() {
-      invalidate('homepage');
-      invalidate('status');
-    },
-    onSuccess() {
-      alert('correct!');
-    },
-  });
-  const handleSubmit = async (e: Event) => {
-    e.preventDefault();
-    submitPuzzle.mutate({
-      difficulty: props.difficulty,
-      solution: solution(),
-    });
-  };
-  return (
-    <div>
-      <form class="flex gap-4" onSubmit={handleSubmit}>
-        <MultiCharInput chars={characterCount[props.difficulty]} onInput={setSolution} />
-        <ButtonPrimary type="submit" disabled={submitPuzzle.isPending}>
-          <Show when={props.difficulty === 'easy'} fallback="submit">
-            hard puzzle <span class="not-italic">&rarr;</span>
-          </Show>
-        </ButtonPrimary>
-      </form>
-    </div>
-  );
-}
-
 export function Puzzles() {
   return (
     <Layout>
@@ -87,7 +52,10 @@ export function Puzzles() {
                 <hr class="border-indigo-500/30" />
               </Show>
             </Show>
-            <Show when={sideQuests.puzzles.easy} fallback={<PuzzleForm difficulty="easy" />}>
+            <Show
+              when={sideQuests.puzzles.easy}
+              fallback={<AnswerForm category="puzzles" answerCharCount={6} difficulty="easy" />}
+            >
               <div class="grid gap-4">
                 <h1 class="font-quill text-8xl">Hard Puzzle</h1>
                 <p class="mt-2 uppercase tracking-widest text-indigo-300/75">a novice asked the master:</p>
@@ -162,7 +130,7 @@ export function Puzzles() {
                 </div>
               </div>
               <Show when={!sideQuests.puzzles.hard}>
-                <PuzzleForm difficulty="hard" />
+                <AnswerForm category="puzzles" difficulty="hard" answerCharCount={12} />
               </Show>
             </Show>
           </>

@@ -12,7 +12,7 @@ import {
   Unauthenticated,
 } from '../../components/Auth';
 import { CanvasGridBg } from '../../components/CanvasGridBg';
-import { EditMessageButton } from './components/EditMessageButton';
+import { AdminEditMessageButton, EditMessageButton } from './components/EditMessageButton';
 import { Layout } from '../../components/Layout';
 import { SideQuestPointCount } from './components/SideQuestPointCount';
 import { TimelineDate } from './components/TimelineDate';
@@ -47,9 +47,18 @@ export function Home() {
               </div>
             )}
           </Show>
-          <NotTv>
-            <EditMessageButton />
-          </NotTv>
+          <Authenticated>
+            {({ username, sideQuests }) => (
+              <Show when={username !== 'tv'}>
+                <div class="grid gap-2">
+                  <EditMessageButton />
+                  <Show when={sideQuests.hacking.easy}>
+                    <AdminEditMessageButton />
+                  </Show>
+                </div>
+              </Show>
+            )}
+          </Authenticated>
         </header>
       </CanvasGridBg>
 

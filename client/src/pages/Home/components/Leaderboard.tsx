@@ -10,10 +10,6 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
   let parent: HTMLDivElement;
   const pos = createMousePosition(() => parent);
 
-  createEffect(() => {
-    console.log(pos.x);
-  });
-
   const hackathonStart = new Date(props.times.codingStart).getTime();
   const hackathonEnd = new Date(props.times.codingEnd).getTime();
 
@@ -21,7 +17,7 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
   const difficultyLevels = ['easy', 'hard'] as const;
 
   const draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
-    const currentTime = new Date('2024-10-19T08:00:00.000Z').getTime();
+    const currentTime = new Date('2024-10-19T08:00:00.000Z').getTime(); // TODO: make this the actual current time
     const now = performance.now();
     const drawingArea = canvas.getBoundingClientRect();
 

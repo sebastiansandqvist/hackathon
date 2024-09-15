@@ -4,10 +4,14 @@ import { mutate, trpc, invalidate } from '../../../trpc';
 import { useNavigate } from '@solidjs/router';
 import { MultiCharInput } from '../../../components/Input';
 
-export const AnswerForm: Component<{ difficulty: 'easy' | 'hard'; answerCharCount: number }> = (props) => {
+export const AnswerForm: Component<{
+  category: 'algorithms' | 'forensics' | 'hacking' | 'logic' | 'puzzles';
+  difficulty: 'easy' | 'hard';
+  answerCharCount: number;
+}> = (props) => {
   const navigate = useNavigate();
   const [solution, setSolution] = createSignal('');
-  const submitPuzzle = mutate(trpc.submitPuzzle, {
+  const submitPuzzle = mutate(trpc.submitSolution, {
     onError(err: Error) {
       alert(err.message ?? 'Unable to submit solution');
     },
@@ -25,6 +29,7 @@ export const AnswerForm: Component<{ difficulty: 'easy' | 'hard'; answerCharCoun
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
     submitPuzzle.mutate({
+      category: props.category,
       difficulty: props.difficulty,
       solution: solution(),
     });

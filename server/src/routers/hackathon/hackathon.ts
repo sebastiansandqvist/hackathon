@@ -36,7 +36,7 @@ export const hackathonRouter = router({
       publicMessage: {
         text: message.text,
         imgUrl: message.imgUrl,
-        author: db.users.find((user) => user.id === message.userId)?.username,
+        author: db.users.find((user) => user.id === message.userId)?.anonymousName,
       },
       sideQuestProgress,
       // sideQuestStandings: db.sideQuestStandings

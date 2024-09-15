@@ -36,7 +36,7 @@ export function mutate<
   Output,
 >(
   { mutate }: { mutate: Resolver<Input> },
-  options: ReturnType<CreateMutationOptions<Output, Error, Parameters<typeof mutate>[0]>>,
+  options: ReturnType<CreateMutationOptions<Output, Error, Parameters<typeof mutate>[0], Output>>,
 ) {
   return createMutation(() => ({
     mutationFn: (data: Parameters<typeof mutate>[0]) => mutate(data),
