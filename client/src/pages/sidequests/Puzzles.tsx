@@ -1,7 +1,8 @@
 import { createSignal, Show } from 'solid-js';
 import { A } from '@solidjs/router';
+import { writeClipboard } from '@solid-primitives/clipboard';
 import { Layout } from '../../components/Layout';
-import { ButtonPrimary } from '../../components/Button';
+import { ButtonPrimary, ButtonSecondary } from '../../components/Button';
 import { CanvasGridBg } from '../../components/CanvasGridBg';
 import { Authenticated, Unauthenticated } from '../../components/Auth';
 import { invalidate, mutate, trpc } from '../../trpc';
@@ -24,6 +25,16 @@ function EasyPuzzle() {
     </div>
   );
 }
+
+const hardPuzzleRawText = `he does not become angry when the system crashes,
+but accepts the uniVerse wIthout Concern.
+he has gone beyond the need for documentation;
+he no longer cares if anyone else sees his code.
+he  has gone beyond the need fOr testing;
+each of his  programs are perfect within themselves,
+sereNe and elegant, their purpose self-evident.
+truly, he has entered the mystery of tao."
+`;
 
 function PuzzleForm(props: { difficulty: 'easy' | 'hard' }) {
   const [solution, setSolution] = createSignal('');
@@ -88,7 +99,10 @@ export function Puzzles() {
                 <p class="text-indigo-200">
                   "that programmer has mastered the tao. he has gone beyond the need for design.
                 </p>
-                <div class="border-l-2 border-indigo-500 py-2 pl-4">
+                <div class="group relative border-l-2 border-indigo-500 py-2 pl-4">
+                  <div class="absolute top-0 right-0 opacity-0 transition group-hover:opacity-100">
+                    <ButtonSecondary onClick={() => writeClipboard(hardPuzzleRawText)}>copy</ButtonSecondary>
+                  </div>
                   <p>
                     he does not become angry when the{' '}
                     <span class="inline-flex border-b-2 border-b-indigo-500/50">
