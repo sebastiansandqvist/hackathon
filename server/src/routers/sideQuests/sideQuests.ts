@@ -3,18 +3,25 @@ import { router, authedProcedure } from '../../trpc';
 import { env } from '../../env';
 import { createDocument } from 'domino';
 import { db } from '../../db';
+import { createLimiter } from '../../ratelimit';
+
+// 10 guesses per minute, per user
+const rateLimiter = createLimiter(10, 60 * 1000);
 
 export const sideQuestRouter = router({
   hackThePublicMessage: authedProcedure
     .input(z.object({ password: z.string(), text: z.string() }))
     .mutation(({ input, ctx }) => {
+      const { limited, retryAfter } = rateLimiter(ctx.user.id);
+      if (limited) throw new Error(`rate limit exceeded! retry in ${Math.floor((retryAfter ?? 0) / 1000)}s`);
+
       const redHerring = '1350';
       if (input.password === redHerring) {
         return { redirect: 'https://en.wikipedia.org/wiki/Red_herring' };
       }
 
       const password = 'supersecretlol';
-      if (input.password !== password && input.password !== env.HACKING_HARD_PASSWORD) {
+      if (input.password !== password && input.password !== env.HACKING_HARD) {
         throw new Error('Incorrect password');
       }
       if (!ctx.user.sideQuests.hacking.easy) {
@@ -27,7 +34,7 @@ export const sideQuestRouter = router({
       let text = input.text;
 
       if (img) {
-        if (input.password !== env.HACKING_HARD_PASSWORD) {
+        if (input.password !== env.HACKING_HARD) {
           throw new Error('Incorrect hard-mode password');
         }
         if (img.src) {
@@ -55,12 +62,15 @@ export const sideQuestRouter = router({
       }),
     )
     .mutation(({ input, ctx }) => {
+      const { limited, retryAfter } = rateLimiter(ctx.user.id);
+      if (limited) throw new Error(`rate limit exceeded! retry in ${Math.floor((retryAfter ?? 0) / 1000)}s`);
+
       const solution = {
         algorithms: { easy: 'TODO', hard: 'TODO' },
-        forensics: { easy: 'TODO', hard: 'TODO' },
-        hacking: { easy: 'TODO', hard: 'TODO' },
+        forensics: { easy: env.FORENSICS_EASY, hard: env.FORENSICS_HARD },
+        hacking: { easy: env.HACKING_EASY, hard: env.HACKING_HARD },
         logic: { easy: 'TODO', hard: 'TODO' },
-        puzzles: { easy: env.PUZZLE_EASY_ANSWER, hard: env.PUZZLE_HARD_ANSWER },
+        puzzles: { easy: env.PUZZLE_EASY, hard: env.PUZZLE_HARD },
       };
       if (input.solution !== solution[input.category][input.difficulty]) {
         throw new Error('Incorrect');
