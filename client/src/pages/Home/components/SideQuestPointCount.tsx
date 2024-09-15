@@ -17,7 +17,7 @@ export function SideQuestPointCount({
             </span>
           </Match>
           <Match when={sideQuests[quest].easy}>
-            <span class="text-sm text-emerald-500"> (+1 point)</span>
+            <span class="text-sm text-sky-400"> (+1 point)</span>
           </Match>
         </Switch>
       )}

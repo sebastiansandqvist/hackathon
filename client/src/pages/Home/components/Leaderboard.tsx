@@ -10,8 +10,11 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
   let parent: HTMLDivElement;
   const pos = createMousePosition(() => parent);
 
-  const hackathonStart = new Date(props.times.codingStart).getTime();
-  const hackathonEnd = new Date(props.times.codingEnd).getTime();
+  const start = new Date(props.times.codingStart);
+  const end = new Date(props.times.codingEnd);
+  const hackathonStart = start.getTime();
+  const hackathonEnd = end.getTime();
+  const midnights = allMidnightsBetween(start, end);
 
   const categories = ['algorithms', 'forensics', 'hacking', 'logic', 'puzzles'] as const;
   const difficultyLevels = ['easy', 'hard'] as const;
@@ -107,6 +110,21 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
     const currentTimeX = Math.floor(currentTimePercent * drawingArea.width);
     ctx.fillStyle = '#3b82f6';
     ctx.fillRect(currentTimeX, 0, 1, drawingArea.height);
+
+    ctx.fillStyle = '#7e89bf';
+
+    // draw a line for the start time and label it "start"
+    ctx.fillRect(0, 0, 1, drawingArea.height);
+
+    // draw a line for each midnight and label it with the date, like 10/19
+    for (const midnight of midnights) {
+      const midnightPercent = (midnight.getTime() - start.getTime()) / range;
+      const midnightX = Math.floor(midnightPercent * drawingArea.width);
+      ctx.fillRect(midnightX, 0, 1, drawingArea.height);
+    }
+
+    // draw a line for the end time and label it "end"
+    ctx.fillRect(drawingArea.width - 1, 0, 1, drawingArea.height);
 
     // ensure that we draw the mouseover pass after the default 1-letter pass
     // and after the "now" line

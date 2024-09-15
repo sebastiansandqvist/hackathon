@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, For, Show } from 'solid-js';
+import { createEffect, createSignal, For, Show } from 'solid-js';
 import { A } from '@solidjs/router';
 import { query, trpc } from '../../trpc';
 import { Countdown } from './components/Countdown';
