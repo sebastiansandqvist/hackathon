@@ -6,7 +6,6 @@ type Progress = RouterOutput['homepage']['sideQuestProgress'][0]['progress'];
 type Times = RouterOutput['homepage']['times'];
 
 export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> = (props) => {
-  const currentTime = new Date('2024-10-19T08:00:00.000Z').getTime();
   const hackathonStart = new Date(props.times.codingStart).getTime();
   const hackathonEnd = new Date(props.times.codingEnd).getTime();
 
@@ -14,6 +13,7 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
   const difficultyLevels = ['easy', 'hard'] as const;
 
   const draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
+    const currentTime = new Date('2024-10-19T08:00:00.000Z').getTime();
     const now = performance.now();
     const drawingArea = canvas.getBoundingClientRect();
 
@@ -85,4 +85,47 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
     ctx.fillRect(currentTimeX, 0, 1.5, drawingArea.height);
   };
   return <Canvas draw={draw} />;
+};
+
+function allMidnightsBetween(start: Date, end: Date) {
+  const midnights = [];
+  const current = new Date(start);
+  current.setUTCHours(8, 0, 0, 0); // Set to midnight Pacific Time
+
+  while (current <= end) {
+    midnights.push(new Date(current));
+    current.setUTCDate(current.getUTCDate() + 1);
+  }
+
+  return midnights;
+}
+
+export const LeaderboardCanvasMetadata: Component<{ times: Times }> = (props) => {
+  const start = new Date(props.times.codingStart);
+  const end = new Date(props.times.codingEnd);
+  const midnights = allMidnightsBetween(start, end);
+
+  return (
+    <Canvas
+      draw={(canvas, ctx) => {
+        const drawingArea = canvas.getBoundingClientRect();
+        const currentTime = new Date('2024-10-19T08:00:00.000Z').getTime();
+        const range = end.getTime() - start.getTime();
+
+        // draw a vertical line at the current time
+        const currentTimePercent = (currentTime - start.getTime()) / range;
+        const currentTimeX = Math.floor(currentTimePercent * drawingArea.width);
+        ctx.font = '12px Zed';
+        ctx.fillStyle = '#6366f1';
+        ctx.fillRect(currentTimeX, 0, 1.5, 14);
+        ctx.textBaseline = 'top';
+        ctx.textAlign = 'center';
+        ctx.fillText('now', currentTimeX, drawingArea.height - 12);
+
+        // draw a line for the start time and label it "start"
+        // draw a line for the end time and label it "end"
+        // draw a line for each midnight and label it with the date, like 10/19
+      }}
+    />
+  );
 };

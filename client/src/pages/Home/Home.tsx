@@ -17,7 +17,7 @@ import { Layout } from '../../components/Layout';
 import { SideQuestPointCount } from './components/SideQuestPointCount';
 import { TimelineDate } from './components/TimelineDate';
 import { FoodGame } from './components/FoodGame';
-import { LeaderboardCanvas } from './components/Leaderboard';
+import { LeaderboardCanvas, LeaderboardCanvasMetadata } from './components/Leaderboard';
 
 export function Home() {
   const home = query('homepage', trpc.homepage); // TODO: make this a subscription
@@ -123,6 +123,9 @@ export function Home() {
                   </div>
                 )}
               </For>
+              <div class="-mt-4 h-8">
+                <LeaderboardCanvasMetadata times={data.times} />
+              </div>
             </div>
           )}
         </Show>
