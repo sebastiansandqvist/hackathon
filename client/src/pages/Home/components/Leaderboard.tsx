@@ -105,8 +105,8 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
     // draw a vertical line at the current time
     const currentTimePercent = (currentTime - hackathonStart) / range;
     const currentTimeX = Math.floor(currentTimePercent * drawingArea.width);
-    ctx.fillStyle = '#6366f1';
-    ctx.fillRect(currentTimeX, 0, 1.5, drawingArea.height);
+    ctx.fillStyle = '#2563eb';
+    ctx.fillRect(currentTimeX, 0, 1, drawingArea.height);
 
     // ensure that we draw the mouseover pass after the default 1-letter pass
     // and after the "now" line
@@ -123,7 +123,9 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
 function allMidnightsBetween(start: Date, end: Date) {
   const midnights = [];
   const current = new Date(start);
-  current.setUTCHours(8, 0, 0, 0); // Set to midnight Pacific Time
+  const offset = current.getTimezoneOffset();
+
+  current.setUTCHours(0, offset, 0, 0); // Set to midnight in local timezone
 
   while (current <= end) {
     midnights.push(new Date(current));
@@ -131,6 +133,21 @@ function allMidnightsBetween(start: Date, end: Date) {
   }
 
   return midnights;
+}
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', {
+    month: 'numeric',
+    day: 'numeric',
+  });
+}
+
+function formatTime(date: Date) {
+  return date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
 }
 
 export const LeaderboardCanvasMetadata: Component<{ times: Times }> = (props) => {
@@ -150,15 +167,35 @@ export const LeaderboardCanvasMetadata: Component<{ times: Times }> = (props) =>
         const currentTimePercent = (currentTime - start.getTime()) / range;
         const currentTimeX = Math.floor(currentTimePercent * drawingArea.width);
         ctx.font = '12px Zed';
-        ctx.fillStyle = '#6366f1';
-        ctx.fillRect(currentTimeX, 0, 1.5, 14);
+        ctx.fillStyle = '#2563eb';
+        ctx.fillRect(currentTimeX, 0, 1, 14);
         ctx.textBaseline = 'top';
         ctx.textAlign = 'center';
         ctx.fillText('now', currentTimeX, drawingArea.height - 12);
 
+        ctx.font = '10px Zed';
+        ctx.fillStyle = '#6366f1';
+        ctx.textAlign = 'left';
+
         // draw a line for the start time and label it "start"
-        // draw a line for the end time and label it "end"
+        ctx.fillRect(0, 0, 1, 6);
+        ctx.fillRect(0, 6, 6, 1);
+        ctx.fillText('start', 10, 2);
+
         // draw a line for each midnight and label it with the date, like 10/19
+        for (const midnight of midnights) {
+          const midnightPercent = (midnight.getTime() - start.getTime()) / range;
+          const midnightX = Math.floor(midnightPercent * drawingArea.width);
+          ctx.fillRect(midnightX, 0, 1, 6);
+          ctx.fillRect(midnightX, 6, 6, 1);
+          ctx.fillText(formatDate(midnight), midnightX + 10, 2);
+        }
+
+        // draw a line for the end time and label it "end"
+        ctx.textAlign = 'right';
+        ctx.fillRect(drawingArea.width - 1, 0, 1, 6);
+        ctx.fillRect(drawingArea.width - 6, 6, 6, 1);
+        ctx.fillText(formatTime(end), drawingArea.width - 10, 2);
       }}
     />
   );

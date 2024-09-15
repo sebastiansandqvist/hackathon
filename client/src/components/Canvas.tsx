@@ -1,5 +1,5 @@
-import { createElementSize } from '@solid-primitives/resize-observer';
 import { type Component, createSignal, createEffect, onCleanup } from 'solid-js';
+import { createElementSize } from '@solid-primitives/resize-observer';
 
 export const Canvas: Component<{
   class?: string;
