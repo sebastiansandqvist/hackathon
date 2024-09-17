@@ -209,50 +209,65 @@ export function Home() {
 
       <NotTv>
         <div class="grid gap-2">
-          <BlurrySection section="rules">
+          <BlurrySection section="logistics">
             <SectionHeading>info</SectionHeading>
             <Uppercase as="h3" class="mt-2">
-              hackathon rules
+              logistics
+            </Uppercase>
+            <ol class="grid list-outside list-decimal gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
+              <li>no obligation to stay in the house, but all are welcome to!</li>
+              <li>
+                if you're sleeping over, bring whatever you'll need to be comfortable. pillows, blankets, etc. we'll
+                provide cots and mattresses.
+              </li>
+              <li>we'll probably take a climbing break, so if you're into that, bring your gear!</li>
+              <li>food: tbd</li>
+              <li>wifi password: ...</li>
+              <li>address: ...</li>
+            </ol>
+          </BlurrySection>
+          <BlurrySection section="side quest rules">
+            <Uppercase as="h3" class="mt-2">
+              side quests
+            </Uppercase>
+            <ol class="grid list-outside list-decimal gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
+              <li>each easy side quest is worth 1 point.</li>
+              <li>each hard side quest is worth 2 points.</li>
+              <li>these points do not impact your hackathon project score.</li>
+              <li>side quests have a separate prize pool.</li>
+            </ol>
+          </BlurrySection>
+          <BlurrySection section="projects">
+            <Uppercase as="h3" class="mt-2">
+              projects
             </Uppercase>
             <ol class="grid list-outside list-decimal gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
               <li>you can work solo or in teams, or just contribute to random projects.</li>
+              <li>theme to be announced on the day of the hackathon.</li>
               <li>
-                all code and assets must be created during the hackathon. but libraries, frameworks, and engines are ok.
+                all code and assets must be created during the hackathon. libraries, scaffolding commands, ai codegen,
+                and game engines are all ok to use.
               </li>
-              <li>no obligation to stay in the house, but this website only runs on austin's wifi!</li>
-              <li>you can ask for hints in order to solve any side quest, but you won't get any points for it.</li>
             </ol>
-          </BlurrySection>
-          <BlurrySection section="points">
-            <Uppercase as="h3" class="mt-2">
-              points
-            </Uppercase>
-            <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
-              <li>the person with the most points wins the hackathon.</li>
-              <li>each easy side quest is worth 1 point.</li>
-              <li>each hard side quest is worth 2 points.</li>
-              <li>project voting will also award points.</li>
-              {/*
-                TODO:
-                the current points system is a little bit broken. problems:
-                1. the weight of the side quests currently depends on the number of projects in the hackathon.
-                2. if multiple people work on one project, then the "person with most points" concept for picking a winner
-                   doesn't really work since they could all have different side quest points.
-
-                INSTEAD:
-                - maybe side quest points are a completely separate competition from the main hackathon
-                - the winner of the side quests is the person with the most side quest points, for a separate prize.
-                - the winner of the main hackathon is the person with the most voting points.
-              */}
-            </ul>
           </BlurrySection>
           <BlurrySection section="voting">
             <Uppercase as="h3" class="mt-2">
               voting
             </Uppercase>
-            <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
+            <ol class="grid list-outside list-decimal gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
               <li>after demos, voting opens on this site.</li>
-              <li>everyone anonymously ranks the other projects.</li>
+              <li>everyone anonymously ranks the other projects according to their...</li>
+              <ul class="grid list-outside list-disc gap-4 px-6 text-indigo-100 marker:text-indigo-300/75">
+                <li>
+                  <em>creativity</em>
+                </li>
+                <li>
+                  <em>technical merit</em>
+                </li>
+                <li>
+                  <em>user experience</em>
+                </li>
+              </ul>
               <li>
                 for each ranking we award{' '}
                 <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
@@ -260,7 +275,8 @@ export function Home() {
                 </code>{' '}
                 points to that project.
               </li>
-            </ul>
+              <li>the project with the most points wins!</li>
+            </ol>
           </BlurrySection>
           <BlurrySection section="prizes">
             <Uppercase as="h3" class="mt-2">

@@ -175,15 +175,15 @@ export const hackathonRouter = router({
         deductions: user.hintDeductions,
         totalPointsBeforeDeductions: [
           user.sideQuests.algorithms.easy ? 1 : 0,
-          user.sideQuests.algorithms.hard ? 3 : 0,
+          user.sideQuests.algorithms.hard ? 2 : 0,
           user.sideQuests.forensics.easy ? 1 : 0,
-          user.sideQuests.forensics.hard ? 3 : 0,
+          user.sideQuests.forensics.hard ? 2 : 0,
           user.sideQuests.hacking.easy ? 1 : 0,
-          user.sideQuests.hacking.hard ? 3 : 0,
+          user.sideQuests.hacking.hard ? 2 : 0,
           user.sideQuests.logic.easy ? 1 : 0,
-          user.sideQuests.logic.hard ? 3 : 0,
+          user.sideQuests.logic.hard ? 2 : 0,
           user.sideQuests.puzzles.easy ? 1 : 0,
-          user.sideQuests.puzzles.hard ? 3 : 0,
+          user.sideQuests.puzzles.hard ? 2 : 0,
         ].reduce((acc, value) => acc + value, 0),
       }))
       .toSorted((a, b) => {

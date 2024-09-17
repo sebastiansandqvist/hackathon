@@ -9,6 +9,8 @@ import { Puzzles } from './pages/sidequests/Puzzles';
 import { Hacking } from './pages/sidequests/Hacking';
 import { Forensics } from './pages/sidequests/Forensics';
 import { Algorithms } from './pages/sidequests/Algorithms';
+import { Vote } from './pages/Vote';
+import { Results } from './pages/Results';
 import { queryClient } from './trpc';
 
 import './main.css';
@@ -18,13 +20,13 @@ render(
     <QueryClientProvider client={queryClient}>
       <Router>
         <Route path="/" component={Home} />
-        {/* TODO: make a tv-specific version */}
-        <Route path="/tv" component={Home} />
         <Route path="/algorithms" component={Algorithms} />
         <Route path="/forensics" component={Forensics} />
         <Route path="/hacking" component={Hacking} />
         <Route path="/logic" component={Logic} />
         <Route path="/puzzles" component={Puzzles} />
+        <Route path="/vote" component={Vote} />
+        <Route path="/results" component={Results} />
         <Route path="*404" component={NotFound} />
       </Router>
     </QueryClientProvider>
