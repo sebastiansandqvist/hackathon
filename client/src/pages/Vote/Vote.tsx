@@ -19,21 +19,28 @@ const Sortable: Component<{ items: { id: string; text: string }[]; onReorder: (i
   let parent: HTMLOListElement;
   const [items, setItems] = createSignal(props.items);
   const [draggedId, setDraggedId] = createSignal<string | null>(null);
-  const [dropTargetEl, setDropTargetEl] = createSignal<HTMLElement | null>(null);
 
-  useAutoAnimate(() => parent!, {});
+  useAutoAnimate(() => parent!, { disrespectUserMotionPreference: true });
 
   return (
     <ol class="grid gap-2" ref={parent!}>
       <For each={items()}>
         {(item) => (
           <li
+            class="cursor-ns-resize border border-indigo-500 py-2 px-4"
             classList={{
               'border-dotted !border-indigo-500/50': draggedId() === item.id,
             }}
             draggable="true"
             onDragStart={(e) => {
               setDraggedId(item.id);
+              if (!e.dataTransfer) return;
+              e.dataTransfer.effectAllowed = 'move';
+              const clone = document.createElement('li');
+              clone.className = 'fixed -top-32 cursor-ns-resize border border-indigo-500 py-2 px-4 w-64';
+              clone.textContent = item.text;
+              document.body.appendChild(clone);
+              e.dataTransfer.setDragImage(clone, 0, 0);
             }}
             onDragLeave={(e) => {
               e.currentTarget.classList.remove('!border-emerald-500');
@@ -41,9 +48,8 @@ const Sortable: Component<{ items: { id: string; text: string }[]; onReorder: (i
             onDragOver={(e) => {
               e.preventDefault();
               e.currentTarget.classList.add('!border-emerald-500');
-              if (e.dataTransfer) {
-                e.dataTransfer.dropEffect = 'move';
-              }
+              if (!e.dataTransfer) return;
+              e.dataTransfer.dropEffect = 'move';
             }}
             onDrop={(e) => {
               e.currentTarget.classList.remove('!border-emerald-500');
@@ -52,14 +58,13 @@ const Sortable: Component<{ items: { id: string; text: string }[]; onReorder: (i
                 const itemsCopy = [...items()];
                 const fromIndex = itemsCopy.findIndex((i) => i.id === dragSrcId);
                 const toIndex = itemsCopy.findIndex((i) => i.id === item.id);
-                itemsCopy.splice(toIndex, 0, itemsCopy.splice(fromIndex, 1)[0]!);
+                const [removedItem] = itemsCopy.splice(fromIndex, 1);
+                itemsCopy.splice(toIndex, 0, removedItem!);
                 setItems(itemsCopy);
               }
               setDraggedId(null);
-              setDropTargetEl(null);
               props.onReorder(items().map((item) => item.id));
             }}
-            class="cursor-ns-resize border border-indigo-500 py-2 px-4"
           >
             {item.text}
           </li>
