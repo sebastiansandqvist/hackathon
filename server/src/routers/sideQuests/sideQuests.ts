@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { TRPCError } from '@trpc/server';
 import { router, authedProcedure } from '../../trpc';
 import { env } from '../../env';
 import { createDocument } from 'domino';
@@ -6,14 +7,19 @@ import { db } from '../../db';
 import { createLimiter } from '../../ratelimit';
 
 // 10 guesses per minute, per user
-const rateLimiter = createLimiter(10, 60 * 1000);
+const rateLimiter = createLimiter({ limit: 10, windowDuration: 60 * 1000 });
 
 export const sideQuestRouter = router({
   hackThePublicMessage: authedProcedure
     .input(z.object({ password: z.string(), text: z.string() }))
     .mutation(({ input, ctx }) => {
       const { limited, retryAfter } = rateLimiter(ctx.user.id);
-      if (limited) throw new Error(`rate limit exceeded! retry in ${Math.floor((retryAfter ?? 0) / 1000)}s`);
+      if (limited) {
+        throw new TRPCError({
+          code: 'TOO_MANY_REQUESTS',
+          message: `rate limit exceeded! retry in ${Math.floor((retryAfter ?? 0) / 1000)}s`,
+        });
+      }
 
       const redHerring = '1350';
       if (input.password === redHerring) {
@@ -22,7 +28,7 @@ export const sideQuestRouter = router({
 
       const password = 'supersecretlol';
       if (input.password !== password && input.password !== env.HACKING_HARD) {
-        throw new Error('Incorrect password');
+        throw new Error('ACCESS DENIED');
       }
       if (!ctx.user.sideQuests.hacking.easy) {
         ctx.user.sideQuests.hacking.easy = Date.now();
@@ -35,7 +41,7 @@ export const sideQuestRouter = router({
 
       if (img) {
         if (input.password !== env.HACKING_HARD) {
-          throw new Error('Incorrect hard-mode password');
+          throw new Error('ADMIN: ACCESS DENIED');
         }
         if (img.src) {
           if (!ctx.user.sideQuests.hacking.hard) {
@@ -63,17 +69,22 @@ export const sideQuestRouter = router({
     )
     .mutation(({ input, ctx }) => {
       const { limited, retryAfter } = rateLimiter(ctx.user.id);
-      if (limited) throw new Error(`rate limit exceeded! retry in ${Math.floor((retryAfter ?? 0) / 1000)}s`);
+      if (limited) {
+        throw new TRPCError({
+          code: 'TOO_MANY_REQUESTS',
+          message: `rate limit exceeded! retry in ${Math.floor((retryAfter ?? 0) / 1000)}s`,
+        });
+      }
 
       const solution = {
-        algorithms: { easy: 'TODO', hard: 'TODO' },
+        algorithms: { easy: env.ALGORITHMS_EASY, hard: env.ALGORITHMS_HARD },
         forensics: { easy: env.FORENSICS_EASY, hard: env.FORENSICS_HARD },
         hacking: { easy: env.HACKING_EASY, hard: env.HACKING_HARD },
-        logic: { easy: 'TODO', hard: 'TODO' },
+        logic: { easy: env.LOGIC_EASY, hard: env.LOGIC_HARD },
         puzzles: { easy: env.PUZZLE_EASY, hard: env.PUZZLE_HARD },
       };
       if (input.solution !== solution[input.category][input.difficulty]) {
-        throw new Error('Incorrect');
+        throw new Error('incorrect');
       }
       ctx.user.sideQuests[input.category][input.difficulty] = Date.now();
     }),

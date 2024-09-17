@@ -38,17 +38,25 @@ export type PublicMessage = {
   createdAt: number;
 };
 
-export type Project = {
-  primaryUserId: string;
-  contributors: string[];
-  projectUrl: string; // could be a github, website, etc.
-  name: string;
-  description: string;
-  languages: string;
-  votes: { userId: string; rank: number }[];
-};
-
 export type FoodGame = {
   title: string;
   items: string[];
+};
+
+export type Project = {
+  id: string;
+  createdBy: string; // user id
+  contributors: string[]; // user ids
+  name: string;
+  description: string;
+  repoUrl: string;
+  hostedUrl: string;
+  votes: {
+    userId: string;
+    points: {
+      creativity: number;
+      experience: number;
+      technicalMerit: number;
+    };
+  }[];
 };

@@ -1,4 +1,4 @@
-export function createLimiter(limit: number, windowDuration: number) {
+export function createLimiter({ limit, windowDuration }: { limit: number; windowDuration: number }) {
   const store = new Map<string, { count: number; windowStart: Date }>();
 
   // (given limit = 10, windowDuration = 24h)

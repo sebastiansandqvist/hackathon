@@ -232,6 +232,18 @@ export function Home() {
               <li>each easy side quest is worth 1 point.</li>
               <li>each hard side quest is worth 2 points.</li>
               <li>project voting will also award points.</li>
+              {/*
+                TODO:
+                the current points system is a little bit broken. problems:
+                1. the weight of the side quests currently depends on the number of projects in the hackathon.
+                2. if multiple people work on one project, then the "person with most points" concept for picking a winner
+                   doesn't really work since they could all have different side quest points.
+
+                INSTEAD:
+                - maybe side quest points are a completely separate competition from the main hackathon
+                - the winner of the side quests is the person with the most side quest points, for a separate prize.
+                - the winner of the main hackathon is the person with the most voting points.
+              */}
             </ul>
           </BlurrySection>
           <BlurrySection section="voting">

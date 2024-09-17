@@ -1,4 +1,4 @@
-import type { FoodGame, PublicMessage, User } from './types';
+import type { FoodGame, Project, PublicMessage, User } from './types';
 import { wait } from './util';
 
 type Db = {
@@ -14,6 +14,7 @@ type Db = {
   foodGame: FoodGame;
   publicMessages: PublicMessage[];
   visibleSections: string[];
+  projects: Project[];
 };
 
 let dbText = '';
@@ -60,6 +61,7 @@ try {
       ],
     },
     publicMessages: [{ createdAt: Date.now(), text: 'Welcome!', userId: '' }],
+    projects: [],
   };
   dbText = JSON.stringify(seedDbState, null, 2);
   await Bun.write('./db.json', dbText);
