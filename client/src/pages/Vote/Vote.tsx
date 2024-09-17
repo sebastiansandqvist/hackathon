@@ -1,4 +1,4 @@
-import { createSignal, For, onCleanup, type Component } from 'solid-js';
+import { createSignal, For, type Component } from 'solid-js';
 import { useAutoAnimate } from 'solid-auto-animate';
 import { Layout } from '../../components/Layout';
 import { SectionHeading, Title, Uppercase } from '../../components/Text';
@@ -15,7 +15,7 @@ const Sortable: Component<{ items: { id: string; text: string }[]; onReorder: (i
       <For each={items()}>
         {(item, index) => (
           <li
-            class="flex cursor-ns-resize items-center justify-between border border-indigo-500 py-2 px-4"
+            class="grid cursor-ns-resize grid-cols-[auto_1fr] items-center justify-between border border-indigo-500 py-2 px-3 text-sm"
             classList={{
               'border-dotted !border-indigo-500/50': draggedId() === item.id,
             }}
@@ -53,7 +53,10 @@ const Sortable: Component<{ items: { id: string; text: string }[]; onReorder: (i
               props.onReorder(items().map((item) => item.id));
             }}
           >
-            {item.text} <span class="text-sm text-emerald-500">(+{items().length - index()} pts)</span>
+            <p class="overflow-hidden text-ellipsis whitespace-nowrap" title={item.text}>
+              {item.text}
+            </p>{' '}
+            <p class="whitespace-nowrap text-right text-sm text-emerald-500">(+{items().length - index()})</p>
           </li>
         )}
       </For>
@@ -76,46 +79,45 @@ export function Vote() {
   // clone 3 times, shuffling each one
   // assign each clone to a rubric criterion
   const sortableItems = [
-    { id: '1', text: 'item 1' },
-    { id: '2', text: 'item 2' },
-    { id: '3', text: 'item 3' },
-    { id: '4', text: 'item 4' },
-    { id: '5', text: 'item 5' },
+    { id: '1', text: 'example project 1' },
+    { id: '2', text: 'another project' },
+    { id: '3', text: 'a third project has a long name' },
+    { id: '4', text: 'project four' },
+    { id: '5', text: 'five' },
   ];
   return (
     <Layout>
       <Title>Vote</Title>
       <header>
         <p class="mb-2">
-          congrats on making it to the end! now, we vote. rank each project by the following three criteria. the number
-          of points awarded for each criterion will be dispayed in green, like this:{' '}
-          <span class="text-sm text-emerald-500">(+2 pts)</span>
+          congrats on making it to the end! now, we vote. rank each project by the following three criteria: creativity,
+          technical merit, and user experience. points <span class="text-sm text-emerald-500">(+2)</span> will be
+          awarded for each criterion.
         </p>
         <dl class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
           <dt>
             <SectionHeading class="text-base">creativity</SectionHeading>
           </dt>
-          <dd class="text-sm text-indigo-300/75">
+          <dd class="text-indigo-300/75">
             how would you rank the project's originality and aesthetics? does it demonstrate creative thinking and
             ingenuity?
           </dd>
           <dt>
             <SectionHeading class="text-base">technical merit</SectionHeading>
           </dt>
-          <dd class="text-sm text-indigo-300/75">
-            does the project exhibit technical difficulty or complexity? was it executed in a way that demonstrates a
-            high level of skill?{' '}
+          <dd class="text-indigo-300/75">
+            does the project exhibit technical difficulty or complexity? was it executed with a high degree of skill?
           </dd>
           <dt>
             <SectionHeading class="text-base">user experience</SectionHeading>
           </dt>
-          <dd class="text-sm text-indigo-300/75">
-            how would you rate the experience of using this project? projects that are fun, useful, or polished will
-            rank highly in this category.{' '}
+          <dd class="text-indigo-300/75">
+            how would you rate the experience of using this project? if it looks fun, useful, or polished, it should
+            rank highly here.
           </dd>
         </dl>
       </header>
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
         <section class="grid gap-2">
           <Uppercase>creativity</Uppercase>
           <Sortable items={sortableItems} onReorder={(ids) => console.log(ids)} />
@@ -129,6 +131,13 @@ export function Vote() {
           <Sortable items={sortableItems} onReorder={(ids) => console.log(ids)} />
         </section>
       </div>
+
+      <section>
+        <Uppercase>projects you contributed to:</Uppercase>
+        <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
+          <li>(TODO)</li>
+        </ul>
+      </section>
     </Layout>
   );
 }
