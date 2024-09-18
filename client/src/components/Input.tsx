@@ -10,6 +10,7 @@ export const Input: Component<JSX.InputHTMLAttributes<HTMLInputElement>> = (prop
 
 export const TextArea: Component<JSX.TextareaHTMLAttributes<HTMLTextAreaElement>> = (props) => {
   const [textarea, setTextarea] = createSignal<HTMLTextAreaElement>();
+
   createEffect(() => {
     const el = textarea();
     if (!el) return;
@@ -22,8 +23,8 @@ export const TextArea: Component<JSX.TextareaHTMLAttributes<HTMLTextAreaElement>
       {...props}
       ref={setTextarea}
       onInput={(e) => {
-        e.currentTarget.style.height = 'auto';
-        e.currentTarget.style.height = `${e.currentTarget.scrollHeight + 4}px`;
+        // e.currentTarget.style.height = 'auto';
+        // e.currentTarget.style.height = `${e.currentTarget.scrollHeight + 4}px`;
         if (typeof props.onInput !== 'function') return;
         props.onInput(e);
       }}

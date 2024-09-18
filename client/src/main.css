@@ -92,3 +92,75 @@ body,
     grid-area: 1 / 1;
   }
 }
+
+/* highlight-js */
+
+pre code {
+  @apply text-slate-300;
+  @apply font-mono;
+  display: block;
+  line-height: 1.5;
+}
+
+.hljs-comment,
+pre .hljs-comment,
+pre .hljs-meta {
+  @apply text-slate-500;
+}
+
+.hljs-red,
+pre .hljs-regexp,
+pre .hljs-ruby .constant,
+pre .hljs-xml .tag .title,
+pre .hljs-xml .pi,
+pre .hljs-xml .doctype,
+pre .hljs-html .doctype,
+pre .hljs-css .id,
+pre .hljs-css .class,
+pre .hljs-css .pseudo,
+.hljs-orange,
+pre .hljs-number,
+pre .hljs-preprocessor,
+pre .hljs-literal,
+pre .hljs-params,
+pre .hljs-constant {
+  @apply text-orange-400;
+}
+
+.hljs-green,
+pre .hljs-string,
+pre .hljs-value,
+pre .hljs-inheritance,
+pre .hljs-header,
+pre .hljs-ruby .symbol,
+pre .hljs-xml .cdata {
+  @apply text-rose-400;
+}
+
+.hljs-yellow,
+pre .hljs-built_in,
+pre .hljs-class,
+pre .hljs-ruby .class .title,
+pre .hljs-css .rules .attribute,
+.hljs-aqua,
+pre .hljs-css .hexcolor,
+pre .hljs-javascript .function,
+.hljs-blue,
+pre .hljs-python .decorator,
+pre .hljs-python .title,
+pre .hljs-ruby .function .title,
+pre .hljs-ruby .title .keyword,
+pre .hljs-perl .sub,
+pre .hljs-javascript .title,
+pre .hljs-coffeescript .title,
+pre .hljs-variable,
+pre .hljs-attribute {
+  @apply text-teal-200;
+}
+
+.hljs-purple,
+pre .hljs-keyword,
+pre .hljs-function,
+pre .hljs-tag {
+  @apply text-sky-300;
+}

@@ -272,7 +272,9 @@ function parseMarkdownToJSX(text: string) {
       codeBlockLanguage = line.slice(3).trim();
     } else if (line.startsWith('# ')) {
       const headerText = line.slice(2);
-      elements.push(<SectionHeading class="mb-4">{parseInlineMarkdown(headerText)}</SectionHeading>);
+      elements.push(
+        <SectionHeading class="mt-6 mb-2 text-lg first:mt-0">{parseInlineMarkdown(headerText)}</SectionHeading>,
+      );
     } else if (line.startsWith('## ')) {
       const headerText = line.slice(3);
       elements.push(
