@@ -1,13 +1,18 @@
-import { A, useParams } from '@solidjs/router';
-import { Layout } from '../components/Layout';
-import { query, trpc, type RouterOutput } from '../trpc';
-import { Title } from '../components/Text';
 import { For, Match, Show, Switch, type Component } from 'solid-js';
-import { ButtonPrimary } from '../components/Button';
+import { A, useParams } from '@solidjs/router';
+import { Layout } from '../../components/Layout';
+import { query, trpc, type RouterOutput } from '../../trpc';
+import { ButtonPrimary } from '../../components/Button';
+import { Markdown } from './components/Markdown';
+import { Title } from '../../components/Text';
+
+// TODO: link to repo url
+// TODO: link to hosted url
+// TODO: list contributors / creator
 
 const ProjectContent: Component<RouterOutput['projectById']> = (props) => (
-  <>
-    <header class="flex items-center gap-4">
+  <div class="grid gap-8">
+    <header class="flex items-center gap-4 border-b pb-8">
       <Title>{props.name}</Title>
       <Show when={props.canEdit}>
         <A href="/submit">
@@ -15,7 +20,9 @@ const ProjectContent: Component<RouterOutput['projectById']> = (props) => (
         </A>
       </Show>
     </header>
-    <div>{props.description}</div>
+    <div class="text-indigo-100">
+      <Markdown source={() => props.description} />
+    </div>
     <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
       <For each={props.contributors}>
         {(contributor) => (
@@ -27,7 +34,7 @@ const ProjectContent: Component<RouterOutput['projectById']> = (props) => (
         )}
       </For>
     </ul>
-  </>
+  </div>
 );
 
 export function Project() {

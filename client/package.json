@@ -17,6 +17,7 @@
     "@tanstack/solid-query": "5.53.1",
     "@trpc/client": "11.0.0-rc.490",
     "@trpc/server": "11.0.0-rc.490",
+    "highlight.js": "11.10.0",
     "s-ago": "2.2.0",
     "solid-js": "^1.8.20"
   },
