@@ -20,7 +20,7 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
   const difficultyLevels = ['easy', 'hard'] as const;
 
   const draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
-    const currentTime = new Date('2024-10-19T08:00:00.000Z').getTime(); // TODO: make this the actual current time
+    const currentTime = new Date('2024-10-19T10:00:00.000Z').getTime(); // TODO: make this the actual current time
     const now = performance.now();
     const drawingArea = canvas.getBoundingClientRect();
 
@@ -181,7 +181,7 @@ export const LeaderboardCanvasMetadata: Component<{ times: Times }> = (props) =>
         ctx.clearRect(0, 0, drawingArea.width, drawingArea.height);
 
         // draw a vertical line at the current time
-        const currentTime = new Date('2024-10-19T08:00:00.000Z').getTime();
+        const currentTime = new Date('2024-10-19T10:00:00.000Z').getTime();
         const currentTimePercent = (currentTime - start.getTime()) / range;
         const currentTimeX = Math.floor(currentTimePercent * drawingArea.width);
         ctx.font = '12px Zed';

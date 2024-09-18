@@ -57,12 +57,15 @@ export const hackathonRouter = router({
       db.foodGame.items = input.items;
     }),
   possibleContributors: authedProcedure.query(({ ctx }) => {
-    return db.users
-      .filter((user) => user.username !== 'tv' && user.id !== ctx.user.id)
-      .map((user) => ({
-        id: user.id,
-        username: user.username,
-      }));
+    return {
+      you: ctx.user.username,
+      others: db.users
+        .filter((user) => user.username !== 'tv' && user.id !== ctx.user.id)
+        .map((user) => ({
+          id: user.id,
+          username: user.username,
+        })),
+    };
   }),
   submitOrUpdateProject: authedProcedure
     .input(
@@ -76,7 +79,9 @@ export const hackathonRouter = router({
     )
     .mutation(({ input, ctx }) => {
       const project = db.projects.find((project) => project.createdBy === ctx.user.id);
-      if (db.projects.find((project) => project.name === input.name)) {
+      const otherProjects = db.projects.filter((p) => p.id !== project?.id);
+
+      if (otherProjects.find((project) => project.name === input.name)) {
         throw new Error(`the name "${input.name}" is already taken`);
       }
 
@@ -106,11 +111,11 @@ export const hackathonRouter = router({
       .map((project) => ({
         id: project.id,
         name: project.name,
-        repoUrl: project.repoUrl, // TODO: should this be included or no?
-        hostedUrl: project.hostedUrl,
-        description: project.description,
-        createdBy: db.users.find((user) => user.id === project.createdBy)?.username ?? '???',
-        contributors: project.contributors.map((id) => db.users.find((user) => user.id === id)?.username ?? '???'),
+        // repoUrl: project.repoUrl, // TODO: should this be included or no?
+        // hostedUrl: project.hostedUrl,
+        // description: project.description,
+        // createdBy: db.users.find((user) => user.id === project.createdBy)?.username ?? '???',
+        // contributors: project.contributors.map((id) => db.users.find((user) => user.id === id)?.username ?? '???'),
       }));
   }),
   submitOrUpdateVote: authedProcedure

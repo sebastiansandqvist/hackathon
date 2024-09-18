@@ -1,5 +1,8 @@
+import { Show } from 'solid-js';
+import { ButtonPrimary } from '../../components/Button';
 import { Layout } from '../../components/Layout';
 import { SectionHeading, Title, Uppercase } from '../../components/Text';
+import { query, trpc } from '../../trpc';
 import { Sortable } from './components/Sortable';
 
 function shuffle<T>(items: T[]) {
@@ -12,6 +15,7 @@ function shuffle<T>(items: T[]) {
 }
 
 export function Vote() {
+  const projects = query('loadProjectsForVoting', trpc.loadProjectsForVoting);
   // TODO:
   // load the projects over trpc
   // clone 3 times, shuffling each one
@@ -27,30 +31,32 @@ export function Vote() {
     <Layout>
       <Title>Vote</Title>
       <header>
-        <p class="mb-2 text-indigo-100">
+        <p class="mb-2 text-indigo-200">
           congrats on making it to the end! now, we vote. rank each project by the following three criteria:{' '}
           <strong class="text-white">creativity</strong>, <strong class="text-white">technical merit</strong>, and{' '}
-          <strong class="text-white">user experience</strong>. points <span class="text-sm text-emerald-500">(+2)</span>{' '}
-          will be awarded for each criterion.
+          <strong class="text-white">user experience</strong>. between{' '}
+          <span class="text-sm text-emerald-500">(+1)</span> and{' '}
+          <span class="text-sm text-emerald-500">(+{sortableItems.length})</span> points will be awarded for each of
+          these three criteria:
         </p>
         <dl class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
           <dt>
             <SectionHeading class="text-base">creativity</SectionHeading>
           </dt>
-          <dd class="text-indigo-300/75">
+          <dd class="text-indigo-200">
             how would you rank the project's originality and aesthetics? does it demonstrate creative thinking and
             ingenuity?
           </dd>
           <dt>
             <SectionHeading class="text-base">technical merit</SectionHeading>
           </dt>
-          <dd class="text-indigo-300/75">
+          <dd class="text-indigo-200">
             does the project exhibit technical difficulty or complexity? was it executed with a high degree of skill?
           </dd>
           <dt>
             <SectionHeading class="text-base">user experience</SectionHeading>
           </dt>
-          <dd class="text-indigo-300/75">
+          <dd class="text-indigo-200">
             how would you rate the experience of using this project? if it looks fun, useful, or polished, it should
             rank highly here.
           </dd>
@@ -59,7 +65,14 @@ export function Vote() {
       <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
         <section class="grid gap-2">
           <Uppercase>creativity</Uppercase>
-          <Sortable items={sortableItems} onReorder={(ids) => console.log(ids)} />
+          <Show when={projects.data} keyed>
+            {(list) => (
+              <Sortable
+                items={shuffle(list.map((project) => ({ id: project.id, text: project.name })))}
+                onReorder={(ids) => console.log(ids)}
+              />
+            )}
+          </Show>
         </section>
         <section class="grid gap-2">
           <Uppercase>technical merit</Uppercase>
@@ -69,6 +82,12 @@ export function Vote() {
           <Uppercase>user experience</Uppercase>
           <Sortable items={sortableItems} onReorder={(ids) => console.log(ids)} />
         </section>
+      </div>
+
+      <div class="grid grid-cols-3 gap-6">
+        <div class="col-start-2 grid">
+          <ButtonPrimary>Submit</ButtonPrimary>
+        </div>
       </div>
 
       <section>

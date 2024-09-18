@@ -29,12 +29,3 @@ export const ButtonPrimary: Component<JSX.ButtonHTMLAttributes<HTMLButtonElement
     </CanvasGridBg>
   </button>
 );
-
-// export const ButtonPrimary: Component<JSX.ButtonHTMLAttributes<HTMLButtonElement>> = (props) => (
-//   <button
-//     {...props}
-//     class="h-fit cursor-pointer whitespace-nowrap border-2 border-violet-500 bg-violet-500 px-2 font-bold italic text-white transition hover:border-white"
-//   >
-//     {props.children}
-//   </button>
-// );

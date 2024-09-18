@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, Show } from 'solid-js';
+import { For, Show } from 'solid-js';
 import { A } from '@solidjs/router';
 import { query, trpc } from '../../trpc';
 import { Countdown } from './components/Countdown';
@@ -275,6 +275,7 @@ export function Home() {
                 </code>{' '}
                 points to that project.
               </li>
+              <li>contributors can't vote for their own projects.</li>
               <li>the project with the most points wins!</li>
             </ol>
           </BlurrySection>
