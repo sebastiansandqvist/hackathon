@@ -39,9 +39,7 @@ export const AnswerForm: Component<{
       <form class="flex gap-4" onSubmit={handleSubmit}>
         <MultiCharInput chars={props.answerCharCount} onInput={setSolution} />
         <ButtonPrimary type="submit" disabled={submitPuzzle.isPending}>
-          <Show when={props.difficulty === 'easy'}>
-            submit <span class="font-dot not-italic">&gt;</span>
-          </Show>
+          submit <span class="font-dot not-italic">&gt;</span>
         </ButtonPrimary>
       </form>
     </div>

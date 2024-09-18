@@ -12,6 +12,8 @@ import { Algorithms } from './pages/sidequests/Algorithms';
 import { Vote } from './pages/Vote';
 import { Results } from './pages/Results';
 import { SubmitProject } from './pages/SubmitProject';
+import { ProjectList } from './pages/ProjectList';
+import { Project } from './pages/Project';
 import { queryClient } from './trpc';
 
 import './main.css';
@@ -29,8 +31,8 @@ render(
         <Route path="/vote" component={Vote} />
         <Route path="/results" component={Results} />
         <Route path="/submit" component={SubmitProject} />
-        <Route path="/projects" component={NotFound} /> {/* ProjectList */}
-        <Route path="/projects/:id" component={NotFound} /> {/* Project */}
+        <Route path="/projects" component={ProjectList} />
+        <Route path="/projects/:id" component={Project} />
         <Route path="*404" component={NotFound} />
       </Router>
     </QueryClientProvider>

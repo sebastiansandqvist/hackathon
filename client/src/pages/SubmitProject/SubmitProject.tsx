@@ -1,9 +1,10 @@
-import { Show, For, createSignal } from 'solid-js';
+import { Show, For, createSignal, createEffect } from 'solid-js';
 import { Layout } from '../../components/Layout';
 import { SectionHeading, Title } from '../../components/Text';
 import { mutate, query, trpc } from '../../trpc';
 import { Input, TextArea } from '../../components/Input';
 import { ButtonPrimary } from '../../components/Button';
+import { useNavigate } from '@solidjs/router';
 
 const projectDescriptionPlaceholder = `# overview
 
@@ -21,16 +22,32 @@ this project is...
 
 ...`;
 
-// TODO: load the project from the db if there is one already, and prepopulate the form fields
-// TODO: do something on success. redirect to a project page?
 export function SubmitProject() {
-  const possibleContributors = query('possibleContributors', trpc.possibleContributors);
+  const navigate = useNavigate();
+  const response = query('loadSubmitProjectPage', trpc.loadSubmitProjectPage);
   const [projectName, setProjectName] = createSignal('');
   const [contributors, setContributors] = createSignal<string[]>([]);
   const [repoUrl, setRepoUrl] = createSignal('');
   const [hostedUrl, setHostedUrl] = createSignal('');
   const [description, setDescription] = createSignal('');
-  const submit = mutate(trpc.submitOrUpdateProject, {});
+  const submit = mutate(trpc.submitOrUpdateProject, {
+    onError(err) {
+      alert(err.message ?? 'Unable to submit project');
+    },
+    onSuccess(data) {
+      navigate(`/projects/${data.id}`);
+    },
+  });
+
+  createEffect(() => {
+    if (!response.data?.project) return;
+    const p = response.data.project;
+    setProjectName(p.name);
+    setContributors(p.contributors);
+    setRepoUrl(p.repoUrl);
+    setHostedUrl(p.hostedUrl);
+    setDescription(p.description);
+  });
   return (
     <Layout>
       <Title>Submit Project</Title>
@@ -54,6 +71,7 @@ export function SubmitProject() {
             type="text"
             maxLength={20}
             class="w-96 max-w-full"
+            disabled={response.isLoading}
             value={projectName()}
             onInput={(e) => setProjectName(e.currentTarget.value)}
           />
@@ -66,6 +84,7 @@ export function SubmitProject() {
             placeholder="eg. https://github.com/you/project"
             maxLength={256}
             class="w-96 max-w-full"
+            disabled={response.isLoading}
             value={repoUrl()}
             onInput={(e) => setRepoUrl(e.currentTarget.value)}
           />
@@ -77,13 +96,14 @@ export function SubmitProject() {
             placeholder="eg. https://example.itch.io/project"
             maxLength={256}
             class="w-96 max-w-full"
+            disabled={response.isLoading}
             value={hostedUrl()}
             onInput={(e) => setHostedUrl(e.currentTarget.value)}
           />
         </label>
         <div class="grid gap-2">
           <SectionHeading class="text-base">contributors</SectionHeading>
-          <Show when={possibleContributors.data} fallback="loading..." keyed>
+          <Show when={response.data} fallback="loading..." keyed>
             {(data) => (
               <>
                 <label class="flex items-center gap-3 select-none">
@@ -120,13 +140,16 @@ export function SubmitProject() {
             placeholder={projectDescriptionPlaceholder}
             maxLength={2048}
             class="w-96 max-w-full"
+            disabled={response.isLoading}
             value={description()}
             onInput={(e) => setDescription(e.currentTarget.value)}
           />
         </label>
         <div class="grid sm:grid-cols-3">
-          <ButtonPrimary type="submit" disabled={submit.isPending}>
-            Submit{/* should say "Save" if there was already a project */}
+          <ButtonPrimary type="submit" disabled={submit.isPending || response.isLoading}>
+            <Show when={response.data?.project} fallback="Submit">
+              Save
+            </Show>
           </ButtonPrimary>
         </div>
       </form>

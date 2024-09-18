@@ -1,6 +1,7 @@
 import { z } from 'zod';
-import { authedProcedure, publicProcedure, router } from '../../trpc';
+import { authedProcedure, maybeAuthedProcedure, publicProcedure, router } from '../../trpc';
 import { db } from '../../db';
+import { nanoid } from '../../util';
 
 function calculateCheckpoints() {
   const checkpoints = Object.entries(db.times).map(
@@ -56,17 +57,6 @@ export const hackathonRouter = router({
       db.foodGame.title = input.title;
       db.foodGame.items = input.items;
     }),
-  possibleContributors: authedProcedure.query(({ ctx }) => {
-    return {
-      you: ctx.user.username,
-      others: db.users
-        .filter((user) => user.username !== 'tv' && user.id !== ctx.user.id)
-        .map((user) => ({
-          id: user.id,
-          username: user.username,
-        })),
-    };
-  }),
   submitOrUpdateProject: authedProcedure
     .input(
       z.object({
@@ -91,11 +81,16 @@ export const hackathonRouter = router({
         project.contributors = input.contributors;
         project.repoUrl = input.repoUrl;
         project.hostedUrl = input.hostedUrl;
-        return;
+        return { id: project.id };
+      }
+
+      let id = nanoid(6);
+      while (db.projects.find((project) => project.id === id)) {
+        id = nanoid(6);
       }
 
       db.projects.push({
-        id: crypto.randomUUID(),
+        id,
         createdBy: ctx.user.id,
         contributors: input.contributors,
         repoUrl: input.repoUrl,
@@ -104,6 +99,7 @@ export const hackathonRouter = router({
         description: input.description,
         votes: [],
       });
+      return { id };
     }),
   loadProjectsForVoting: authedProcedure.query(({ ctx }) => {
     return db.projects
@@ -216,5 +212,46 @@ export const hackathonRouter = router({
     }));
 
     return { mostPerfectUsernames, mostMessageUpdates, sideQuestProgress, bigBoys, projects };
+  }),
+  loadSubmitProjectPage: authedProcedure.query(({ ctx }) => {
+    const result = {
+      you: ctx.user.username,
+      others: db.users
+        .filter((user) => user.username !== 'tv' && user.id !== ctx.user.id)
+        .map((user) => ({
+          id: user.id,
+          username: user.username,
+        })),
+      project: null,
+    };
+
+    const project = db.projects.find((project) => project.createdBy === ctx.user.id);
+    if (!project) return result;
+    return {
+      ...result,
+      project: {
+        id: project.id,
+        name: project.name,
+        description: project.description,
+        contributors: project.contributors,
+        repoUrl: project.repoUrl,
+        hostedUrl: project.hostedUrl,
+      },
+    };
+  }),
+  projectById: maybeAuthedProcedure.input(z.object({ id: z.string() })).query(({ ctx, input }) => {
+    const project = db.projects.find((project) => project.id === input.id);
+    if (!project) throw new Error('not found');
+    const canEdit = ctx.user && project.createdBy === ctx.user.id;
+    return {
+      id: project.id,
+      name: project.name,
+      description: project.description,
+      createdBy: db.users.find((user) => user.id === project.createdBy)?.username ?? '???',
+      contributors: project.contributors.map((id) => db.users.find((user) => user.id === id)?.username ?? '???'),
+      repoUrl: project.repoUrl,
+      hostedUrl: project.hostedUrl,
+      canEdit,
+    };
   }),
 });

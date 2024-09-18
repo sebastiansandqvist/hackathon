@@ -66,6 +66,7 @@ export function query<
   { query }: { query: Resolver<Input> },
   options?: {
     refetchInterval?: number;
+    input?: () => Input['input']; // data: Parameters<typeof query>[0]
   },
 ) {
   return createQuery(() => ({
@@ -75,6 +76,6 @@ export function query<
       if (JSON.stringify(oldData) === JSON.stringify(newData)) return oldData;
       return newData;
     },
-    queryFn: (data: Parameters<typeof query>[0]) => query(data),
+    queryFn: () => query(options?.input?.()),
   }));
 }

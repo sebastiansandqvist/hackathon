@@ -271,13 +271,16 @@ const Challenge = () => {
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    points.forEach((point) => {
-      ctx.fillStyle = 'black';
-
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
-      ctx.fill();
-    });
+    (async () => {
+      const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+      for (const point of points) {
+        // await wait(100);
+        ctx.fillStyle = 'black';
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
+        // ctx.fill();
+      }
+    })();
 
     console.log(points.map((point) => `${point.x},  ${point.y}`).join('\n'));
   });
@@ -312,9 +315,9 @@ export function Algorithms() {
                 <Challenge />
                 <p class="text-indigo-100">(background)</p>
                 <Uppercase>heading:</Uppercase>
-                <textarea class="text-white">{input}</textarea>
+                <textarea class="min-h-[900px] text-white">{input}</textarea>
                 <Show when={!sideQuests.algorithms.hard}>
-                  <AnswerForm answerCharCount={4} difficulty="hard" category="algorithms" />
+                  <AnswerForm answerCharCount={7} difficulty="hard" category="algorithms" />
                 </Show>
               </Show>
             </>

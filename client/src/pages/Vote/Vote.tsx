@@ -65,14 +65,7 @@ export function Vote() {
       <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
         <section class="grid gap-2">
           <Uppercase>creativity</Uppercase>
-          <Show when={projects.data} keyed>
-            {(list) => (
-              <Sortable
-                items={shuffle(list.map((project) => ({ id: project.id, text: project.name })))}
-                onReorder={(ids) => console.log(ids)}
-              />
-            )}
-          </Show>
+          <Sortable items={sortableItems} onReorder={(ids) => console.log(ids)} />
         </section>
         <section class="grid gap-2">
           <Uppercase>technical merit</Uppercase>
