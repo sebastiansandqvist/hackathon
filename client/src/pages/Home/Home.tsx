@@ -1,4 +1,4 @@
-import { For, Show } from 'solid-js';
+import { createEffect, createSignal, For, Show } from 'solid-js';
 import { A } from '@solidjs/router';
 import { query, trpc } from '../../trpc';
 import { Countdown } from './components/Countdown';
@@ -20,10 +20,20 @@ import { TimelineDate } from './components/TimelineDate';
 import { FoodGame } from './components/FoodGame';
 import { LeaderboardCanvas, LeaderboardCanvasMetadata } from './components/Leaderboard';
 import { SectionHeading, Uppercase } from '../../components/Text';
+import { flashMessage } from '../../components/FlashMessage';
 
 export function Home() {
+  const [lastMessage, setLastMessage] = createSignal('');
   const home = query('homepage', trpc.homepage, {
     refetchInterval: 5000,
+  });
+
+  createEffect(() => {
+    const newMessage = home.data?.publicMessage.text;
+    if (!newMessage) return;
+    if (lastMessage() === newMessage) return;
+    setLastMessage(newMessage);
+    flashMessage(newMessage);
   });
 
   return (
@@ -158,6 +168,12 @@ export function Home() {
                 forensics <span class="font-dot">&gt;</span>
               </A>
               <SideQuestPointCount quest="forensics" />
+            </li>
+            <li>
+              <A href="/graphics" class="text-indigo-300 transition hover:text-indigo-200">
+                graphics <span class="font-dot">&gt;</span>
+              </A>
+              <SideQuestPointCount quest="graphics" />
             </li>
             <li>
               <A href="/hacking" class="text-indigo-300 transition hover:text-indigo-200">

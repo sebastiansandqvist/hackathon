@@ -13,7 +13,7 @@ export const Button: Component<JSX.ButtonHTMLAttributes<HTMLButtonElement>> = (p
 export const ButtonSecondary: Component<JSX.ButtonHTMLAttributes<HTMLButtonElement>> = (props) => (
   <button
     {...props}
-    class="h-fit cursor-pointer whitespace-nowrap border border-indigo-500/50 bg-indigo-800/50 py-0.5 px-2 font-bold italic text-white transition hover:border-indigo-500 hover:bg-indigo-800/75"
+    class="h-fit cursor-pointer whitespace-nowrap border border-indigo-500/50 bg-indigo-800/50 py-0.5 px-2 font-bold italic text-white transition hover:border-indigo-500 hover:bg-indigo-800/75 disabled:cursor-default disabled:border-indigo-500/30 disabled:bg-indigo-800/25 disabled:text-white/75"
   >
     {props.children}
   </button>

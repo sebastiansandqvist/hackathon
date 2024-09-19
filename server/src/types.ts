@@ -6,27 +6,13 @@ export type User = {
   sessions: { id: string; created: number }[];
   hintDeductions: number;
   sideQuests: {
-    hacking: {
-      easy: number | null; // timestamp of completion
-      hard: number | null;
-    };
-    logic: {
-      easy: number | null;
-      hard: number | null;
-    };
-    forensics: {
-      easy: number | null;
-      hard: number | null;
-    };
-    puzzles: {
-      easy: number | null;
-      hard: number | null;
-    };
-    algorithms: {
-      easy: number | null;
-      hard: number | null;
-      bigboy: number | null; // idea is that this will be a huge file that only an efficient algorithm and language can handle
-    };
+    // idea is that this will be a huge file that only an efficient algorithm and language can handle
+    algorithms: { easy: number | null; hard: number | null; bigboy: number | null };
+    forensics: { easy: number | null; hard: number | null };
+    graphics: { easy: number | null; hard: number | null };
+    hacking: { easy: number | null; hard: number | null };
+    logic: { easy: number | null; hard: number | null };
+    puzzles: { easy: number | null; hard: number | null };
   };
   renameCounter: number;
 };

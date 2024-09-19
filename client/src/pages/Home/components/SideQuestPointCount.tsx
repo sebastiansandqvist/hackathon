@@ -4,7 +4,7 @@ import { Authenticated } from '../../../components/Auth';
 export function SideQuestPointCount({
   quest,
 }: {
-  quest: 'hacking' | 'logic' | 'algorithms' | 'puzzles' | 'forensics';
+  quest: 'hacking' | 'logic' | 'algorithms' | 'graphics' | 'puzzles' | 'forensics';
 }) {
   return (
     <Authenticated>

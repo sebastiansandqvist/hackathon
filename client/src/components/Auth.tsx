@@ -1,4 +1,13 @@
-import { createSignal, Match, Show, Switch, type Component, type JSX, type ParentComponent } from 'solid-js';
+import {
+  createEffect,
+  createSignal,
+  Match,
+  Show,
+  Switch,
+  type Component,
+  type JSX,
+  type ParentComponent,
+} from 'solid-js';
 import { mutate, trpc, invalidate, query, type RouterOutput } from '../trpc';
 import { Button, ButtonPrimary, ButtonSecondary } from './Button';
 import { Input } from './Input';
@@ -79,6 +88,12 @@ export const Authenticated: Component<{
   children: (status: RouterOutput['status'] & { isAuthed: true }) => JSX.Element;
 }> = (props) => {
   const auth = query('status', trpc.status);
+  createEffect(() => {
+    if (!auth.data) return;
+    if (auth.data.isAuthed === false) return;
+    console.log(auth.data?.sideQuests.graphics);
+  });
+
   return (
     <Switch>
       <Match when={auth.error} keyed>

@@ -5,6 +5,8 @@ const envSchema = z.object({
   ALGORITHMS_HARD: z.string(),
   FORENSICS_EASY: z.string(),
   FORENSICS_HARD: z.string(),
+  GRAPHICS_EASY: z.string(),
+  GRAPHICS_HARD: z.string(),
   HACKING_EASY: z.string(),
   HACKING_HARD: z.string(),
   LOGIC_EASY: z.string(),

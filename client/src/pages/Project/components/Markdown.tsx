@@ -1,7 +1,7 @@
 import type { Component, JSX, Accessor } from 'solid-js';
 import { Show, splitProps } from 'solid-js';
 import { Highlight } from './Highlight';
-import { SectionHeading, Title, Uppercase } from '../../../components/Text';
+import { SectionHeading, Uppercase } from '../../../components/Text';
 
 function sanitizeUrl(input?: string) {
   if (!input) {
@@ -215,7 +215,7 @@ function parseList(lines: string[]) {
 
   if (firstChar === '-' || firstChar === '*') {
     return (
-      <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
+      <ul class="mb-6 grid list-outside list-disc gap-2 pt-2 px-10 text-indigo-100 marker:text-indigo-300/75">
         {listItems}
       </ul>
     );
@@ -226,7 +226,7 @@ function parseList(lines: string[]) {
 
   return (
     <ol
-      class="grid list-outside list-decimal gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75"
+      class="mb-6 grid list-outside list-decimal gap-2 pt-2 px-10 text-indigo-100 marker:text-indigo-300/75"
       start={startNumber}
     >
       {listItems}
@@ -236,7 +236,7 @@ function parseList(lines: string[]) {
 
 // parse markdown and convert it to solidjs elements
 function parseMarkdownToJSX(text: string) {
-  const lines = text.split('\n').filter((line) => line.trim() !== '');
+  const lines = text.split('\n');
   const elements: JSX.ArrayElement = [];
 
   let inCodeBlock = false;
@@ -257,7 +257,7 @@ function parseMarkdownToJSX(text: string) {
           elements.push(...parseMarkdownToJSX(codeBlockContent.join('\n')));
         } else {
           elements.push(
-            <Highlight language={codeBlockLanguage} class="not-prose overflow-x-auto">
+            <Highlight language={codeBlockLanguage} class="not-prose mb-6 overflow-x-auto bg-indigo-950/75 p-6">
               {codeBlockContent.join('\n')}
             </Highlight>,
           );
@@ -278,7 +278,7 @@ function parseMarkdownToJSX(text: string) {
     } else if (line.startsWith('## ')) {
       const headerText = line.slice(3);
       elements.push(
-        <Uppercase as="h2" class="mt-6 mb-2 !text-indigo-300">
+        <Uppercase as="h2" class="mt-6 mb-2 !text-indigo-300 first:mt-0">
           {parseInlineMarkdown(headerText)}
         </Uppercase>,
       );
@@ -300,8 +300,8 @@ function parseMarkdownToJSX(text: string) {
         listLines.push(lines[i]!);
       }
       elements.push(parseList(listLines));
-    } else {
-      elements.push(<p>{parseInlineMarkdown(line)}</p>);
+    } else if (line.trim() !== '') {
+      elements.push(<p class="mb-6">{parseInlineMarkdown(line)}</p>);
     }
   }
 
@@ -313,7 +313,7 @@ function parseMarkdownToJSX(text: string) {
       elements.push(...parseMarkdownToJSX(codeBlockContent.join('\n')));
     } else {
       elements.push(
-        <Highlight language={codeBlockLanguage} class="not-prose overflow-x-auto">
+        <Highlight language={codeBlockLanguage} class="not-prose mb-6 overflow-x-auto bg-indigo-950/75 p-6">
           {codeBlockContent.join('\n')}
         </Highlight>,
       );

@@ -179,6 +179,8 @@ export const hackathonRouter = router({
           user.sideQuests.algorithms.hard ? 2 : 0,
           user.sideQuests.forensics.easy ? 1 : 0,
           user.sideQuests.forensics.hard ? 2 : 0,
+          user.sideQuests.graphics.easy ? 1 : 0,
+          user.sideQuests.graphics.hard ? 2 : 0,
           user.sideQuests.hacking.easy ? 1 : 0,
           user.sideQuests.hacking.hard ? 2 : 0,
           user.sideQuests.logic.easy ? 1 : 0,

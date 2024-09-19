@@ -93,10 +93,22 @@ body,
   }
 }
 
+@keyframes flash {
+  90%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.animate-flash {
+  animation: flash 2s ease-out forwards;
+}
+
 /* highlight-js */
 
 pre code {
-  @apply text-slate-300;
+  @apply text-indigo-100;
   @apply font-mono;
   display: block;
   line-height: 1.5;
@@ -105,7 +117,7 @@ pre code {
 .hljs-comment,
 pre .hljs-comment,
 pre .hljs-meta {
-  @apply text-slate-500;
+  @apply text-indigo-300/75;
 }
 
 .hljs-red,

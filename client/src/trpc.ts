@@ -1,12 +1,6 @@
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import { createTRPCClient, httpBatchLink, type Resolver } from '@trpc/client';
-import {
-  createMutation,
-  createQuery,
-  QueryClient,
-  type CreateMutateAsyncFunction,
-  type CreateMutationOptions,
-} from '@tanstack/solid-query';
+import { createMutation, createQuery, QueryClient, type CreateMutationOptions } from '@tanstack/solid-query';
 import type { AppRouter } from '../../server/src/index';
 
 export type RouterInput = inferRouterInputs<AppRouter>;

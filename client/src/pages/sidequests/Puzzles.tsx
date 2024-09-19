@@ -1,12 +1,12 @@
 import { Show } from 'solid-js';
 import { A } from '@solidjs/router';
-import { writeClipboard } from '@solid-primitives/clipboard';
 import { Layout } from '../../components/Layout';
-import { ButtonPrimary, ButtonSecondary } from '../../components/Button';
+import { ButtonPrimary } from '../../components/Button';
 import { CanvasGridBg } from '../../components/CanvasGridBg';
 import { Authenticated, Unauthenticated } from '../../components/Auth';
 import { AnswerForm } from './components/AnswerForm';
 import { Title, Uppercase } from '../../components/Text';
+import { CopyButton } from '../../components/CopyButton';
 
 function EasyPuzzle() {
   return (
@@ -68,7 +68,7 @@ export function Puzzles() {
                 </p>
                 <div class="group relative border-l-2 border-indigo-500 py-2 pl-4">
                   <div class="absolute top-0 right-0 opacity-0 transition group-hover:opacity-100">
-                    <ButtonSecondary onClick={() => writeClipboard(hardPuzzleRawText)}>copy</ButtonSecondary>
+                    <CopyButton input={() => hardPuzzleRawText} />
                   </div>
                   <p>
                     he does not become angry when the{' '}

@@ -62,7 +62,7 @@ export const sideQuestRouter = router({
   submitSolution: authedProcedure
     .input(
       z.object({
-        category: z.enum(['algorithms', 'forensics', 'hacking', 'logic', 'puzzles']),
+        category: z.enum(['algorithms', 'forensics', 'graphics', 'hacking', 'logic', 'puzzles']),
         difficulty: z.enum(['easy', 'hard']),
         solution: z.string(),
       }),
@@ -79,6 +79,7 @@ export const sideQuestRouter = router({
       const solution = {
         algorithms: { easy: env.ALGORITHMS_EASY, hard: env.ALGORITHMS_HARD },
         forensics: { easy: env.FORENSICS_EASY, hard: env.FORENSICS_HARD },
+        graphics: { easy: env.GRAPHICS_EASY, hard: env.GRAPHICS_HARD },
         hacking: { easy: env.HACKING_EASY, hard: env.HACKING_HARD },
         logic: { easy: env.LOGIC_EASY, hard: env.LOGIC_HARD },
         puzzles: { easy: env.PUZZLE_EASY, hard: env.PUZZLE_HARD },

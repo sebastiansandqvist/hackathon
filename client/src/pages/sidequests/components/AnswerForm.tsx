@@ -3,9 +3,10 @@ import { ButtonPrimary } from '../../../components/Button';
 import { mutate, trpc, invalidate } from '../../../trpc';
 import { useNavigate } from '@solidjs/router';
 import { MultiCharInput } from '../../../components/Input';
+import { flashMessage } from '../../../components/FlashMessage';
 
 export const AnswerForm: Component<{
-  category: 'algorithms' | 'forensics' | 'hacking' | 'logic' | 'puzzles';
+  category: 'algorithms' | 'forensics' | 'graphics' | 'hacking' | 'logic' | 'puzzles';
   difficulty: 'easy' | 'hard';
   answerCharCount: number;
 }> = (props) => {
@@ -13,14 +14,16 @@ export const AnswerForm: Component<{
   const [solution, setSolution] = createSignal('');
   const submitPuzzle = mutate(trpc.submitSolution, {
     onError(err: Error) {
-      alert(err.message ?? 'Unable to submit solution');
+      if (err.message === 'incorrect') {
+        flashMessage('incorrect', 'red');
+      } else {
+        alert(err.message ?? 'Unable to submit solution');
+      }
     },
-    onSettled() {
+    async onSuccess() {
+      await flashMessage('correct!');
       invalidate('homepage');
       invalidate('status');
-    },
-    onSuccess() {
-      alert('correct!');
       if (props.difficulty === 'hard') {
         navigate('/');
       }

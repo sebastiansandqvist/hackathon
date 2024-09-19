@@ -16,7 +16,7 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
   const hackathonEnd = end.getTime();
   const midnights = allMidnightsBetween(start, end);
 
-  const categories = ['algorithms', 'forensics', 'hacking', 'logic', 'puzzles'] as const;
+  const categories = ['algorithms', 'forensics', 'graphics', 'hacking', 'logic', 'puzzles'] as const;
   const difficultyLevels = ['easy', 'hard'] as const;
 
   const draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
