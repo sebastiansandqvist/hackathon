@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, Show } from 'solid-js';
+import { For, Show } from 'solid-js';
 import { A } from '@solidjs/router';
 import { query, trpc } from '../../trpc';
 import { Countdown } from './components/Countdown';
@@ -20,20 +20,10 @@ import { TimelineDate } from './components/TimelineDate';
 import { FoodGame } from './components/FoodGame';
 import { LeaderboardCanvas, LeaderboardCanvasMetadata } from './components/Leaderboard';
 import { SectionHeading, Uppercase } from '../../components/Text';
-import { flashMessage } from '../../components/FlashMessage';
 
 export function Home() {
-  const [lastMessage, setLastMessage] = createSignal('');
   const home = query('homepage', trpc.homepage, {
     refetchInterval: 5000,
-  });
-
-  createEffect(() => {
-    const newMessage = home.data?.publicMessage.text;
-    if (!newMessage) return;
-    if (lastMessage() === newMessage) return;
-    setLastMessage(newMessage);
-    flashMessage(newMessage);
   });
 
   return (
@@ -249,8 +239,7 @@ export function Home() {
             <ol class="grid list-outside list-decimal gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
               <li>each easy side quest is worth 1 point.</li>
               <li>each hard side quest is worth 2 points.</li>
-              <li>these points do not impact your hackathon project score.</li>
-              <li>side quests have a separate prize pool.</li>
+              <li>these points have a separate prize pool. they do not impact your hackathon project score.</li>
             </ol>
           </BlurrySection>
           <BlurrySection section="projects">

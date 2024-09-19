@@ -1,4 +1,5 @@
-import { createSignal, Show } from 'solid-js';
+import { createEffect, createSignal, Show } from 'solid-js';
+import { query, trpc } from '../trpc';
 
 const [message, setMessage] = createSignal<{ color: 'green' | 'red'; message: string } | null>();
 const duration = 2000;
@@ -29,4 +30,24 @@ export function FlashMessageContainer() {
       )}
     </Show>
   );
+}
+
+export function HomepageMessageFlasher() {
+  const [lastMessage, setLastMessage] = createSignal('');
+  const home = query('homepage', trpc.homepage, {
+    refetchInterval: 5000,
+  });
+
+  createEffect(() => {
+    const newMessage = home.data?.publicMessage.text;
+    if (!newMessage) return;
+    if (lastMessage() !== newMessage) {
+      if (lastMessage()) {
+        flashMessage(newMessage);
+      }
+      setLastMessage(newMessage);
+    }
+  });
+
+  return <div class="pointer-events-none hidden">{home.data?.publicMessage.text}</div>;
 }

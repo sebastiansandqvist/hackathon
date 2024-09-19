@@ -18,7 +18,7 @@ import { Project } from './pages/Project';
 import { queryClient } from './trpc';
 
 import './main.css';
-import { FlashMessageContainer } from './components/FlashMessage';
+import { FlashMessageContainer, HomepageMessageFlasher } from './components/FlashMessage';
 
 render(
   () => (
@@ -38,6 +38,7 @@ render(
         <Route path="/projects/:id" component={Project} />
         <Route path="*404" component={NotFound} />
       </Router>
+      <HomepageMessageFlasher />
       <FlashMessageContainer />
     </QueryClientProvider>
   ),
