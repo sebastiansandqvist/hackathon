@@ -2,13 +2,13 @@ import { createSignal, Show, type Component } from 'solid-js';
 import { ButtonPrimary } from '../../../components/Button';
 import { mutate, trpc, invalidate } from '../../../trpc';
 import { useNavigate } from '@solidjs/router';
-import { MultiCharInput } from '../../../components/Input';
+import { Input, MultiCharInput } from '../../../components/Input';
 import { flashMessage } from '../../../components/FlashMessage';
 
 export const AnswerForm: Component<{
   category: 'algorithms' | 'forensics' | 'graphics' | 'hacking' | 'logic' | 'puzzles';
   difficulty: 'easy' | 'hard';
-  answerCharCount: number;
+  answerCharCount?: number;
 }> = (props) => {
   const navigate = useNavigate();
   const [solution, setSolution] = createSignal('');
@@ -40,7 +40,12 @@ export const AnswerForm: Component<{
   return (
     <div>
       <form class="flex gap-4" onSubmit={handleSubmit}>
-        <MultiCharInput chars={props.answerCharCount} onInput={setSolution} />
+        <Show
+          when={props.answerCharCount}
+          fallback={<Input type="text" onInput={(e) => setSolution(e.currentTarget.value)} />}
+        >
+          <MultiCharInput chars={props.answerCharCount!} onInput={setSolution} />
+        </Show>
         <ButtonPrimary type="submit" disabled={submitPuzzle.isPending}>
           submit <span class="font-dot not-italic">&gt;</span>
         </ButtonPrimary>

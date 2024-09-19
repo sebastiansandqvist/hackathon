@@ -7,102 +7,23 @@ import { AnswerForm } from './components/AnswerForm';
 import { Title, Uppercase } from '../../components/Text';
 import { CopyButton } from '../../components/CopyButton';
 
+const easyInput = `i1 h42 a47 a56 x59-63`;
+
 function EasyGraphics() {
   return (
     <>
       <Title>Graphics – Part 1</Title>
       <Uppercase>
-        <q>pointillism</q>
+        <q></q>
       </Uppercase>
-      <div class="group relative">
-        <div class="absolute top-0 right-0 opacity-0 transition group-hover:opacity-100">
-          <CopyButton input={() => getInput()} />
-        </div>
-        <textarea
-          readonly
-          class="h-[320px] w-full resize-y overflow-y-scroll border-indigo-500 p-4 outline-none transition focus:bg-indigo-950/50"
-          value={getInput()}
-          onClick={(e) => {
-            if (e.currentTarget.selectionStart === e.currentTarget.selectionEnd) {
-              e.currentTarget.select();
-            }
-          }}
-        />
-      </div>
-      <p class="text-indigo-100"></p>
+      <p class="text-indigo-100">what color is described by the following sequence?</p>
+      <pre class="w-full overflow-x-auto text-nowrap bg-indigo-950/75 p-6">
+        <code>{easyInput}</code>
+      </pre>
+      <img src="/images/lovelace.webp" class="w-full" />
     </>
   );
 }
-
-/*
-const Challenge = () => {
-  const [canvasElement, setCanvasElement] = createSignal<HTMLCanvasElement>();
-
-  createEffect(() => {
-    const canvas = canvasElement();
-    if (!canvas) return;
-    // query the canvas
-
-    // draw our text
-    const ctx = canvas.getContext('2d');
-    if (!ctx) throw new Error('2d context not supported');
-
-    ctx.font = '60px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    ctx.fillStyle = 'blue';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'white';
-    ctx.fillText('H U F F M A N', canvas.width / 2, canvas.height / 2 + 5);
-
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    let points = [] as {
-      x: number;
-      y: number;
-    }[];
-    const desiredPointAmount = 200;
-
-    while (points.length < desiredPointAmount) {
-      const x = Math.floor(Math.random() * canvas.width);
-      const y = Math.floor(Math.random() * canvas.height);
-      const pixelIndex = (y * canvas.width + x) * 4;
-      const pixel = imageData.data.slice(pixelIndex, pixelIndex + 4);
-      const pixelR = pixel[0];
-      if (pixelR !== 255) continue;
-
-      const circleRadius = 2;
-      const overlapping = points.some((point) => {
-        const dx = point.x - x;
-        const dy = point.y - y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        return distance < circleRadius * 2;
-      });
-      if (overlapping) continue;
-
-      points.push({ x, y });
-    }
-
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    (async () => {
-      const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-      for (const point of points) {
-        await wait(100);
-        ctx.fillStyle = 'black';
-        ctx.beginPath();
-        ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    })();
-
-    console.log(points.map((point) => `${point.x}, ${point.y}`).join('\n'));
-  });
-
-  return <canvas ref={setCanvasElement} width="400" height="100" />;
-};
-*/
 
 export function Graphics() {
   return (
@@ -120,16 +41,27 @@ export function Graphics() {
                   <hr class="border-indigo-500/30" />
                 </Show>
               </Show>
-              <Show
-                when={sideQuests.graphics.easy}
-                fallback={<AnswerForm answerCharCount={7} difficulty="easy" category="graphics" />}
-              >
+              <Show when={sideQuests.graphics.easy} fallback={<AnswerForm difficulty="easy" category="graphics" />}>
                 <Title>Graphics – Part 2</Title>
                 <Uppercase>
-                  <q>...</q>
+                  <q>pointillism</q>
                 </Uppercase>
-                <p class="text-indigo-100">(background)</p>
-                <Uppercase>heading:</Uppercase>
+                <p class="text-indigo-100">what do you make of this? some kind of coding?</p>
+                <div class="group relative">
+                  <div class="absolute top-0 right-0 opacity-0 transition group-hover:opacity-100">
+                    <CopyButton input={() => getInput()} />
+                  </div>
+                  <textarea
+                    readonly
+                    class="h-[320px] w-full resize-y overflow-y-scroll border-indigo-500 p-4 outline-none transition focus:bg-indigo-950/50"
+                    value={getInput()}
+                    onClick={(e) => {
+                      if (e.currentTarget.selectionStart === e.currentTarget.selectionEnd) {
+                        e.currentTarget.select();
+                      }
+                    }}
+                  />
+                </div>
                 <Show when={!sideQuests.graphics.hard}>
                   <AnswerForm answerCharCount={7} difficulty="hard" category="graphics" />
                 </Show>
