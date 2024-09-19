@@ -42,7 +42,9 @@ export const publicProcedure = t.procedure.use(logger);
 function parseCookie(cookie: string) {
   return cookie.split('; ').reduce<Record<string, string>>((acc, row) => {
     const [key, value] = row.split('=');
-    acc[key] = value;
+    if (key !== undefined) {
+      acc[key] = value ?? '1'; // default to some truthy value
+    }
     return acc;
   }, {});
 }
