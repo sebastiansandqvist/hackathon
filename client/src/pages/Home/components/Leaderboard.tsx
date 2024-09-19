@@ -1,14 +1,14 @@
-import { createEffect, type Component } from 'solid-js';
+import { type Component } from 'solid-js';
 import { Canvas } from '../../../components/Canvas';
 import type { RouterOutput } from '../../../trpc';
-import { createMousePosition } from '@solid-primitives/mouse';
 
 type Progress = RouterOutput['homepage']['sideQuestProgress'][0]['progress'];
 type Times = RouterOutput['homepage']['times'];
 
 export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> = (props) => {
   let parent: HTMLDivElement;
-  const pos = createMousePosition(() => parent);
+  let isMouseInside = false;
+  let mouseX = 0;
 
   const start = new Date(props.times.codingStart);
   const end = new Date(props.times.codingEnd);
@@ -79,8 +79,8 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
           const percent = Math.abs(timestamp - hackathonStart) / range;
           const x = Math.floor(percent * drawingArea.width);
           const rightEdge = x + fontWidth * 4;
-          const mouseX = pos.x - drawingArea.x + fontWidth / 2;
-          const isMouseOver = mouseX >= x && mouseX <= rightEdge && pos.isInside;
+          const mouseXAdjusted = mouseX - drawingArea.x + fontWidth / 2;
+          const isMouseOver = mouseXAdjusted >= x && mouseXAdjusted <= rightEdge && isMouseInside;
 
           if (isMouseOver) {
             if (!mouseOver) continue;
@@ -132,7 +132,19 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
   };
 
   return (
-    <div ref={parent!} class="h-full">
+    <div
+      ref={parent!}
+      class="h-full"
+      onMouseMove={(e) => {
+        mouseX = e.clientX;
+      }}
+      onMouseEnter={() => {
+        isMouseInside = true;
+      }}
+      onMouseLeave={() => {
+        isMouseInside = false;
+      }}
+    >
       <Canvas draw={draw} />
     </div>
   );
