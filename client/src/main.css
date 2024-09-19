@@ -94,6 +94,15 @@ body,
 }
 
 @keyframes flash {
+  0%,
+  10% {
+    opacity: 0;
+  }
+
+  10%,
+  30% {
+    opacity: 1;
+  }
   90%,
   100% {
     transform: scale(2);

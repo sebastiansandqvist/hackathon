@@ -1,6 +1,7 @@
 import { writeClipboard } from '@solid-primitives/clipboard';
 import { ButtonSecondary } from './Button';
 import { createSignal, onCleanup, Show, type Component } from 'solid-js';
+import { flashMessage } from './FlashMessage';
 
 export const CopyButton: Component<{ input: () => string }> = (props) => {
   const [didCopy, setDidCopy] = createSignal(false);
@@ -12,14 +13,13 @@ export const CopyButton: Component<{ input: () => string }> = (props) => {
     <ButtonSecondary
       disabled={didCopy()}
       onClick={() => {
+        flashMessage('copied!');
         setDidCopy(true);
         writeClipboard(props.input());
         timeoutId = setTimeout(() => setDidCopy(false), 1000);
       }}
     >
-      <Show when={didCopy()} fallback="copy">
-        copied!
-      </Show>
+      copy
     </ButtonSecondary>
   );
 };

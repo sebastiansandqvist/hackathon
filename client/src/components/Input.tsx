@@ -65,7 +65,7 @@ export const MultiCharInput: Component<{ chars: number; onInput: (value: string)
                 inputs[i() + 1]?.element()?.focus();
                 return;
               }
-              const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789-';
+              const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789-.';
               const value = e.key.toLowerCase();
               if (!alphabet.includes(value)) return;
               input.setValue(value);

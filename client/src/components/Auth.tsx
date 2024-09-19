@@ -88,11 +88,6 @@ export const Authenticated: Component<{
   children: (status: RouterOutput['status'] & { isAuthed: true }) => JSX.Element;
 }> = (props) => {
   const auth = query('status', trpc.status);
-  createEffect(() => {
-    if (!auth.data) return;
-    if (auth.data.isAuthed === false) return;
-    console.log(auth.data?.sideQuests.graphics);
-  });
 
   return (
     <Switch>

@@ -10,7 +10,6 @@ export const Canvas: Component<{
 
   let raf = 0;
   createEffect(() => {
-    console.log('effect');
     const canvas = canvasElement()!;
     const ctx = canvas.getContext('2d')!;
     if (!size.width || !size.height) return;
