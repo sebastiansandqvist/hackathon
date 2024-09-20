@@ -107,12 +107,18 @@ export const hackathonRouter = router({
       .map((project) => ({
         id: project.id,
         name: project.name,
-        // repoUrl: project.repoUrl, // TODO: should this be included or no?
-        // hostedUrl: project.hostedUrl,
-        // description: project.description,
-        // createdBy: db.users.find((user) => user.id === project.createdBy)?.username ?? '???',
-        // contributors: project.contributors.map((id) => db.users.find((user) => user.id === id)?.username ?? '???'),
       }));
+  }),
+  listProjects: publicProcedure.query(() => {
+    return db.projects
+      .map((project) => ({
+        id: project.id,
+        name: project.name,
+        description: project.description,
+        createdBy: db.users.find((user) => user.id === project.createdBy)?.username ?? '???',
+        contributors: project.contributors.map((id) => db.users.find((user) => user.id === id)?.username ?? '???'),
+      }))
+      .toSorted((a, b) => a.name.localeCompare(b.name));
   }),
   submitOrUpdateVote: authedProcedure
     .input(
