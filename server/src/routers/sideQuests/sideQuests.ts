@@ -92,6 +92,11 @@ export const sideQuestRouter = router({
             throw new Error('close! but wrong');
           }
         }
+
+        if (input.category === 'forensics' && input.difficulty === 'easy') {
+          if (input.solution === 'green') throw new Error('be more specific');
+        }
+
         throw new Error('incorrect');
       }
       ctx.user.sideQuests[input.category][input.difficulty] = Date.now();

@@ -102,12 +102,20 @@ export const hackathonRouter = router({
       return { id };
     }),
   loadProjectsForVoting: authedProcedure.query(({ ctx }) => {
-    return db.projects
-      .filter((project) => project.createdBy !== ctx.user.id && !project.contributors.includes(ctx.user.id))
-      .map((project) => ({
-        id: project.id,
-        name: project.name,
-      }));
+    return {
+      projects: db.projects
+        .filter((project) => project.createdBy !== ctx.user.id && !project.contributors.includes(ctx.user.id))
+        .map((project) => ({
+          id: project.id,
+          name: project.name,
+        })),
+      yourProjects: db.projects
+        .filter((project) => project.createdBy === ctx.user.id)
+        .map((project) => ({
+          id: project.id,
+          name: project.name,
+        })),
+    };
   }),
   listProjects: publicProcedure.query(() => {
     return db.projects

@@ -2,7 +2,7 @@ import { type Component, createSignal, For } from 'solid-js';
 import { useAutoAnimate } from 'solid-auto-animate';
 
 export const Sortable: Component<{
-  items: { id: string; text: string }[];
+  items: { id: string; name: string }[];
   onReorder: (ids: string[]) => void;
 }> = (props) => {
   let parent: HTMLOListElement;
@@ -13,11 +13,11 @@ export const Sortable: Component<{
   useAutoAnimate(() => parent!, { disrespectUserMotionPreference: true });
 
   return (
-    <ol class="grid gap-2 text-white" ref={parent!}>
+    <ol class="grid text-white" ref={parent!}>
       <For each={items()}>
         {(item, index) => (
           <li
-            class="grid cursor-ns-resize grid-cols-[auto_1fr] items-center justify-between gap-1 border-l-2 border-purple-400 bg-indigo-900/75 py-2 px-3 text-sm transition hover:bg-indigo-900 active:bg-indigo-900/50"
+            class="relative grid cursor-ns-resize grid-cols-[auto_1fr] items-center justify-between gap-1 border-l-2 border-l-purple-400 bg-indigo-900/75 pt-2 px-3 pb-3 text-sm ring-2 ring-zinc-950 transition hover:bg-indigo-900 active:bg-indigo-900/50"
             classList={{
               '!border-indigo-500/50': draggedId() === item.id,
             }}
@@ -67,8 +67,8 @@ export const Sortable: Component<{
               props.onReorder(items().map((item) => item.id));
             }}
           >
-            <p class="overflow-hidden text-ellipsis whitespace-nowrap" title={item.text}>
-              {item.text}
+            <p class="overflow-hidden text-ellipsis whitespace-nowrap" title={item.name}>
+              {item.name}
             </p>{' '}
             <p class="whitespace-nowrap text-right text-sm text-emerald-500">(+{items().length - index()})</p>
           </li>

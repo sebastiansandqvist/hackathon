@@ -1,9 +1,11 @@
-import { Show } from 'solid-js';
+import { createSignal, For, Show } from 'solid-js';
 import { ButtonPrimary } from '../../components/Button';
 import { Layout } from '../../components/Layout';
 import { SectionHeading, Title, Uppercase } from '../../components/Text';
-import { query, trpc } from '../../trpc';
+import { mutate, query, trpc } from '../../trpc';
 import { Sortable } from './components/Sortable';
+import { flashMessage } from '../../components/FlashMessage';
+import { useNavigate } from '@solidjs/router';
 
 function shuffle<T>(items: T[]) {
   const itemsCopy = [...items];
@@ -15,18 +17,20 @@ function shuffle<T>(items: T[]) {
 }
 
 export function Vote() {
+  const navigate = useNavigate();
   const projects = query('loadProjectsForVoting', trpc.loadProjectsForVoting);
-  // TODO:
-  // load the projects over trpc
-  // clone 3 times, shuffling each one
-  // assign each clone to a rubric criterion
-  const sortableItems = [
-    { id: '1', text: 'example project 1' },
-    { id: '2', text: 'another project' },
-    { id: '3', text: 'a third project has a long name' },
-    { id: '4', text: 'project four' },
-    { id: '5', text: 'five' },
-  ];
+  const vote = mutate(trpc.submitOrUpdateVote, {
+    onError(err) {
+      alert(err.message ?? 'something went wrong');
+    },
+    async onSuccess() {
+      await flashMessage('vote saved!');
+      navigate('/');
+    },
+  });
+  const [creativityVotes, setCreativityVotes] = createSignal<string[]>([]);
+  const [technicalMeritVotes, setTechnicalMeritVotes] = createSignal<string[]>([]);
+  const [userExperienceVotes, setUserExperienceVotes] = createSignal<string[]>([]);
   return (
     <Layout>
       <Title>Vote</Title>
@@ -36,8 +40,8 @@ export function Vote() {
           <strong class="text-white">creativity</strong>, <strong class="text-white">technical merit</strong>, and{' '}
           <strong class="text-white">user experience</strong>. between{' '}
           <span class="text-sm text-emerald-500">(+1)</span> and{' '}
-          <span class="text-sm text-emerald-500">(+{sortableItems.length})</span> points will be awarded for each of
-          these three criteria:
+          <span class="text-sm text-emerald-500">(+{projects.data?.projects.length ?? '...'})</span> points will be
+          awarded in each of these three criteria:
         </p>
         <dl class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
           <dt>
@@ -62,33 +66,50 @@ export function Vote() {
           </dd>
         </dl>
       </header>
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <section class="grid gap-2">
-          <Uppercase>creativity</Uppercase>
-          <Sortable items={sortableItems} onReorder={(ids) => console.log(ids)} />
-        </section>
-        <section class="grid gap-2">
-          <Uppercase>technical merit</Uppercase>
-          <Sortable items={sortableItems} onReorder={(ids) => console.log(ids)} />
-        </section>
-        <section class="grid gap-2">
-          <Uppercase>user experience</Uppercase>
-          <Sortable items={sortableItems} onReorder={(ids) => console.log(ids)} />
-        </section>
-      </div>
+      <Show when={projects.data} keyed>
+        {(data) => (
+          <>
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+              <section class="grid gap-2">
+                <Uppercase>creativity</Uppercase>
+                <Sortable items={shuffle(data.projects)} onReorder={setCreativityVotes} />
+              </section>
+              <section class="grid gap-2">
+                <Uppercase>technical merit</Uppercase>
+                <Sortable items={shuffle(data.projects)} onReorder={setTechnicalMeritVotes} />
+              </section>
+              <section class="grid gap-2">
+                <Uppercase>user experience</Uppercase>
+                <Sortable items={shuffle(data.projects)} onReorder={setUserExperienceVotes} />
+              </section>
+            </div>
 
-      <div class="grid grid-cols-3 gap-6">
-        <div class="col-start-2 grid">
-          <ButtonPrimary>Submit</ButtonPrimary>
-        </div>
-      </div>
+            <div class="grid grid-cols-3 gap-6">
+              <div class="col-start-2 grid">
+                <ButtonPrimary
+                  disabled={vote.isPending}
+                  onClick={() => {
+                    vote.mutate({
+                      creativity: creativityVotes(),
+                      technicalMerit: technicalMeritVotes(),
+                      experience: userExperienceVotes(),
+                    });
+                  }}
+                >
+                  Submit
+                </ButtonPrimary>
+              </div>
+            </div>
 
-      <section>
-        <Uppercase>projects you contributed to:</Uppercase>
-        <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
-          <li>(TODO)</li>
-        </ul>
-      </section>
+            <section>
+              <Uppercase>projects you contributed to:</Uppercase>
+              <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
+                <For each={data.yourProjects}>{(project) => <li>{project.name}</li>}</For>
+              </ul>
+            </section>
+          </>
+        )}
+      </Show>
     </Layout>
   );
 }
