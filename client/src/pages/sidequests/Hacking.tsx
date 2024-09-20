@@ -12,8 +12,8 @@ export function Hacking() {
         <Title>Hacking – Part 1</Title>
         <Uppercase>background:</Uppercase>
         <p class="text-indigo-100">
-          oh no! someone appears to have used a hard-coded password in the homepage message editor. show them why that's
-          a bad idea by leaving your own message for everyone to see.
+          oh no! someone appears to have left the password to the homepage message editor in plain sight. find it, and
+          leave a message for everyone to see.
         </p>
         <Uppercase>your objective, for 1 point:</Uppercase>
         <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
@@ -23,6 +23,7 @@ export function Hacking() {
         <Authenticated>
           {({ sideQuests }) => (
             <Show when={sideQuests.hacking.easy}>
+              <hr class="border-indigo-500/30" />
               <Title>Hacking – Part 2</Title>
               <Uppercase>background:</Uppercase>
               <p class="text-indigo-100">
@@ -46,13 +47,7 @@ export function Hacking() {
                 <li>locate the hashed admin password</li>
                 <li>identify the hashing algorithm in use</li>
                 <li>crack the password</li>
-                <li>
-                  as admins are the only ones who can add images, you'll need to add an HTML image to the homepage using
-                  the cracked password. any image from the web will do! for example,
-                  <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
-                    &lt;img src="https://wikipedia.org/.../example.png" /&gt;
-                  </code>
-                </li>
+                <li>use your admin password to add an image to the homepage</li>
               </ul>
             </Show>
           )}

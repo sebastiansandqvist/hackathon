@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { router, authedProcedure } from '../../trpc';
 import { env } from '../../env';
-import { createDocument } from 'domino';
 import { db } from '../../db';
 import { createLimiter } from '../../ratelimit';
 
@@ -21,42 +20,43 @@ export const sideQuestRouter = router({
         });
       }
 
-      const redHerring = '1350';
-      if (input.password === redHerring) {
-        return { redirect: 'https://en.wikipedia.org/wiki/Red_herring' };
-      }
-
       const password = 'supersecretlol';
-      if (input.password !== password && input.password !== env.HACKING_HARD) {
+      if (input.password !== password) {
         throw new Error('ACCESS DENIED');
       }
       if (!ctx.user.sideQuests.hacking.easy) {
         ctx.user.sideQuests.hacking.easy = Date.now();
       }
 
-      const doc = createDocument(input.text);
-      const img = doc.querySelector('img');
-      let imgUrl: string | undefined;
-      let text = input.text;
+      db.publicMessages.push({
+        createdAt: Date.now(),
+        userId: ctx.user.id,
+        text: input.text,
+      });
+    }),
+  hackThePublicMessageImage: authedProcedure
+    .input(z.object({ password: z.string(), imageUrl: z.string() }))
+    .mutation(({ input, ctx }) => {
+      const { limited, retryAfter } = rateLimiter(ctx.user.id);
+      if (limited) {
+        throw new TRPCError({
+          code: 'TOO_MANY_REQUESTS',
+          message: `rate limit exceeded! retry in ${Math.floor((retryAfter ?? 0) / 1000)}s`,
+        });
+      }
 
-      if (img) {
-        if (input.password !== env.HACKING_HARD) {
-          throw new Error('ADMIN: ACCESS DENIED');
-        }
-        if (img.src) {
-          if (!ctx.user.sideQuests.hacking.hard) {
-            ctx.user.sideQuests.hacking.hard = Date.now();
-          }
-          imgUrl = img.src;
-          text = doc.body.textContent ?? text;
-        }
+      if (input.password !== env.HACKING_HARD) {
+        throw new Error('ACCESS DENIED');
+      }
+      if (!ctx.user.sideQuests.hacking.hard) {
+        ctx.user.sideQuests.hacking.hard = Date.now();
       }
 
       db.publicMessages.push({
         createdAt: Date.now(),
-        userId: ctx.user.id, // convert this to the anonymous name to be displayed on the homepage as "you've been hacked by <anon>"
-        imgUrl,
-        text,
+        userId: ctx.user.id,
+        imgUrl: input.imageUrl,
+        text: '',
       });
     }),
   submitSolution: authedProcedure

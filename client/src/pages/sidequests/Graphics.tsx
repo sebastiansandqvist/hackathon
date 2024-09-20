@@ -1,6 +1,6 @@
 import { A } from '@solidjs/router';
 import { Layout } from '../../components/Layout';
-import { ButtonPrimary, ButtonSecondary } from '../../components/Button';
+import { ButtonPrimary } from '../../components/Button';
 import { Authenticated, Unauthenticated } from '../../components/Auth';
 import { Show } from 'solid-js';
 import { AnswerForm } from './components/AnswerForm';
@@ -14,9 +14,15 @@ function EasyGraphics() {
     <>
       <Title>Graphics – Part 1</Title>
       <Uppercase>
-        <q></q>
+        <q>name that color!</q>
       </Uppercase>
-      <p class="text-indigo-100">what color is described by the following sequence?</p>
+      <p class="text-indigo-100">
+        what{' '}
+        <a class="underline transition hover:text-white" href="https://colornamer.robertcooper.me/">
+          color
+        </a>{' '}
+        is described by the following sequence?
+      </p>
       <pre class="w-full overflow-x-auto text-nowrap bg-indigo-950/75 p-6">
         <code>{easyInput}</code>
       </pre>

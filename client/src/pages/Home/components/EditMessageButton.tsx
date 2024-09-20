@@ -1,6 +1,39 @@
-import { useNavigate } from '@solidjs/router';
 import { mutate, trpc, invalidate } from '../../../trpc';
-import { ButtonSecondary } from '../../../components/Button';
+import { ButtonSecondary, ButtonSecondaryAlt } from '../../../components/Button';
+import { flashMessage } from '../../../components/FlashMessage';
+
+export function EditMessageButton() {
+  const editMessage = mutate(trpc.hackThePublicMessage, {
+    onError(err) {
+      flashMessage(err.message ?? 'unexpected error');
+    },
+    onSettled() {
+      invalidate('homepage');
+      invalidate('status');
+    },
+  });
+
+  const handleClick = async () => {
+    const input = prompt('enter password');
+    if (!input) return;
+
+    const password = 'supersecretlol';
+    if (input !== password) {
+      return flashMessage('ACCESS DENIED', 'red');
+    }
+
+    const text = prompt('enter message');
+    if (!text) return;
+
+    editMessage.mutate({ password: input, text });
+  };
+
+  return (
+    <ButtonSecondary onClick={handleClick} disabled={editMessage.isPending}>
+      edit message
+    </ButtonSecondary>
+  );
+}
 
 async function hash(message: string): Promise<string> {
   const data = new TextEncoder().encode(message);
@@ -15,46 +48,10 @@ async function isAdminPasswordValid(password: string) {
   return (await hash(password)) === adminPasswordHash;
 }
 
-export function EditMessageButton() {
-  const editMessage = mutate(trpc.hackThePublicMessage, {
+export function EditMessageImageButton() {
+  const editImage = mutate(trpc.hackThePublicMessageImage, {
     onError(err) {
-      alert(err.message ?? 'Unable to edit message');
-    },
-    onSettled() {
-      invalidate('homepage');
-      invalidate('status');
-    },
-  });
-
-  const handleClick = async () => {
-    const input = prompt('enter password');
-    if (!input) return;
-
-    const password = 'supersecretlol';
-    if (input !== password) {
-      return alert('incorrect password');
-    }
-
-    const text = prompt('enter message');
-    if (!text) return;
-
-    const result = await editMessage.mutateAsync({ password: input, text });
-    // if (result.redirect) {
-    //   window.location.href = result.redirect;
-    // }
-  };
-
-  return (
-    <ButtonSecondary onClick={handleClick} disabled={editMessage.isPending}>
-      edit message
-    </ButtonSecondary>
-  );
-}
-
-export function AdminEditMessageButton() {
-  const editMessage = mutate(trpc.hackThePublicMessage, {
-    onError(err) {
-      alert(err.message ?? 'Unable to edit message');
+      flashMessage(err.message ?? 'unexpected error', 'red');
     },
     onSettled() {
       invalidate('homepage');
@@ -67,18 +64,18 @@ export function AdminEditMessageButton() {
     if (!input) return;
 
     if (!(await isAdminPasswordValid(input))) {
-      return alert('incorrect admin password');
+      return flashMessage('ACCESS DENIED', 'red');
     }
 
-    const text = prompt('enter message');
-    if (!text) return;
+    const imageUrl = prompt('enter image url');
+    if (!imageUrl) return;
 
-    await editMessage.mutateAsync({ password: input, text });
+    editImage.mutate({ password: input, imageUrl });
   };
 
   return (
-    <ButtonSecondary onClick={handleClick} disabled={editMessage.isPending}>
+    <ButtonSecondaryAlt onClick={handleClick} disabled={editImage.isPending}>
       edit image
-    </ButtonSecondary>
+    </ButtonSecondaryAlt>
   );
 }

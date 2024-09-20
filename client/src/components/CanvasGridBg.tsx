@@ -32,7 +32,7 @@ export const CanvasGridBg: ParentComponent = (props) => {
           ctx.fillStyle = '#000';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-          const pixelSize = 4;
+          const pixelSize = 3;
           const borderSize = 1;
           const colors = ['#141341', '#161352', '#36397e', '#110733', '#0c0b26'];
 

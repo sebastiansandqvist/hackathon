@@ -19,6 +19,15 @@ export const ButtonSecondary: Component<JSX.ButtonHTMLAttributes<HTMLButtonEleme
   </button>
 );
 
+export const ButtonSecondaryAlt: Component<JSX.ButtonHTMLAttributes<HTMLButtonElement>> = (props) => (
+  <button
+    {...props}
+    class="h-fit cursor-pointer whitespace-nowrap border border-rose-500/50 bg-indigo-800/50 py-0.5 px-2 font-bold italic text-white transition hover:border-rose-500 hover:bg-rose-800/75 disabled:cursor-default disabled:border-indigo-500/30 disabled:bg-indigo-800/25 disabled:text-white/75"
+  >
+    {props.children}
+  </button>
+);
+
 export const ButtonPrimary: Component<JSX.ButtonHTMLAttributes<HTMLButtonElement>> = (props) => (
   <button
     {...props}

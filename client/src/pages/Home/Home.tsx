@@ -13,7 +13,7 @@ import {
   Unauthenticated,
 } from '../../components/Auth';
 import { CanvasGridBg } from '../../components/CanvasGridBg';
-import { AdminEditMessageButton, EditMessageButton } from './components/EditMessageButton';
+import { EditMessageImageButton, EditMessageButton } from './components/EditMessageButton';
 import { Layout } from '../../components/Layout';
 import { SideQuestPointCount } from './components/SideQuestPointCount';
 import { TimelineDate } from './components/TimelineDate';
@@ -57,7 +57,7 @@ export function Home() {
                 <div class="grid gap-2">
                   <EditMessageButton />
                   <Show when={sideQuests.hacking.easy}>
-                    <AdminEditMessageButton />
+                    <EditMessageImageButton />
                   </Show>
                 </div>
               </Show>
@@ -216,7 +216,7 @@ export function Home() {
       <NotTv>
         <div class="grid gap-2">
           <BlurrySection section="logistics">
-            <SectionHeading>info</SectionHeading>
+            <SectionHeading>hackathon 1nfo</SectionHeading>
             <Uppercase as="h3" class="mt-2">
               logistics
             </Uppercase>

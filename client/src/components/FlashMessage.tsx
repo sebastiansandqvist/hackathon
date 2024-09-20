@@ -19,7 +19,7 @@ export function FlashMessageContainer() {
     <Show when={message()} keyed>
       {(data) => (
         <div
-          class="font-pixel animate-flash pointer-events-none fixed inset-0 bottom-1/2 z-20 flex items-center justify-center text-6xl"
+          class="font-pixel animate-flash pointer-events-none fixed inset-0 bottom-1/2 z-20 flex items-center justify-center text-center text-6xl"
           classList={{
             'text-emerald-600': data.color === 'green',
             'text-rose-600': data.color === 'red',
