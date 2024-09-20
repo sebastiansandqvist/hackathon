@@ -85,6 +85,13 @@ export const sideQuestRouter = router({
         puzzles: { easy: env.PUZZLE_EASY, hard: env.PUZZLE_HARD },
       };
       if (input.solution !== solution[input.category][input.difficulty]) {
+        if (input.category === 'algorithms' && input.difficulty === 'hard') {
+          const userSolution = parseInt(input.solution, 10);
+          const actualSolution = parseInt(solution.algorithms.hard, 10);
+          if (Math.abs(userSolution - actualSolution) < 10) {
+            throw new Error('close! but wrong');
+          }
+        }
         throw new Error('incorrect');
       }
       ctx.user.sideQuests[input.category][input.difficulty] = Date.now();
