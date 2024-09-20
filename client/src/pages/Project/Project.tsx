@@ -4,11 +4,7 @@ import { Layout } from '../../components/Layout';
 import { query, trpc, type RouterOutput } from '../../trpc';
 import { ButtonPrimary } from '../../components/Button';
 import { Markdown } from './components/Markdown';
-import { Title, Uppercase } from '../../components/Text';
-
-// TODO: link to repo url
-// TODO: link to hosted url
-// TODO: list contributors / creator
+import { Title } from '../../components/Text';
 
 const ProjectContent: Component<RouterOutput['projectById']> = (props) => (
   <div class="grid gap-8">

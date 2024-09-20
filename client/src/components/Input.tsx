@@ -50,11 +50,27 @@ export const MultiCharInput: Component<{ chars: number; onInput: (value: string)
           <input
             ref={input.setElement}
             value={input.value()}
+            maxLength={1}
+            onPaste={(e) => {
+              const pastedText = e.clipboardData?.getData('text/plain');
+              if (!pastedText) return;
+              for (let j = 0; j < pastedText.length; j++) {
+                inputs[i() + j]?.setValue(pastedText[j]!);
+              }
+              props.onInput(aggregateValue());
+              const lastElement = Math.min(i() + pastedText.length, inputs.length - 1);
+              inputs[lastElement]?.element()?.focus();
+              e.preventDefault();
+            }}
             onKeyUp={(e) => {
               if (e.key === 'Backspace') {
+                if (input.value() === '') {
+                  inputs[i() - 1]?.element()?.focus();
+                  inputs[i() - 1]?.setValue('');
+                  return;
+                }
                 input.setValue('');
                 props.onInput(aggregateValue());
-                inputs[i() - 1]?.element()?.focus();
                 return;
               }
               if (e.key === 'ArrowLeft') {
@@ -74,7 +90,6 @@ export const MultiCharInput: Component<{ chars: number; onInput: (value: string)
               inputs[i() + direction]?.element()?.focus();
             }}
             type="text"
-            max={1}
             class="w-[2ch] border-0 border-b border-dotted border-indigo-500 py-0.5 text-center italic outline-none transition placeholder:text-indigo-400/75 focus:border-solid"
           />
         )}
