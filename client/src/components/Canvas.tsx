@@ -10,7 +10,8 @@ export const Canvas: Component<{
 
   let raf = 0;
   createEffect(() => {
-    const canvas = canvasElement()!;
+    const canvas = canvasElement();
+    if (!canvas) return;
     const ctx = canvas.getContext('2d')!;
     if (!size.width || !size.height) return;
 
@@ -23,6 +24,7 @@ export const Canvas: Component<{
     ctx.scale(devicePixelRatio, devicePixelRatio);
     props.draw(canvas, ctx);
     function drawLoop() {
+      if (!canvas) return;
       props.draw(canvas, ctx);
       raf = requestAnimationFrame(drawLoop);
     }

@@ -209,21 +209,23 @@ export const hackathonRouter = router({
         return bPoints - aPoints;
       });
 
-    const projects = db.projects.map((project) => ({
-      ...project,
-      createdBy: db.users.find((user) => user.id === project.createdBy)?.username ?? '???',
-      contributors: project.contributors.map((id) => db.users.find((user) => user.id === id)?.username ?? '???'),
-      votes: project.votes.reduce(
-        (acc, vote) => {
-          acc.creativity += vote.points.creativity;
-          acc.experience += vote.points.experience;
-          acc.technicalMerit += vote.points.technicalMerit;
-          acc.total += vote.points.creativity + vote.points.experience + vote.points.technicalMerit;
-          return acc;
-        },
-        { total: 0, creativity: 0, experience: 0, technicalMerit: 0 },
-      ),
-    }));
+    const projects = db.projects
+      .map((project) => ({
+        ...project,
+        createdBy: db.users.find((user) => user.id === project.createdBy)?.username ?? '???',
+        contributors: project.contributors.map((id) => db.users.find((user) => user.id === id)?.username ?? '???'),
+        votes: project.votes.reduce(
+          (acc, vote) => {
+            acc.creativity += vote.points.creativity;
+            acc.experience += vote.points.experience;
+            acc.technicalMerit += vote.points.technicalMerit;
+            acc.total += vote.points.creativity + vote.points.experience + vote.points.technicalMerit;
+            return acc;
+          },
+          { total: 0, creativity: 0, experience: 0, technicalMerit: 0 },
+        ),
+      }))
+      .toSorted((a, b) => b.votes.total - a.votes.total);
 
     return {
       times: db.times,

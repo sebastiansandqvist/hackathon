@@ -2,6 +2,7 @@
 import { render } from 'solid-js/web';
 import { Router, Route } from '@solidjs/router';
 import { QueryClientProvider } from '@tanstack/solid-query';
+import { FlashMessageContainer, HomepageMessageFlasher } from './components/FlashMessage';
 import { Home } from './pages/Home';
 import { NotFound } from './pages/NotFound';
 import { Logic } from './pages/sidequests/Logic';
@@ -18,7 +19,6 @@ import { Project } from './pages/Project';
 import { queryClient } from './trpc';
 
 import './main.css';
-import { FlashMessageContainer, HomepageMessageFlasher } from './components/FlashMessage';
 
 render(
   () => (

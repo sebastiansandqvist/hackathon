@@ -4,6 +4,7 @@ import {
   For,
   Index,
   Match,
+  onCleanup,
   Show,
   Switch,
   type Component,
@@ -12,38 +13,119 @@ import {
 } from 'solid-js';
 import { Dots, InnerLayout, Layout } from '../../components/Layout';
 import { SectionHeading, Title, Uppercase } from '../../components/Text';
-import { query, trpc } from '../../trpc';
+import { query, trpc, type RouterOutput } from '../../trpc';
 import { autoAnimate, useAutoAnimate } from 'solid-auto-animate';
 import { Transition } from 'solid-transition-group';
 import { BlurrySection } from '../../components/BlurrySection';
 import { LeaderboardCanvas, LeaderboardCanvasMetadata } from '../Home/components/Leaderboard';
+import { commaSeparatedList } from '../../util';
 
-// should be interactive and presentation-like,
-// similar to the homepage reveal section-by-section
-// or like a powerpoint presentation
+const ProjectResult: Component<{
+  place: 'first' | 'second' | 'third';
+  project: RouterOutput['results']['projects'][number];
+}> = (props) => (
+  <InnerLayout>
+    <section class="grid gap-4">
+      <BlurrySection section={`results-project-${props.place}`}>
+        <Uppercase class="!text-indigo-200">
+          in {props.place} place with {props.project.votes.total} points...
+        </Uppercase>
+      </BlurrySection>
+      <BlurrySection section={`results-project-${props.project.id}`}>
+        <SectionHeading>{props.project.name}</SectionHeading>
+        <p class="text-indigo-200">
+          congrats, <strong>{commaSeparatedList([props.project.createdBy, ...props.project.contributors])}</strong>!
+        </p>
+      </BlurrySection>
+    </section>
+  </InnerLayout>
+);
+
+const LeaderboardResult: Component<{
+  sideQuestProgress: RouterOutput['results']['sideQuestProgress'];
+  times: RouterOutput['results']['times'];
+}> = (props) => (
+  <InnerLayout>
+    <SectionHeading>leaderboard</SectionHeading>
+    <div class="grid gap-4">
+      <For each={props.sideQuestProgress}>
+        {(progress) => (
+          <div class="grid grid-rows-[auto_20px] gap-1">
+            <p class="font-bold text-indigo-200">
+              {progress.username}{' '}
+              <span class="text-sm text-emerald-500">(+{progress.totalPointsBeforeDeductions})</span>
+              <Show when={progress.deductions}>
+                <>
+                  <span class="text-sm text-rose-500"> (-{progress.deductions})</span>
+                  <span class="text-sm text-indigo-300/75">
+                    {' '}
+                    = {progress.totalPointsBeforeDeductions - progress.deductions}
+                  </span>
+                </>
+              </Show>
+            </p>
+            <LeaderboardCanvas progress={progress.progress} times={props.times} />
+          </div>
+        )}
+      </For>
+      <div class="-mt-4 h-8">
+        <LeaderboardCanvasMetadata times={props.times} />
+      </div>
+    </div>
+  </InnerLayout>
+);
+
 const Slideshow: Component<{
-  // children: ((args: { next: () => void; prev: () => void }) => JSX.Element)[];
   children: JSX.Element[];
   onSlideChange: (index: number) => void;
 }> = (props) => {
   const [index, setIndex] = createSignal(0);
-  const [elements, setElements] = createSignal<Signal<HTMLDivElement | undefined>[]>(
-    props.children.map(() => createSignal()),
-  );
+  const elements = props.children.map(() => createSignal<HTMLElement>());
+
   createEffect(() => {
     const i = index();
     props.onSlideChange(i);
-    const [element] = elements()[i]!;
+    const [element] = elements[i]!;
     const el = element();
     if (!el) return;
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+
+  const handleArrowKey = (e: KeyboardEvent) => {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      setIndex((i) => Math.max(i - 1, 0));
+    } else if (e.key === 'ArrowRight' || e.key === ' ') {
+      e.preventDefault();
+      setIndex((i) => Math.min(i + 1, props.children.length - 1));
+    }
+  };
+
+  window.addEventListener('keydown', handleArrowKey);
+
+  onCleanup(() => {
+    window.removeEventListener('keydown', handleArrowKey);
+  });
+
   return (
     <>
-      <div class="flex snap-x snap-mandatory overflow-x-auto">
+      <div
+        class="flex snap-x snap-mandatory overflow-x-auto"
+        onScrollEnd={(e) => {
+          const el = e.currentTarget;
+          setIndex(Math.round(el.scrollLeft / window.innerWidth));
+          // TODO: make sure this doesn't interfere with the scrollIntoView
+        }}
+      >
         <For each={props.children}>
           {(slide, i) => (
-            <div class="w-screen shrink-0 snap-center" ref={(el) => elements()[i()]?.[1](el)}>
+            <div
+              class="w-screen shrink-0 snap-center"
+              ref={(el) => {
+                const [, setElement] = elements[i()]!;
+                setElement(el);
+              }}
+            >
               {slide}
             </div>
           )}
@@ -62,9 +144,6 @@ const Slideshow: Component<{
             {(item, i) => (
               <button
                 class="font-dot box-content h-1.5 w-1.5 grow-0 border border-solid border-slate-950 bg-indigo-300/50 transition enabled:cursor-pointer enabled:hover:bg-white disabled:border-indigo-100 disabled:bg-indigo-100"
-                // classList={{
-                //   '': index() === i,
-                // }}
                 disabled={index() === i}
                 onClick={() => setIndex(i)}
               />
@@ -105,11 +184,58 @@ const TitleWithTransition: Component<{ title: () => string }> = (props) => {
           <Match when={props.title() === 'Side Quests'}>
             <Title>Side Quests</Title>
           </Match>
+          <Match when={props.title() === 'Projects'}>
+            <Title>Projects</Title>
+          </Match>
+          <Match when={props.title() === 'And the winner is'}>
+            <Title>And the winner is...</Title>
+          </Match>
         </Switch>
       </Transition>
     </div>
   );
 };
+
+const UsernameResult: Component<{ usernames: RouterOutput['results']['mostPerfectUsernames'] }> = (props) => (
+  <InnerLayout>
+    <BlurrySection section="results-username-header">
+      <header class="grid gap-4">
+        <Uppercase class="!text-indigo-200">with {props.usernames[0]?.renameCounter} rerolls...</Uppercase>
+        <p class="text-2xl">the most perfect username goes to...</p>
+        <BlurrySection section="results-username-winner">
+          <section class="flex flex-wrap items-center gap-4">
+            <p class="text-2xl font-bold">{props.usernames[0]?.username ?? '???'}!</p>
+            <Uppercase class="!text-indigo-200">
+              the <q>{props.usernames[0]?.anonymousName}</q>
+            </Uppercase>
+          </section>
+        </BlurrySection>
+      </header>
+    </BlurrySection>
+    <BlurrySection section="results-username-table">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="border-b-2 border-indigo-300/50">
+            <th class="pb-2">user</th>
+            <th class="pb-2">anonymous name</th>
+            <th class="pb-2 text-right">rerolls</th>
+          </tr>
+        </thead>
+        <tbody>
+          <For each={props.usernames}>
+            {(user) => (
+              <tr class="group">
+                <td class="pb-2 font-bold group-first:pt-2">{user.username}</td>
+                <td class="pb-2 text-indigo-200 group-first:pt-2">{user.anonymousName}</td>
+                <td class="pb-2 text-right group-first:pt-2">{user.renameCounter}</td>
+              </tr>
+            )}
+          </For>
+        </tbody>
+      </table>
+    </BlurrySection>
+  </InnerLayout>
+);
 
 export function Results() {
   const results = query('results', trpc.results);
@@ -123,71 +249,15 @@ export function Results() {
         {(data) => (
           <Slideshow
             onSlideChange={(i) => {
-              const titles = ['Results', 'Side Quests'];
+              const titles = ['Results', 'Side Quests', 'Projects', 'Projects', 'And the winner is'];
               setTitle(titles[i]!);
             }}
           >
-            <InnerLayout>
-              <BlurrySection section="results-username-header">
-                <header class="grid gap-4">
-                  <Uppercase class="!text-indigo-200">
-                    with {data.mostPerfectUsernames[0]?.renameCounter} rerolls...
-                  </Uppercase>
-                  <p class="text-2xl">the most perfect username goes to...</p>
-                  <BlurrySection section="results-username-winner">
-                    <section class="flex flex-wrap items-center gap-4">
-                      <p class="text-2xl font-bold">{data.mostPerfectUsernames[0]?.username ?? '???'}!</p>
-                      <Uppercase class="!text-indigo-200">
-                        the <q>{data.mostPerfectUsernames[0]?.anonymousName}</q>
-                      </Uppercase>
-                    </section>
-                  </BlurrySection>
-                </header>
-              </BlurrySection>
-              <BlurrySection section="results-username-table">
-                <table class="w-full text-left">
-                  <thead>
-                    <tr class="border-b-2 border-indigo-300/50">
-                      <th class="pb-2">user</th>
-                      <th class="pb-2">anonymous name</th>
-                      <th class="pb-2 text-right">rerolls</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <For each={data.mostPerfectUsernames}>
-                      {(user) => (
-                        <tr class="group">
-                          <td class="pb-2 font-bold group-first:pt-2">{user.username}</td>
-                          <td class="pb-2 text-indigo-200 group-first:pt-2">{user.anonymousName}</td>
-                          <td class="pb-2 text-right group-first:pt-2">{user.renameCounter}</td>
-                        </tr>
-                      )}
-                    </For>
-                  </tbody>
-                </table>
-              </BlurrySection>
-            </InnerLayout>
-            <InnerLayout>
-              <BlurrySection section="results-leaderboard">
-                <SectionHeading>lead3rboard</SectionHeading>
-                <div class="grid gap-4">
-                  <For each={data.sideQuestProgress}>
-                    {(progress) => (
-                      <div class="grid grid-rows-[auto_20px] gap-1">
-                        <p class="font-bold text-indigo-200">{progress.username}</p>
-                        <LeaderboardCanvas progress={progress.progress} times={data.times} />
-                      </div>
-                    )}
-                  </For>
-                  <div class="-mt-4 h-8">
-                    <LeaderboardCanvasMetadata times={data.times} />
-                  </div>
-                </div>
-              </BlurrySection>
-            </InnerLayout>
-            <InnerLayout>
-              <SectionHeading>...</SectionHeading>
-            </InnerLayout>
+            <UsernameResult usernames={data.mostPerfectUsernames} />
+            <LeaderboardResult sideQuestProgress={data.sideQuestProgress} times={data.times} />
+            <ProjectResult place="third" project={data.projects[2]!} />
+            <ProjectResult place="second" project={data.projects[1]!} />
+            <ProjectResult place="first" project={data.projects[0]!} />
           </Slideshow>
         )}
       </Show>

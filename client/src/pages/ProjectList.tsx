@@ -3,18 +3,7 @@ import { A } from '@solidjs/router';
 import { Layout } from '../components/Layout';
 import { query, trpc } from '../trpc';
 import { ButtonPrimary } from '../components/Button';
-
-const CommaSeparated: Component<{ list: string[] }> = (props) => {
-  const displayValue = () => {
-    const list = props.list.slice();
-    if (list.length === 1) return list[0];
-    if (list.length === 2) return `${list[0]} and ${list[1]}`;
-    const last = list.pop();
-    list.push(`and ${last}`);
-    return list.join(', ');
-  };
-  return <div>{displayValue()}</div>;
-};
+import { commaSeparatedList } from '../util';
 
 export function ProjectList() {
   const projects = query('listProjects', trpc.listProjects);
@@ -36,7 +25,7 @@ export function ProjectList() {
 
                     <div class="flex items-center gap-2">
                       <span class="text-indigo-300">a project by: </span>
-                      <CommaSeparated list={[project.createdBy, ...project.contributors]} />
+                      <div>{commaSeparatedList([project.createdBy, ...project.contributors])}</div>
                     </div>
                   </div>
                 </A>
