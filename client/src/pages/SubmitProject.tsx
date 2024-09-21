@@ -1,10 +1,10 @@
 import { Show, For, createSignal, createEffect } from 'solid-js';
-import { Layout } from '../../components/Layout';
-import { SectionHeading, Title } from '../../components/Text';
-import { mutate, query, trpc } from '../../trpc';
-import { Input, TextArea } from '../../components/Input';
-import { ButtonPrimary } from '../../components/Button';
 import { useNavigate } from '@solidjs/router';
+import { Layout } from '../components/Layout';
+import { SectionHeading, Title } from '../components/Text';
+import { mutate, query, trpc } from '../trpc';
+import { Input, TextArea } from '../components/Input';
+import { ButtonPrimary } from '../components/Button';
 
 const projectDescriptionPlaceholder = `# overview
 

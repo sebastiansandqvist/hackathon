@@ -9,16 +9,16 @@ import {
   Switch,
   type Component,
   type JSX,
-  type Signal,
 } from 'solid-js';
-import { Dots, InnerLayout, Layout } from '../../components/Layout';
+import { Dots, InnerLayout } from '../../components/Layout';
 import { SectionHeading, Title, Uppercase } from '../../components/Text';
 import { query, trpc, type RouterOutput } from '../../trpc';
-import { autoAnimate, useAutoAnimate } from 'solid-auto-animate';
 import { Transition } from 'solid-transition-group';
 import { BlurrySection } from '../../components/BlurrySection';
 import { LeaderboardCanvas, LeaderboardCanvasMetadata } from '../Home/components/Leaderboard';
 import { commaSeparatedList } from '../../util';
+import { A } from '@solidjs/router';
+import { ButtonPrimary } from '../../components/Button';
 
 const ProjectResult: Component<{
   place: 'first' | 'second' | 'third';
@@ -32,10 +32,19 @@ const ProjectResult: Component<{
         </Uppercase>
       </BlurrySection>
       <BlurrySection section={`results-project-${props.project.id}`}>
-        <SectionHeading>{props.project.name}</SectionHeading>
-        <p class="text-indigo-200">
-          congrats, <strong>{commaSeparatedList([props.project.createdBy, ...props.project.contributors])}</strong>!
-        </p>
+        <div class="grid gap-4">
+          <SectionHeading>{props.project.name}</SectionHeading>
+          <p class="text-indigo-200">
+            congrats, <strong>{commaSeparatedList([props.project.createdBy, ...props.project.contributors])}</strong>!
+          </p>
+          <Show when={props.place === 'first'}>
+            <A href={`/projects/${props.project.id}`}>
+              <ButtonPrimary>
+                view project <span class="font-dot not-italic">&gt;</span>
+              </ButtonPrimary>
+            </A>
+          </Show>
+        </div>
       </BlurrySection>
     </section>
   </InnerLayout>
