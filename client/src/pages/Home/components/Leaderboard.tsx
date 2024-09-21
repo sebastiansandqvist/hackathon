@@ -56,7 +56,7 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
     ctx.fillStyle = '#020617';
     for (const category of categories) {
       for (const difficulty of difficultyLevels) {
-        const isoDate = props.progress[category][difficulty];
+        const isoDate = props.progress[category]?.[difficulty];
         if (!isoDate) continue;
         const timestamp = new Date(isoDate).getTime();
         const percent = Math.abs(timestamp - hackathonStart) / range;
@@ -73,7 +73,7 @@ export const LeaderboardCanvas: Component<{ progress: Progress; times: Times }> 
       ctx.translate(-fontWidth / 2, 0);
       for (const category of categories) {
         for (const difficulty of difficultyLevels) {
-          const isoDate = props.progress[category][difficulty];
+          const isoDate = props.progress[category]?.[difficulty];
           if (!isoDate) continue;
           const timestamp = new Date(isoDate).getTime();
           const percent = Math.abs(timestamp - hackathonStart) / range;
