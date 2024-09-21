@@ -32,6 +32,10 @@ export const ButtonPrimary: Component<JSX.ButtonHTMLAttributes<HTMLButtonElement
   <button
     {...props}
     class="h-fit cursor-pointer whitespace-nowrap border border-indigo-500/50 bg-indigo-700/50 font-bold italic text-white transition hover:border-indigo-500"
+    classList={{
+      'disabled:cursor-default disabled:border-indigo-500/30 disabled:bg-indigo-800/25 disabled:text-white/75':
+        props.disabled,
+    }}
   >
     <CanvasGridBg>
       <div class="py-0.5 px-2">{props.children}</div>

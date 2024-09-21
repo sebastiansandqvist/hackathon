@@ -33,6 +33,9 @@ export function RerollAnonymousNameButton() {
 export function AuthForm() {
   const [username, setUsername] = createSignal('');
   const [password, setPassword] = createSignal('');
+  const bitsAmount = 8;
+  const randomNumber = Math.floor(Math.random() * 50 + 50);
+  const [bitState, setBitState] = createSignal(Array.from({ length: bitsAmount }, () => false));
   const authenticate = mutate(trpc.authenticate, {
     onError(err: Error) {
       alert(err.message ?? 'Unable to authenticate');
@@ -41,6 +44,14 @@ export function AuthForm() {
       invalidate('status');
     },
   });
+  const bitStateNumber = () =>
+    parseInt(
+      bitState()
+        .map((bit) => (bit ? '1' : '0'))
+        .join(''),
+      2,
+    );
+  const bitsMatchNumber = () => bitStateNumber() === randomNumber;
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
@@ -49,26 +60,51 @@ export function AuthForm() {
 
   return (
     <div class="grid">
-      <h2 class="font-pixel text-2xl leading-loose">sign in / up</h2>
-      <form onSubmit={handleSubmit} class="flex flex-wrap gap-4">
-        <Input
-          class="w-36"
-          type="text"
-          placeholder="first name"
-          disabled={authenticate.isPending}
-          value={username()}
-          onInput={(e) => setUsername(e.currentTarget.value.toLowerCase())}
-        />
-        <Input
-          class="w-64"
-          type="password"
-          placeholder="a password you'll remember"
-          disabled={authenticate.isPending}
-          value={password()}
-          onInput={(e) => setPassword(e.currentTarget.value)}
-        />
-        <ButtonPrimary type="submit" disabled={authenticate.isPending}>
-          connect
+      <h2 class="font-pixel text-2xl leading-loose">sign up</h2>
+      <form onSubmit={handleSubmit} class="grid gap-4">
+        <div class="flex flex-wrap gap-4">
+          <Input
+            class="w-36"
+            type="text"
+            placeholder="first name"
+            disabled={authenticate.isPending}
+            value={username()}
+            onInput={(e) => setUsername(e.currentTarget.value.toLowerCase())}
+          />
+          <Input
+            class="w-64"
+            type="password"
+            placeholder="a password you'll remember"
+            disabled={authenticate.isPending}
+            value={password()}
+            onInput={(e) => setPassword(e.currentTarget.value)}
+          />
+        </div>
+        <p>
+          Enter <b>{randomNumber}</b> to prove you are a hacker:
+        </p>
+        <div class="flex items-center gap-2">
+          {bitState().map((bit, i) => (
+            <input
+              class="h-4 w-4"
+              type="checkbox"
+              disabled={authenticate.isPending}
+              checked={bit}
+              onChange={(e) => {
+                setBitState((prev) => {
+                  const next = [...prev];
+                  next[i] = e.currentTarget.checked;
+                  return next;
+                });
+              }}
+            />
+          ))}
+          <p>
+            = <b>{bitStateNumber()}</b>{' '}
+          </p>
+        </div>
+        <ButtonPrimary type="submit" disabled={!bitsMatchNumber() || authenticate.isPending}>
+          submit
         </ButtonPrimary>
       </form>
     </div>

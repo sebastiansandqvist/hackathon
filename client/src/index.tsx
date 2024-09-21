@@ -26,6 +26,7 @@ render(
     <QueryClientProvider client={queryClient}>
       <Router>
         <Route path="/" component={Home} />
+        <Route path="/invitation" component={Invitation} />
         <Route path="/algorithms" component={Algorithms} />
         <Route path="/forensics" component={Forensics} />
         <Route path="/graphics" component={Graphics} />
