@@ -1,6 +1,6 @@
 import type { ParentComponent } from 'solid-js';
 
-const Dots: ParentComponent = (props) => {
+export const Dots: ParentComponent = (props) => {
   return (
     <div class="bg-dots stack min-h-full">
       <div class="pointer-events-none flex w-full items-center justify-center bg-slate-950 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
@@ -8,6 +8,10 @@ const Dots: ParentComponent = (props) => {
     </div>
   );
 };
+
+export const InnerLayout: ParentComponent = (props) => (
+  <main class="mx-auto flex min-h-full max-w-4xl flex-col gap-12 px-12">{props.children}</main>
+);
 
 export const Layout: ParentComponent = (props) => (
   <Dots>

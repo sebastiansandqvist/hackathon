@@ -59,7 +59,7 @@ export const authRouter = router({
         renameCounter: 0,
         hintDeductions: 0,
         sideQuests: {
-          algorithms: { easy: null, hard: null, bigboy: null },
+          algorithms: { easy: null, hard: null },
           forensics: { easy: null, hard: null },
           graphics: { easy: null, hard: null },
           hacking: { easy: null, hard: null },

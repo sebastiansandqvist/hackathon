@@ -6,8 +6,7 @@ export type User = {
   sessions: { id: string; created: number }[];
   hintDeductions: number;
   sideQuests: {
-    // idea is that this will be a huge file that only an efficient algorithm and language can handle
-    algorithms: { easy: number | null; hard: number | null; bigboy: number | null };
+    algorithms: { easy: number | null; hard: number | null };
     forensics: { easy: number | null; hard: number | null };
     graphics: { easy: number | null; hard: number | null };
     hacking: { easy: number | null; hard: number | null };

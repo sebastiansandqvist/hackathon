@@ -33,7 +33,7 @@ try {
         hintDeductions: 0,
         sessions: [],
         sideQuests: {
-          algorithms: { easy: null, hard: null, bigboy: null },
+          algorithms: { easy: null, hard: null },
           forensics: { easy: null, hard: null },
           graphics: { easy: null, hard: null },
           hacking: { easy: null, hard: null },

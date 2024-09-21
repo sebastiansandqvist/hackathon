@@ -209,8 +209,6 @@ export const hackathonRouter = router({
         return bPoints - aPoints;
       });
 
-    const bigBoys = db.users.filter((user) => user.sideQuests.algorithms.bigboy).map((user) => user.username);
-
     const projects = db.projects.map((project) => ({
       ...project,
       createdBy: db.users.find((user) => user.id === project.createdBy)?.username ?? '???',
@@ -227,7 +225,13 @@ export const hackathonRouter = router({
       ),
     }));
 
-    return { mostPerfectUsernames, mostMessageUpdates, sideQuestProgress, bigBoys, projects };
+    return {
+      times: db.times,
+      mostPerfectUsernames,
+      mostMessageUpdates,
+      sideQuestProgress,
+      projects,
+    };
   }),
   loadSubmitProjectPage: authedProcedure.query(({ ctx }) => {
     const result = {
