@@ -225,15 +225,17 @@ export function Home() {
               logistics
             </Uppercase>
             <ol class="grid list-outside list-decimal gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
-              <li>no obligation to stay in the house, but all are welcome to!</li>
+              <li>bring your own laptop</li>
+              <li>visit and leave the house as you please</li>
               <li>
-                if you're sleeping over, bring whatever you'll need to be comfortable. pillows, blankets, etc. we'll
-                provide cots and mattresses.
+                feel free to spend nights here
+                <ul>
+                  {' '}
+                  <li class="text-indigo-300">(we have air matresses, couches, and spare rooms!)</li>
+                </ul>
               </li>
-              <li>we'll probably take a climbing break, so if you're into that, bring your gear!</li>
-              <li>food: tbd</li>
-              <li>wifi password: ...</li>
-              <li>address: ...</li>
+              <li>we'll probably take climbing breaks</li>
+              <li>food tbd</li>
             </ol>
           </BlurrySection>
           <BlurrySection section="side quest rules">
@@ -241,6 +243,8 @@ export function Home() {
               side quests
             </Uppercase>
             <ol class="grid list-outside list-decimal gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
+              <li>optional puzzles that include logic, programming, and hacking</li>
+              <li>similar to advent of code and capture the flag problems</li>
               <li>each easy side quest is worth 1 point.</li>
               <li>each hard side quest is worth 2 points.</li>
               <li>these points have a separate prize pool. they do not impact your hackathon project score.</li>
