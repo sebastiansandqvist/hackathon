@@ -14,11 +14,11 @@ export function EditMessageButton() {
   });
 
   const handleClick = async () => {
-    const input = prompt('enter password');
+    const input = prompt('enter access credential');
     if (!input) return;
 
-    const password = 'supersecretlol';
-    if (input !== password) {
+    const accessCredential = 'supersecretlol'; // password
+    if (input !== accessCredential) {
       return flashMessage('ACCESS DENIED', 'red');
     }
 
