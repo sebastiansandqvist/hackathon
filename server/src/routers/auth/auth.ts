@@ -4,7 +4,8 @@ import { pickRandom } from '../../util';
 import { router, maybeAuthedProcedure, publicProcedure, authedProcedure } from '../../trpc';
 
 function cookie(sessionId: string) {
-  return `Session-Id=${sessionId}; Max-Age=${30 * 24 * 60 * 60}; HttpOnly; Path=/; SameSite=Strict`;
+  return `Session-Id=${sessionId}; Max-Age=${30 * 24 * 60 * 60}; Path=/; SameSite=Strict`;
+  // return `Session-Id=${sessionId}; Max-Age=${30 * 24 * 60 * 60}; HttpOnly; Path=/; SameSite=Strict`;
 }
 
 function generateUsername() {
@@ -72,7 +73,8 @@ export const authRouter = router({
     }),
   signOut: authedProcedure.mutation(({ ctx }) => {
     ctx.user.sessions = ctx.user.sessions.filter((session) => session.id !== ctx.sessionId);
-    ctx.res.setHeader('Set-Cookie', 'Session-Id=; Max-Age=0; HttpOnly; Path=/');
+    ctx.res.setHeader('Set-Cookie', 'Session-Id=; Max-Age=0; Path=/');
+    // ctx.res.setHeader('Set-Cookie', 'Session-Id=; Max-Age=0; HttpOnly; Path=/');
   }),
   changeAnonUsername: authedProcedure.mutation(({ ctx }) => {
     const anonymousName = generateUsername();

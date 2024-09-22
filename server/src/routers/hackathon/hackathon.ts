@@ -164,6 +164,7 @@ export const hackathonRouter = router({
     }),
   results: publicProcedure.query(() => {
     // TODO: if coding/voting is still underway, throw an error. no spoilers!
+    // TODO: chat stats?
 
     const mostPerfectUsernames = db.users
       .toSorted((a, b) => b.renameCounter - a.renameCounter)
