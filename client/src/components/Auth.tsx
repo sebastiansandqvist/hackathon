@@ -58,6 +58,8 @@ export function AuthForm() {
     authenticate.mutate({ username: username(), password: password() });
   };
 
+  const isSubmitDisabled = () => !bitsMatchNumber() || authenticate.isPending || !username() || !password();
+
   return (
     <div class="grid">
       <h2 class="font-pixel text-2xl leading-loose">sign up</h2>
@@ -86,7 +88,7 @@ export function AuthForm() {
         <div class="flex items-center gap-2">
           {bitState().map((bit, i) => (
             <input
-              class="h-4 w-4"
+              class="h-4 w-4 accent-indigo-500"
               type="checkbox"
               disabled={authenticate.isPending}
               checked={bit}
@@ -103,7 +105,7 @@ export function AuthForm() {
             = <b>{bitStateNumber()}</b>{' '}
           </p>
         </div>
-        <ButtonPrimary type="submit" disabled={!bitsMatchNumber() || authenticate.isPending}>
+        <ButtonPrimary type="submit" disabled={isSubmitDisabled()}>
           submit
         </ButtonPrimary>
       </form>
@@ -112,7 +114,7 @@ export function AuthForm() {
 }
 
 export const Authenticated: Component<{
-  children: (status: RouterOutput['status'] & { isAuthed: true }) => JSX.Element;
+  children: JSX.Element | ((status: RouterOutput['status'] & { isAuthed: true }) => JSX.Element);
 }> = (props) => {
   const auth = query('status', trpc.status);
 
@@ -123,7 +125,7 @@ export const Authenticated: Component<{
       </Match>
       <Match when={auth.isLoading}>Loading...</Match>
       <Match when={auth.data?.isAuthed && auth.data} keyed>
-        {(data) => props.children(data)}
+        {(data) => (typeof props.children === 'function' ? props.children(data) : props.children)}
       </Match>
     </Switch>
   );

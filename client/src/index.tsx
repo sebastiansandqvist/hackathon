@@ -2,7 +2,9 @@
 import { render } from 'solid-js/web';
 import { Router, Route } from '@solidjs/router';
 import { QueryClientProvider } from '@tanstack/solid-query';
+import { FlashMessageContainer, HomepageMessageFlasher } from './components/FlashMessage';
 import { Home } from './pages/Home';
+import { Invitation } from './pages/Invitation';
 import { NotFound } from './pages/NotFound';
 import { Logic } from './pages/sidequests/Logic';
 import { Puzzles } from './pages/sidequests/Puzzles';
@@ -19,13 +21,13 @@ import { Chat } from './chat/Chat';
 import { queryClient } from './trpc';
 
 import './main.css';
-import { FlashMessageContainer, HomepageMessageFlasher } from './components/FlashMessage';
 
 render(
   () => (
     <QueryClientProvider client={queryClient}>
       <Router>
         <Route path="/" component={Home} />
+        <Route path="/invitation" component={Invitation} />
         <Route path="/algorithms" component={Algorithms} />
         <Route path="/forensics" component={Forensics} />
         <Route path="/graphics" component={Graphics} />
