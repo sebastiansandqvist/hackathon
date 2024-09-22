@@ -1,4 +1,4 @@
-import { type Component, JSX, createSignal, createEffect, onCleanup, For, Index } from 'solid-js';
+import { type Component, type JSX, createSignal, createEffect, onCleanup, For, Index } from 'solid-js';
 
 export const Slideshow: Component<{
   children: JSX.Element[];
@@ -35,7 +35,7 @@ export const Slideshow: Component<{
   return (
     <>
       <div
-        class="flex snap-x snap-mandatory overflow-x-auto"
+        class="no-scrollbar flex snap-x snap-mandatory overflow-x-auto"
         onScrollEnd={(e) => {
           const el = e.currentTarget;
           setIndex(Math.round(el.scrollLeft / window.innerWidth));
@@ -56,7 +56,7 @@ export const Slideshow: Component<{
           )}
         </For>
       </div>
-      <nav class="fixed right-0 bottom-4 left-0 flex items-center justify-center gap-6">
+      <nav class="fixed right-0 bottom-6 left-0 flex items-center justify-center gap-6">
         <button
           class="font-dot p-2 text-5xl text-indigo-100 transition enabled:cursor-pointer enabled:hover:text-white disabled:text-indigo-300/50"
           disabled={index() === 0}

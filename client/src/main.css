@@ -113,6 +113,10 @@ body,
   animation: flash 2s ease-out forwards;
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* highlight-js */
 
 pre code {
