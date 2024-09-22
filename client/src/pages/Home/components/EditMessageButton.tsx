@@ -1,6 +1,5 @@
-import { mutate, trpc, invalidate } from '../../../trpc';
-import { ButtonSecondary, ButtonSecondaryAlt } from '../../../components/Button';
-import { flashMessage } from '../../../components/FlashMessage';
+import { mutate, trpc, invalidate } from '~/trpc';
+import { ButtonSecondary, ButtonSecondaryAlt, flashMessage } from '~/components';
 
 export function EditMessageButton() {
   const editMessage = mutate(trpc.hackThePublicMessage, {

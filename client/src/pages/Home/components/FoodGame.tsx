@@ -1,7 +1,6 @@
 import { createSignal, For, Show, type Component } from 'solid-js';
-import { invalidate, mutate, trpc } from '../../../trpc';
-import { Button, ButtonPrimary } from '../../../components/Button';
-import { Input } from '../../../components/Input';
+import { invalidate, mutate, trpc } from '~/trpc';
+import { Button, ButtonPrimary, Input } from '~/components';
 
 function NewFoodGameButton() {
   const update = mutate(trpc.updateFoodGame, {

@@ -1,10 +1,7 @@
 import { Show } from 'solid-js';
 import { A } from '@solidjs/router';
-import { Layout } from '../../components/Layout';
-import { ButtonPrimary } from '../../components/Button';
-import { Authenticated, Unauthenticated } from '../../components/Auth';
+import { Layout, ButtonPrimary, Authenticated, Unauthenticated, Title, Uppercase } from '~/components';
 import { AnswerForm } from './components/AnswerForm';
-import { Title, Uppercase } from '../../components/Text';
 
 function EasyLogic() {
   return (

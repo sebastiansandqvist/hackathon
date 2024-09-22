@@ -1,5 +1,5 @@
 import { Switch, Match } from 'solid-js';
-import { Authenticated } from '../../../components/Auth';
+import { Authenticated } from '~/components';
 
 export function SideQuestPointCount({
   quest,

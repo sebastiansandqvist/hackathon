@@ -1,11 +1,8 @@
 import { createSignal, For, Show } from 'solid-js';
 import { useNavigate } from '@solidjs/router';
-import { ButtonPrimary } from '../../components/Button';
-import { Layout } from '../../components/Layout';
-import { SectionHeading, Title, Uppercase } from '../../components/Text';
-import { mutate, query, trpc } from '../../trpc';
+import { ButtonPrimary, flashMessage, Layout, SectionHeading, Title, Uppercase } from '~/components';
+import { mutate, query, trpc } from '~/trpc';
 import { Sortable } from './components/Sortable';
-import { flashMessage } from '../../components/FlashMessage';
 
 function shuffle<T>(items: T[]) {
   const itemsCopy = [...items];

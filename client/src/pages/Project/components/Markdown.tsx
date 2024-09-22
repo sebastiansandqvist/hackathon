@@ -1,6 +1,6 @@
 import { Show, splitProps, type Component, type JSX, type Accessor } from 'solid-js';
+import { SectionHeading, Uppercase } from '~/components';
 import { Highlight } from './Highlight';
-import { SectionHeading, Uppercase } from '../../../components/Text';
 
 function sanitizeUrl(input?: string) {
   if (!input) {

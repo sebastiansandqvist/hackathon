@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    // Enable latest features
+    // enable latest features
     "lib": ["ESNext", "DOM"],
     "target": "ESNext",
     "module": "ESNext",
@@ -8,13 +8,13 @@
     "jsx": "preserve",
     "allowJs": true,
 
-    // Bundler mode
+    // bundler mode
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
 
-    // Best practices
+    // best practices
     "strict": true,
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
@@ -23,9 +23,14 @@
     "isolatedModules": true,
     "noPropertyAccessFromIndexSignature": true,
 
-    // SolidJS/Vite
+    // solidjs/vite
     "jsxImportSource": "solid-js",
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+
+    // path aliases
+    "paths": {
+      "~/*": ["./src/*"]
+    }
   },
   "include": ["src", "vite.config.ts"]
 }

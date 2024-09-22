@@ -1,6 +1,6 @@
 import { type Component } from 'solid-js';
-import { Canvas } from '../../../components/Canvas';
-import type { RouterOutput } from '../../../trpc';
+import { Canvas } from '~/components';
+import type { RouterOutput } from '~/trpc';
 
 type Progress = RouterOutput['homepage']['sideQuestProgress'][0]['progress'];
 type Times = RouterOutput['homepage']['times'];

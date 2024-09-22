@@ -1,9 +1,8 @@
 import { For, Show } from 'solid-js';
 import { A } from '@solidjs/router';
-import { Layout } from '../components/Layout';
-import { query, trpc } from '../trpc';
-import { ButtonPrimary } from '../components/Button';
-import { commaSeparatedList } from '../util';
+import { Layout, ButtonPrimary } from '~/components';
+import { query, trpc } from '~/trpc';
+import { commaSeparatedList } from '~/util';
 
 export function ProjectList() {
   const projects = query('listProjects', trpc.listProjects);

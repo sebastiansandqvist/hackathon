@@ -2,13 +2,10 @@ import { createSignal, For, Match, Show, Switch, type Component } from 'solid-js
 import { A } from '@solidjs/router';
 import { useAutoAnimate } from 'solid-auto-animate';
 import { Transition } from 'solid-transition-group';
-import { Dots, InnerLayout } from '../../components/Layout';
-import { SectionHeading, Title, Uppercase } from '../../components/Text';
-import { query, trpc, type RouterOutput } from '../../trpc';
-import { BlurrySection } from '../../components/BlurrySection';
+import { ButtonPrimary, BlurrySection, Dots, InnerLayout, SectionHeading, Title, Uppercase } from '~/components';
+import { query, trpc, type RouterOutput } from '~/trpc';
+import { commaSeparatedList } from '~/util';
 import { LeaderboardCanvas, LeaderboardCanvasMetadata } from '../Home/components/Leaderboard';
-import { commaSeparatedList } from '../../util';
-import { ButtonPrimary } from '../../components/Button';
 import { Slideshow } from './components/Slideshow';
 
 export function Results() {

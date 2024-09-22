@@ -1,9 +1,8 @@
 import { For, Show } from 'solid-js';
 import { A } from '@solidjs/router';
-import { query, trpc } from '../../trpc';
-import { Countdown } from './components/Countdown';
-import { BlurrySection } from '../../components/BlurrySection';
+import { query, trpc } from '~/trpc';
 import {
+  BlurrySection,
   Authenticated,
   AuthForm,
   NotTv,
@@ -11,15 +10,17 @@ import {
   SignOutButton,
   TvOnly,
   Unauthenticated,
-} from '../../components/Auth';
-import { CanvasGridBg } from '../../components/CanvasGridBg';
+  CanvasGridBg,
+  Layout,
+  SectionHeading,
+  Uppercase,
+} from '~/components';
+import { Countdown } from './components/Countdown';
 import { EditMessageImageButton, EditMessageButton } from './components/EditMessageButton';
-import { Layout } from '../../components/Layout';
 import { SideQuestPointCount } from './components/SideQuestPointCount';
 import { TimelineDate } from './components/TimelineDate';
 import { FoodGame } from './components/FoodGame';
 import { LeaderboardCanvas, LeaderboardCanvasMetadata } from './components/Leaderboard';
-import { SectionHeading, Uppercase } from '../../components/Text';
 
 export function Home() {
   const home = query('homepage', trpc.homepage, {

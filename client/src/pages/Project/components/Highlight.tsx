@@ -1,6 +1,5 @@
 import highlightJs from 'highlight.js';
-import { createMemo, splitProps } from 'solid-js';
-import type { Component, JSX } from 'solid-js';
+import { createMemo, splitProps, type Component, type JSX } from 'solid-js';
 
 type Props = JSX.HTMLAttributes<HTMLElement> & {
   autoDetect?: boolean;

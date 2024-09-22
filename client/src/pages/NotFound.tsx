@@ -1,5 +1,4 @@
-import { CanvasGridBg } from '../components/CanvasGridBg';
-import { Layout } from '../components/Layout';
+import { CanvasGridBg, Layout } from '~/components';
 
 export function NotFound() {
   return (

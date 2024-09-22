@@ -1,12 +1,16 @@
 import { Show } from 'solid-js';
 import { A } from '@solidjs/router';
-import { Layout } from '../../components/Layout';
-import { ButtonPrimary } from '../../components/Button';
-import { CanvasGridBg } from '../../components/CanvasGridBg';
-import { Authenticated, Unauthenticated } from '../../components/Auth';
+import {
+  Layout,
+  ButtonPrimary,
+  CanvasGridBg,
+  Authenticated,
+  Unauthenticated,
+  Title,
+  Uppercase,
+  CopyButton,
+} from '~/components';
 import { AnswerForm } from './components/AnswerForm';
-import { Title, Uppercase } from '../../components/Text';
-import { CopyButton } from '../../components/CopyButton';
 
 function EasyPuzzle() {
   return (

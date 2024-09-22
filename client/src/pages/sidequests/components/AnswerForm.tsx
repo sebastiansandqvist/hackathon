@@ -1,9 +1,7 @@
 import { createSignal, Show, type Component } from 'solid-js';
 import { useNavigate } from '@solidjs/router';
-import { ButtonPrimary } from '../../../components/Button';
-import { mutate, trpc, invalidate } from '../../../trpc';
-import { Input, MultiCharInput } from '../../../components/Input';
-import { flashMessage } from '../../../components/FlashMessage';
+import { ButtonPrimary, Input, MultiCharInput, flashMessage } from '~/components';
+import { mutate, trpc, invalidate } from '~/trpc';
 
 export const AnswerForm: Component<{
   category: 'algorithms' | 'forensics' | 'graphics' | 'hacking' | 'logic' | 'puzzles';
