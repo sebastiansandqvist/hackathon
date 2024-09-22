@@ -8,9 +8,6 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "engines": {
-    "node": ">=22.0.0"
-  },
   "dependencies": {
     "@formkit/auto-animate": "0.8.2",
     "@solid-primitives/autofocus": "0.0.111",
