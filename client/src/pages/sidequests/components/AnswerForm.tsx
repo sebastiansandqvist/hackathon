@@ -1,7 +1,7 @@
 import { createSignal, Show, type Component } from 'solid-js';
+import { useNavigate } from '@solidjs/router';
 import { ButtonPrimary } from '../../../components/Button';
 import { mutate, trpc, invalidate } from '../../../trpc';
-import { useNavigate } from '@solidjs/router';
 import { Input, MultiCharInput } from '../../../components/Input';
 import { flashMessage } from '../../../components/FlashMessage';
 

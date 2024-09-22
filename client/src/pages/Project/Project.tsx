@@ -1,7 +1,7 @@
 import { For, Match, Show, Switch, type Component } from 'solid-js';
 import { A, useParams } from '@solidjs/router';
-import { Layout } from '../../components/Layout';
 import { query, trpc, type RouterOutput } from '../../trpc';
+import { Layout } from '../../components/Layout';
 import { ButtonPrimary } from '../../components/Button';
 import { Markdown } from './components/Markdown';
 import { Title } from '../../components/Text';

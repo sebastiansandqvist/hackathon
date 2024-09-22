@@ -1,4 +1,4 @@
-import { For, Show, type Component } from 'solid-js';
+import { For, Show } from 'solid-js';
 import { A } from '@solidjs/router';
 import { Layout } from '../components/Layout';
 import { query, trpc } from '../trpc';

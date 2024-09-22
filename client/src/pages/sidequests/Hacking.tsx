@@ -1,8 +1,8 @@
+import { Show } from 'solid-js';
 import { A } from '@solidjs/router';
 import { Layout } from '../../components/Layout';
 import { ButtonPrimary } from '../../components/Button';
 import { Authenticated } from '../../components/Auth';
-import { Show } from 'solid-js';
 import { Title, Uppercase } from '../../components/Text';
 
 export function Hacking() {

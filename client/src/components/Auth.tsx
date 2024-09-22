@@ -1,15 +1,6 @@
-import {
-  createEffect,
-  createSignal,
-  Match,
-  Show,
-  Switch,
-  type Component,
-  type JSX,
-  type ParentComponent,
-} from 'solid-js';
+import { createSignal, Match, Show, Switch, type Component, type JSX, type ParentComponent } from 'solid-js';
 import { mutate, trpc, invalidate, query, type RouterOutput } from '../trpc';
-import { Button, ButtonPrimary, ButtonSecondary } from './Button';
+import { Button, ButtonPrimary } from './Button';
 import { Input } from './Input';
 
 export function SignOutButton() {

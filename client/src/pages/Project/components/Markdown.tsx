@@ -1,5 +1,4 @@
-import type { Component, JSX, Accessor } from 'solid-js';
-import { Show, splitProps } from 'solid-js';
+import { Show, splitProps, type Component, type JSX, type Accessor } from 'solid-js';
 import { Highlight } from './Highlight';
 import { SectionHeading, Uppercase } from '../../../components/Text';
 
