@@ -19,7 +19,7 @@ export const SectionHeading: ParentComponent<{ class?: string; as?: 'h1' | 'h2' 
 ) => (
   <Dynamic
     component={props.as ?? 'h2'}
-    class="font-pixel text-2xl leading-loose"
+    class="font-pixel flex items-center text-2xl leading-loose"
     classList={{ [props.class ?? '']: true }}
   >
     {props.children}
