@@ -1,175 +1,43 @@
-import {
-  createEffect,
-  createSignal,
-  For,
-  Index,
-  Match,
-  onCleanup,
-  Show,
-  Switch,
-  type Component,
-  type JSX,
-} from 'solid-js';
+import { createSignal, For, Match, Show, Switch, type Component } from 'solid-js';
+import { A } from '@solidjs/router';
+import { useAutoAnimate } from 'solid-auto-animate';
+import { Transition } from 'solid-transition-group';
 import { Dots, InnerLayout } from '../../components/Layout';
 import { SectionHeading, Title, Uppercase } from '../../components/Text';
 import { query, trpc, type RouterOutput } from '../../trpc';
-import { Transition } from 'solid-transition-group';
 import { BlurrySection } from '../../components/BlurrySection';
 import { LeaderboardCanvas, LeaderboardCanvasMetadata } from '../Home/components/Leaderboard';
 import { commaSeparatedList } from '../../util';
-import { A } from '@solidjs/router';
 import { ButtonPrimary } from '../../components/Button';
+import { Slideshow } from './components/Slideshow';
 
-const ProjectResult: Component<{
-  place: 'first' | 'second' | 'third';
-  project: RouterOutput['results']['projects'][number];
-}> = (props) => (
-  <InnerLayout>
-    <section class="grid gap-4">
-      <BlurrySection section={`results-project-${props.place}`}>
-        <Uppercase class="!text-indigo-200">
-          in {props.place} place with {props.project.votes.total} points...
-        </Uppercase>
-      </BlurrySection>
-      <BlurrySection section={`results-project-${props.project.id}`}>
-        <div class="grid gap-4">
-          <SectionHeading>{props.project.name}</SectionHeading>
-          <p class="text-indigo-200">
-            congrats, <strong>{commaSeparatedList([props.project.createdBy, ...props.project.contributors])}</strong>!
-          </p>
-          <Show when={props.place === 'first'}>
-            <A href={`/projects/${props.project.id}`}>
-              <ButtonPrimary>
-                view project <span class="font-dot not-italic">&gt;</span>
-              </ButtonPrimary>
-            </A>
-          </Show>
-        </div>
-      </BlurrySection>
-    </section>
-  </InnerLayout>
-);
-
-const LeaderboardResult: Component<{
-  sideQuestProgress: RouterOutput['results']['sideQuestProgress'];
-  times: RouterOutput['results']['times'];
-}> = (props) => (
-  <InnerLayout>
-    <SectionHeading>leaderboard</SectionHeading>
-    <div class="grid gap-4">
-      <For each={props.sideQuestProgress}>
-        {(progress) => (
-          <div class="grid grid-rows-[auto_20px] gap-1">
-            <p class="font-bold text-indigo-200">
-              {progress.username}{' '}
-              <span class="text-sm text-emerald-500">(+{progress.totalPointsBeforeDeductions})</span>
-              <Show when={progress.deductions}>
-                <>
-                  <span class="text-sm text-rose-500"> (-{progress.deductions})</span>
-                  <span class="text-sm text-indigo-300/75">
-                    {' '}
-                    = {progress.totalPointsBeforeDeductions - progress.deductions}
-                  </span>
-                </>
-              </Show>
-            </p>
-            <LeaderboardCanvas progress={progress.progress} times={props.times} />
-          </div>
-        )}
-      </For>
-      <div class="-mt-4 h-8">
-        <LeaderboardCanvasMetadata times={props.times} />
-      </div>
-    </div>
-  </InnerLayout>
-);
-
-const Slideshow: Component<{
-  children: JSX.Element[];
-  onSlideChange: (index: number) => void;
-}> = (props) => {
-  const [index, setIndex] = createSignal(0);
-  const elements = props.children.map(() => createSignal<HTMLElement>());
-
-  createEffect(() => {
-    const i = index();
-    props.onSlideChange(i);
-    const [element] = elements[i]!;
-    const el = element();
-    if (!el) return;
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
-  const handleArrowKey = (e: KeyboardEvent) => {
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      setIndex((i) => Math.max(i - 1, 0));
-    } else if (e.key === 'ArrowRight' || e.key === ' ') {
-      e.preventDefault();
-      setIndex((i) => Math.min(i + 1, props.children.length - 1));
-    }
-  };
-
-  window.addEventListener('keydown', handleArrowKey);
-
-  onCleanup(() => {
-    window.removeEventListener('keydown', handleArrowKey);
-  });
-
+export function Results() {
+  const results = query('results', trpc.results);
+  const [title, setTitle] = createSignal('Results');
   return (
-    <>
-      <div
-        class="flex snap-x snap-mandatory overflow-x-auto"
-        onScrollEnd={(e) => {
-          const el = e.currentTarget;
-          setIndex(Math.round(el.scrollLeft / window.innerWidth));
-          // TODO: make sure this doesn't interfere with the scrollIntoView
-        }}
-      >
-        <For each={props.children}>
-          {(slide, i) => (
-            <div
-              class="w-screen shrink-0 snap-center"
-              ref={(el) => {
-                const [, setElement] = elements[i()]!;
-                setElement(el);
-              }}
-            >
-              {slide}
-            </div>
-          )}
-        </For>
+    <Dots>
+      <div class="mx-auto max-w-4xl p-12">
+        <TitleWithTransition title={title} />
       </div>
-      <nav class="fixed right-0 bottom-4 left-0 flex items-center justify-center gap-4">
-        <button
-          class="font-dot p-2 text-5xl text-indigo-100 transition enabled:cursor-pointer enabled:hover:text-white disabled:text-indigo-300/50"
-          disabled={index() === 0}
-          onClick={() => setIndex((i) => i - 1)}
-        >
-          &lt;
-        </button>
-        <div class="flex items-center justify-center gap-1 pb-2">
-          <Index each={props.children}>
-            {(item, i) => (
-              <button
-                class="font-dot box-content h-1.5 w-1.5 grow-0 border border-solid border-slate-950 bg-indigo-300/50 transition enabled:cursor-pointer enabled:hover:bg-white disabled:border-indigo-100 disabled:bg-indigo-100"
-                disabled={index() === i}
-                onClick={() => setIndex(i)}
-              />
-            )}
-          </Index>
-        </div>
-        <button
-          class="font-dot p-2 text-5xl text-indigo-100 transition enabled:cursor-pointer enabled:hover:text-white disabled:text-indigo-300/50"
-          disabled={index() === props.children.length - 1}
-          onClick={() => setIndex((i) => i + 1)}
-        >
-          &gt
-        </button>
-      </nav>
-    </>
+      <Show when={results.data} keyed>
+        {(data) => (
+          <Slideshow
+            onSlideChange={(i) => {
+              const titles = ['Results', 'Side Quests', 'Projects', 'Projects', 'And the winner is'];
+              setTitle(titles[i]!);
+            }}
+          >
+            <UsernameResult usernames={data.mostPerfectUsernames} />
+            <LeaderboardResult sideQuestProgress={data.sideQuestProgress} times={data.times} />
+            <ProjectResult place="third" project={data.projects[2]!} />
+            <ProjectResult place="second" project={data.projects[1]!} />
+            <ProjectResult place="first" project={data.projects[0]!} />
+          </Slideshow>
+        )}
+      </Show>
+    </Dots>
   );
-};
+}
 
 const TitleWithTransition: Component<{ title: () => string }> = (props) => {
   return (
@@ -205,12 +73,90 @@ const TitleWithTransition: Component<{ title: () => string }> = (props) => {
   );
 };
 
+const ProjectResult: Component<{
+  place: 'first' | 'second' | 'third';
+  project: RouterOutput['results']['projects'][number];
+}> = (props) => (
+  <InnerLayout>
+    <section class="grid gap-6">
+      <BlurrySection section={`results-project-${props.place}`}>
+        <Uppercase class="!text-indigo-200">
+          in {props.place} place with {props.project.votes.total} points...
+        </Uppercase>
+      </BlurrySection>
+      <BlurrySection section={`results-project-${props.project.id}`}>
+        <div class="grid gap-6">
+          <SectionHeading>{props.project.name}</SectionHeading>
+          <p class="text-indigo-200">
+            congrats, <strong>{commaSeparatedList([props.project.createdBy, ...props.project.contributors])}</strong>!
+          </p>
+          <Show when={props.place === 'first'}>
+            <A href={`/projects/${props.project.id}`}>
+              <ButtonPrimary>
+                view project <span class="font-dot not-italic">&gt;</span>
+              </ButtonPrimary>
+            </A>
+          </Show>
+        </div>
+      </BlurrySection>
+    </section>
+  </InnerLayout>
+);
+
+const LeaderboardResult: Component<{
+  sideQuestProgress: RouterOutput['results']['sideQuestProgress'];
+  times: RouterOutput['results']['times'];
+}> = (props) => {
+  let parent: HTMLDivElement;
+  const defaultSlice = 3;
+  const [slice, setSlice] = createSignal(defaultSlice);
+  useAutoAnimate(() => parent!, { disrespectUserMotionPreference: true });
+  return (
+    <InnerLayout>
+      <SectionHeading>leaderboard</SectionHeading>
+      <div class="grid gap-6" ref={parent!}>
+        <For each={props.sideQuestProgress.slice(0, slice())}>
+          {(progress) => (
+            <div class="grid grid-rows-[auto_20px] gap-1">
+              <p class="text-xl font-bold text-indigo-200">
+                {progress.username}{' '}
+                <span class="text-sm text-emerald-500">+{progress.totalPointsBeforeDeductions}</span>
+                <Show when={progress.deductions}>
+                  <>
+                    <span class="text-sm text-rose-500"> - {progress.deductions}</span>
+                    <span class="text-sm text-indigo-300/75">
+                      {' '}
+                      = {progress.totalPointsBeforeDeductions - progress.deductions}
+                    </span>
+                  </>
+                </Show>
+              </p>
+              <LeaderboardCanvas progress={progress.progress} times={props.times} />
+            </div>
+          )}
+        </For>
+        <div class="-mt-4 h-8">
+          <LeaderboardCanvasMetadata times={props.times} />
+        </div>
+      </div>
+      <Show when={slice() === defaultSlice}>
+        <div>
+          <ButtonPrimary onClick={() => setSlice(100)}>show all</ButtonPrimary>
+        </div>
+      </Show>
+    </InnerLayout>
+  );
+};
+
 const UsernameResult: Component<{ usernames: RouterOutput['results']['mostPerfectUsernames'] }> = (props) => (
   <InnerLayout>
     <BlurrySection section="results-username-header">
-      <header class="grid gap-4">
+      <header class="grid gap-6">
         <Uppercase class="!text-indigo-200">with {props.usernames[0]?.renameCounter} rerolls...</Uppercase>
-        <p class="text-2xl">the most perfect username goes to...</p>
+        <p class="text-xl">
+          in the hunt for the perfect name, <br />
+          the award for most effort goes to...
+        </p>
         <BlurrySection section="results-username-winner">
           <section class="flex flex-wrap items-center gap-4">
             <p class="text-2xl font-bold">{props.usernames[0]?.username ?? '???'}!</p>
@@ -245,31 +191,3 @@ const UsernameResult: Component<{ usernames: RouterOutput['results']['mostPerfec
     </BlurrySection>
   </InnerLayout>
 );
-
-export function Results() {
-  const results = query('results', trpc.results);
-  const [title, setTitle] = createSignal('Results');
-  return (
-    <Dots>
-      <div class="mx-auto max-w-4xl p-12">
-        <TitleWithTransition title={title} />
-      </div>
-      <Show when={results.data} keyed>
-        {(data) => (
-          <Slideshow
-            onSlideChange={(i) => {
-              const titles = ['Results', 'Side Quests', 'Projects', 'Projects', 'And the winner is'];
-              setTitle(titles[i]!);
-            }}
-          >
-            <UsernameResult usernames={data.mostPerfectUsernames} />
-            <LeaderboardResult sideQuestProgress={data.sideQuestProgress} times={data.times} />
-            <ProjectResult place="third" project={data.projects[2]!} />
-            <ProjectResult place="second" project={data.projects[1]!} />
-            <ProjectResult place="first" project={data.projects[0]!} />
-          </Slideshow>
-        )}
-      </Show>
-    </Dots>
-  );
-}
