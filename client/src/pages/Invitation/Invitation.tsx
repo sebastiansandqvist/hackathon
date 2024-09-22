@@ -16,7 +16,11 @@ export function Invitation() {
         </div>
       </CanvasGridBg>
       <div>
-        <b>Hackathon</b> starting <b>Friday, October 18th evening</b> and ending <b>Sunday, October 20th day</b>
+        <p class="text-indigo-200">
+          <b class="text-white">hackathon</b> starting{' '}
+          <time class="font-bold text-white">Friday, October 18th evening</time> and ending{' '}
+          <time class="font-bold text-white">Sunday, October 20th day</time>
+        </p>
         <ul class="my-4 grid gap-4 sm:grid-cols-3">
           <li class="flex flex-col items-center gap-4 border border-indigo-300/50 p-4 backdrop-blur">
             <Hourglass class="h-12 w-12 text-indigo-300" />
