@@ -10,13 +10,13 @@ export function SideQuestPointCount({
     <Authenticated>
       {({ sideQuests }) => (
         <Switch>
-          <Match when={sideQuests[quest].hard}>
+          <Match when={sideQuests[quest]?.hard}>
             <span class="text-sm text-emerald-500">
               {' '}
               (+3 points) <strong>COMPLETE</strong>
             </span>
           </Match>
-          <Match when={sideQuests[quest].easy}>
+          <Match when={sideQuests[quest]?.easy}>
             <span class="text-sm text-sky-400"> (+1 point)</span>
           </Match>
         </Switch>
