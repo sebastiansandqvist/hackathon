@@ -80,7 +80,7 @@ export function Invitation() {
       <CanvasGridBg>
         <div class="p-4">
           <h1 class="font-pixel text-center text-2xl">
-            <GlitchText text="REGISTRATION OPENS 2024-11-11" />
+            <GlitchText text="REGISTRATION OPENS 2024-10-11" />
           </h1>
         </div>
       </CanvasGridBg>
