@@ -5,7 +5,7 @@ import { Transition } from 'solid-transition-group';
 import { ButtonPrimary, BlurrySection, Dots, InnerLayout, SectionHeading, Title, Uppercase } from '~/components';
 import { query, trpc, type RouterOutput } from '~/trpc';
 import { commaSeparatedList } from '~/util';
-import { LeaderboardCanvas, LeaderboardCanvasMetadata } from '../Home/components/Leaderboard';
+import { LeaderboardCanvas, LeaderboardCanvasMetadata } from '../Home/components';
 import { Slideshow } from './components/Slideshow';
 
 export function Results() {

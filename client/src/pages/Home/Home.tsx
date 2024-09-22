@@ -15,12 +15,16 @@ import {
   SectionHeading,
   Uppercase,
 } from '~/components';
-import { Countdown } from './components/Countdown';
-import { EditMessageImageButton, EditMessageButton } from './components/EditMessageButton';
-import { SideQuestPointCount } from './components/SideQuestPointCount';
-import { TimelineDate } from './components/TimelineDate';
-import { FoodGame } from './components/FoodGame';
-import { LeaderboardCanvas, LeaderboardCanvasMetadata } from './components/Leaderboard';
+import {
+  Countdown,
+  EditMessageImageButton,
+  EditMessageButton,
+  FoodGame,
+  LeaderboardCanvas,
+  LeaderboardCanvasMetadata,
+  SideQuestPointCount,
+  TimelineDate,
+} from './components';
 
 export function Home() {
   const home = query('homepage', trpc.homepage, {
