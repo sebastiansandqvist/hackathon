@@ -2,27 +2,27 @@
 
 @layer base {
   @font-face {
-    font-family: 'Barcode';
-    src: url(/fonts/barcode.ttf) format('truetype');
-    font-display: swap;
-  }
-
-  @font-face {
     font-family: 'Dot';
     src: url(/fonts/dot.ttf) format('truetype');
     font-display: swap;
+    -webkit-font-smoothing: none;
+    font-smooth: never;
   }
 
   @font-face {
     font-family: 'Quill';
     src: url(/fonts/quill.otf) format('opentype');
     font-display: swap;
+    -webkit-font-smoothing: none;
+    font-smooth: never;
   }
 
   @font-face {
     font-family: 'Pixel';
     src: url(/fonts/pixel.ttf) format('truetype');
     font-display: swap;
+    -webkit-font-smoothing: none;
+    font-smooth: never;
   }
 
   @font-face {
@@ -59,7 +59,6 @@
 }
 
 @theme {
-  --font-family-barcode: 'Barcode', 'monospace';
   --font-family-dot: 'Dot', 'sans-serif';
   --font-family-quill: 'Quill', 'cursive';
   --font-family-pixel: 'Pixel', 'monospace';
