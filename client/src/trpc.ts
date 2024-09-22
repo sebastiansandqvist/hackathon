@@ -1,35 +1,18 @@
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
-import {
-  createTRPCClient,
-  httpBatchLink,
-  loggerLink,
-  splitLink,
-  unstable_httpSubscriptionLink,
-  type Resolver,
-} from '@trpc/client';
+import { createTRPCClient, httpBatchLink, splitLink, unstable_httpSubscriptionLink, type Resolver } from '@trpc/client';
 import { createMutation, createQuery, QueryClient, type CreateMutationOptions } from '@tanstack/solid-query';
 import type { AppRouter } from '../../server/src/index';
 
 export type RouterInput = inferRouterInputs<AppRouter>;
 export type RouterOutput = inferRouterOutputs<AppRouter>;
 
-function getSessionId() {
-  return document.cookie.match(/(?:^|;\s*)Session-Id=([^;]*)/)?.[1] ?? '';
-}
-
 export const trpc = createTRPCClient<AppRouter>({
   links: [
-    loggerLink(),
     splitLink({
       condition: (operation) => operation.type === 'subscription',
       true: unstable_httpSubscriptionLink({
         url: 'http://localhost:3000',
-        eventSourceOptions: {
-          withCredentials: true,
-        },
-        connectionParams: () => ({
-          sessionId: getSessionId(),
-        }),
+        eventSourceOptions: { withCredentials: true },
       }),
       false: httpBatchLink({
         url: 'http://localhost:3000',

@@ -1,11 +1,9 @@
 import cors from 'cors';
 import { createHTTPServer } from '@trpc/server/adapters/standalone';
 import { createContext, merge } from './trpc';
-import { authRouter } from './routers/auth';
-import { hackathonRouter } from './routers/hackathon';
-import { sideQuestRouter } from './routers/sideQuests';
+import { authRouter, chatRouter, hackathonRouter, sideQuestRouter } from './routers';
 
-const appRouter = merge(authRouter, hackathonRouter, sideQuestRouter);
+const appRouter = merge(authRouter, chatRouter, hackathonRouter, sideQuestRouter);
 
 const server = createHTTPServer({
   router: appRouter,
