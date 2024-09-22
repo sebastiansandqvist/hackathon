@@ -58,7 +58,7 @@ export function Chat() {
       class="fixed right-0 bottom-0 z-10 grid gap-2 border border-indigo-300/50 border-r-transparent border-b-transparent backdrop-blur-lg"
       classList={{
         'pb-4 px-4 w-80': !collapsed(),
-        'w-auto': collapsed(),
+        'w-auto text-indigo-200 hover:text-white hover:bg-indigo-900 transition': collapsed(),
       }}
     >
       <Show
@@ -80,12 +80,12 @@ export function Chat() {
         }
       >
         <button
-          class="absolute top-2 right-4 cursor-pointer text-indigo-300/75 transition hover:text-indigo-100"
+          class="absolute top-2 right-0 left-0 z-10 flex cursor-pointer justify-end pr-4 text-indigo-300/75 transition hover:text-indigo-100"
           onClick={() => {
             setCollapsed(true);
           }}
         >
-          <div class="font-dot rotate-90 transform text-2xl">&gt;</div>
+          <div class="font-dot w-min rotate-90 transform text-2xl">&gt;</div>
         </button>
         <div class="grid max-h-72 gap-3 overflow-auto" ref={chatMesssagesContainer!}>
           <For each={messages()}>
