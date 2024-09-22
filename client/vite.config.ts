@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [solid(), tailwindcss()],
   build: { minify: false },
   define: {
-    'import.meta.env.API_URL': JSON.stringify(process.env['API_URL'] || 'http://localhost:3000'),
+    'import.meta.env.VITE_API_URL': JSON.stringify(process.env['VITE_API_URL'] || 'http://localhost:3000'),
   },
   resolve: {
     alias: [

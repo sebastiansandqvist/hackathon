@@ -11,11 +11,11 @@ export const trpc = createTRPCClient<AppRouter>({
     splitLink({
       condition: (operation) => operation.type === 'subscription',
       true: unstable_httpSubscriptionLink({
-        url: 'http://localhost:3000',
+        url: import.meta.env['VITE_API_URL'],
         eventSourceOptions: { withCredentials: true },
       }),
       false: httpBatchLink({
-        url: 'http://localhost:3000',
+        url: import.meta.env['VITE_API_URL'],
         fetch(url, options) {
           return fetch(url, {
             ...options,

@@ -14,11 +14,12 @@ services:
     # - example.com
     runtime: static
     envVars:
-      - key: PUBLIC_API_URL
-        fromService:
-          type: web
-          name: hackathon-server
-          envVarKey: RENDER_EXTERNAL_URL
+      - key: VITE_API_URL
+        value: http://localhost:3000
+        # fromService:
+        #   type: web
+        #   name: hackathon-server
+        #   envVarKey: RENDER_EXTERNAL_URL
       - key: SKIP_INSTALL_DEPS
         value: 'true'
     headers:
