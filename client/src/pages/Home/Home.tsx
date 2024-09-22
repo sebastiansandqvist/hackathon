@@ -1,6 +1,6 @@
-import { For, onCleanup, Show } from 'solid-js';
+import { For, Show } from 'solid-js';
 import { A } from '@solidjs/router';
-import { mutate, query, queryClient, trpc } from '~/trpc';
+import { query, trpc } from '~/trpc';
 import {
   BlurrySection,
   Authenticated,
@@ -30,43 +30,6 @@ export function Home() {
   const home = query('homepage', trpc.homepage, {
     refetchInterval: 5000,
   });
-
-  // here's how chat will work!
-
-  // const chat = trpc.onChatMessage.subscribe(undefined, {
-  //   onData(data) {
-  //     console.log({ data });
-  //   },
-  //   onError(err) {
-  //     console.error(err);
-  //   },
-  //   onStarted() {
-  //     console.log('onstarted');
-  //   },
-  //   onComplete() {
-  //     console.log('oncomplete');
-  //   },
-  //   onStopped() {
-  //     console.log('onstopped');
-  //   },
-  // });
-
-  // const sendMessage = mutate(trpc.sendMessage, {
-  //   onError(err) {
-  //     console.error(err);
-  //   },
-  // });
-
-  // let i = 0;
-  // const interval = setInterval(() => {
-  //   sendMessage.mutate({ text: `hello world ${++i}` });
-  // }, 15000);
-
-  // onCleanup(() => {
-  //   clearInterval(interval);
-  //   chat.unsubscribe();
-  // });
-
   return (
     <Layout>
       <Show when={home.data} keyed>

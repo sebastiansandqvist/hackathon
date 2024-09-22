@@ -16,6 +16,7 @@ import { Results } from './pages/Results';
 import { SubmitProject } from './pages/SubmitProject';
 import { ProjectList } from './pages/ProjectList';
 import { Project } from './pages/Project';
+import { Chat } from './chat/Chat';
 import { queryClient } from './trpc';
 
 import './main.css';
@@ -38,6 +39,7 @@ render(
         <Route path="/projects/:id" component={Project} />
         <Route path="*404" component={NotFound} />
       </Router>
+      <Chat />
       <HomepageMessageFlasher />
       <FlashMessageContainer />
     </QueryClientProvider>
