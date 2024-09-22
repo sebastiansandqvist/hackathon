@@ -6,6 +6,9 @@ import path from 'path';
 export default defineConfig({
   plugins: [solid(), tailwindcss()],
   build: { minify: false },
+  define: {
+    'import.meta.env.API_URL': JSON.stringify(process.env['API_URL'] || 'http://localhost:3000'),
+  },
   resolve: {
     alias: [
       { find: '~/components', replacement: path.resolve(__dirname, './src/components/index.ts') },

@@ -1,0 +1,74 @@
+services:
+  - type: web
+    name: hackathon-client
+    buildCommand: cd server &&
+      bun i &&
+      cd ../client &&
+      bun i &&
+      bun run build
+    buildFilter:
+      paths:
+        - client/**/*
+        - server/**/*
+    # domains:
+    # - example.com
+    runtime: static
+    envVars:
+      - key: PUBLIC_API_URL
+        fromService:
+          type: web
+          name: hackathon-server
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: SKIP_INSTALL_DEPS
+        value: 'true'
+    headers:
+      # - path: /*
+      #   name: Content-Security-Policy
+      #   value: "default-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data: ; connect-src 'self' smudge-server.onrender.com api.smudge.ai www.google-analytics.com; object-src 'none'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; frame-src www.youtube-nocookie.com; frame-ancestors 'none'; upgrade-insecure-requests; block-all-mixed-content"
+      - path: /*
+        name: Cross-Origin-Embedder-Policy
+        value: unsafe-none
+      - path: /*
+        name: Cross-Origin-Opener-Policy
+        value: same-origin
+      - path: /*
+        name: Cross-Origin-Resource-Policy
+        value: same-origin
+      - path: /*
+        name: Referrer-Policy
+        value: no-referrer
+      - path: /*
+        name: Strict-Transport-Security
+        value: max-age=31536000; includeSubDomains; preload
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: deny
+      - path: /**/*.css
+        name: Cache-Control
+        value: public, max-age=31536000
+      - path: /**/*.js
+        name: Cache-Control
+        value: public, max-age=31536000
+      - path: /**/*.html
+        name: Cache-Control
+        value: public, max-age=86400
+      - path: /**/*.png
+        name: Cache-Control
+        value: public, max-age=31536000
+      - path: /**/*.svg
+        name: Cache-Control
+        value: public, max-age=31536000
+      - path: /**/*.webp
+        name: Cache-Control
+        value: public, max-age=31536000
+      - path: /**/*.mp4
+        name: Cache-Control
+        value: public, max-age=31536000
+      - path: /**/*.webm
+        name: Cache-Control
+        value: public, max-age=31536000
+    pullRequestPreviewsEnabled: false
+    staticPublishPath: ./client/dist
