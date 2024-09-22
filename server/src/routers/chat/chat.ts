@@ -4,13 +4,14 @@ import { authedProcedure, router } from '../../trpc';
 import { db } from '../../db';
 
 const ee = new EventEmitter<{ message: Message[] }>();
-type Message = { text: string; sentBy: string; timestamp: number };
+type Message = { text: string; sentBy: string; timestamp: number; isAnonymous: boolean };
 const messages: Message[] = [];
 
 function mapMessageSender(message: Message) {
+  const field = message.isAnonymous ? 'anonymousName' : 'username';
   return {
     ...message,
-    sentBy: db.users.find((user) => user.id === message.sentBy)?.username ?? '???',
+    sentBy: db.users.find((user) => user.id === message.sentBy)?.[field] ?? '???',
   };
 }
 
@@ -19,6 +20,7 @@ export const chatRouter = router({
     .input(
       z.object({
         text: z.string(),
+        isAnonymous: z.boolean(),
       }),
     )
     .mutation(({ input, ctx }) => {
@@ -26,14 +28,13 @@ export const chatRouter = router({
         text: input.text,
         sentBy: ctx.user.id,
         timestamp: Date.now(),
+        isAnonymous: input.isAnonymous,
       };
-      console.log('sending', message);
       messages.push(message);
       ee.emit('message', message);
     }),
-  subscribeToChat: authedProcedure.subscription(async function* (opts) {
-    console.log('subscribed');
-    yield { kind: 'onSubscribe' as const, messages: messages.map(mapMessageSender) };
+  subscribeToChat: authedProcedure.subscription(async function* () {
+    yield { kind: 'onSubscribe' as const, messages: messages.map(mapMessageSender).slice(-100) };
     for await (const [message] of on(ee, 'message') as AsyncIterableIterator<[Message]>) {
       yield { kind: 'onMessage' as const, message: mapMessageSender(message) };
     }

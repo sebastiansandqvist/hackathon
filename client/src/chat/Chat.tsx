@@ -1,5 +1,6 @@
-import { autoAnimate, useAutoAnimate } from 'solid-auto-animate';
-import { createSignal, onCleanup, For } from 'solid-js';
+import { useAutoAnimate } from 'solid-auto-animate';
+import { createSignal, onCleanup, For, Show } from 'solid-js';
+import ago from 's-ago';
 import { Input } from '~/components';
 import { trpc, mutate, type RouterOutput } from '~/trpc';
 
@@ -7,15 +8,14 @@ type Message = (RouterOutput['subscribeToChat'] & { kind: 'onMessage' })['messag
 const animationDuration = 300;
 
 export function Chat() {
-  // TODO: if chat is collapsed, then increase unread count on each message.
-  //       while it's open, ensure the unread count is zero.
-  // const [unreadMessages, setUnreadMessages] = createSignal(0);
-  // const [collapsed, setCollapsed] = createSignal(false);
+  const [unreadMessages, setUnreadMessages] = createSignal(0);
+  const [collapsed, setCollapsed] = createSignal(true);
 
-  let chatContainer: HTMLDivElement;
-  useAutoAnimate(() => chatContainer!, { disrespectUserMotionPreference: true, duration: animationDuration });
+  let chatMesssagesContainer: HTMLDivElement;
+  useAutoAnimate(() => chatMesssagesContainer!, { disrespectUserMotionPreference: true, duration: animationDuration });
 
   const [input, setInput] = createSignal('');
+  const [isAnonymous, setIsAnonymous] = createSignal(false);
   const [messages, setMessages] = createSignal<Message[]>([]);
 
   const chat = trpc.subscribeToChat.subscribe(undefined, {
@@ -23,17 +23,20 @@ export function Chat() {
       // the initial subscribe returns an array of prior messages
       if (response.kind === 'onSubscribe') {
         setMessages(response.messages);
-        if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+        if (chatMesssagesContainer) chatMesssagesContainer.scrollTop = chatMesssagesContainer.scrollHeight;
         return;
       }
       // subsequent onMessage data events are just individual new messages
       if (response.kind === 'onMessage') {
         setMessages((prev) => [...prev, response.message]);
-        if (chatContainer) {
+        if (collapsed()) {
+          setUnreadMessages((prev) => prev + 1);
+        }
+        if (chatMesssagesContainer) {
           setTimeout(() => {
-            chatContainer.scrollTo({
+            chatMesssagesContainer.scrollTo({
               behavior: 'smooth',
-              top: chatContainer.scrollHeight,
+              top: chatMesssagesContainer.scrollHeight,
             });
           }, animationDuration);
         }
@@ -51,32 +54,88 @@ export function Chat() {
   });
 
   return (
-    <div class="fixed right-0 bottom-0 z-10 grid w-80 gap-2 border border-indigo-300/50 border-b-transparent px-4 pb-4 backdrop-blur-lg">
-      <div class="max-h-72 overflow-auto" ref={chatContainer!}>
-        <For each={messages()}>
-          {(message) => (
-            <div class="flex gap-2">
-              <span class="text-sm text-indigo-300">{message.sentBy}</span>
-              <span class="text-sm">{message.text}</span>
-            </div>
-          )}
-        </For>
-      </div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          sendMessage.mutate({ text: input() });
-          setInput('');
-        }}
+    <div
+      class="fixed right-0 bottom-0 z-10 grid gap-2 border border-indigo-300/50 border-r-transparent border-b-transparent backdrop-blur-lg"
+      classList={{
+        'pb-4 px-4 w-80': !collapsed(),
+        'w-auto': collapsed(),
+      }}
+    >
+      <Show
+        when={!collapsed()}
+        fallback={
+          <div
+            class="cursor-pointer py-2 px-4"
+            onClick={() => {
+              setCollapsed(false);
+              setUnreadMessages(0);
+              chatMesssagesContainer.scrollTop = chatMesssagesContainer.scrollHeight;
+            }}
+          >
+            chat
+            <Show when={unreadMessages() > 0}>
+              : <span class="text-rose-500">({unreadMessages()})</span>
+            </Show>
+          </div>
+        }
       >
-        <Input
-          type="text"
-          class="w-full text-sm"
-          placeholder="enter message"
-          onInput={(e) => setInput(e.currentTarget.value)}
-          value={input()}
-        />
-      </form>
+        <button
+          class="absolute top-2 right-4 cursor-pointer text-indigo-300/75 transition hover:text-indigo-100"
+          onClick={() => {
+            setCollapsed(true);
+          }}
+        >
+          <div class="font-dot rotate-90 transform text-2xl">&gt;</div>
+        </button>
+        <div class="grid max-h-72 gap-3 overflow-auto" ref={chatMesssagesContainer!}>
+          <For each={messages()}>
+            {(message) => (
+              <div class="grid first:pt-4">
+                <span class="text-xs text-indigo-300">
+                  {message.sentBy}{' '}
+                  <small class="opacity-75">
+                    (
+                    {new Date(message.timestamp)
+                      .toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: true,
+                      })
+                      .replace(/ [APap][Mm]$/, '')}
+                    )
+                  </small>
+                </span>
+                <span class="text-sm">{message.text} </span>
+              </div>
+            )}
+          </For>
+        </div>
+        <form
+          class="flex items-center gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            sendMessage.mutate({ text: input(), isAnonymous: isAnonymous() });
+            setInput('');
+          }}
+        >
+          <Input
+            type="text"
+            class="w-full text-sm"
+            placeholder="enter message"
+            onInput={(e) => setInput(e.currentTarget.value)}
+            value={input()}
+          />
+          <label class="flex items-center gap-1 text-sm text-indigo-300 select-none">
+            <input
+              class="accent-indigo-500"
+              type="checkbox"
+              checked={isAnonymous()}
+              onInput={(e) => setIsAnonymous(e.currentTarget.checked)}
+            />
+            anon
+          </label>
+        </form>
+      </Show>
     </div>
   );
 }
