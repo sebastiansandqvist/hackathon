@@ -1,9 +1,7 @@
+import { createEffect, createSignal, onCleanup } from 'solid-js';
 import { Authenticated, AuthForm, CanvasGridBg, Layout, SignOutButton, Unauthenticated, Uppercase } from '~/components';
 import { Countdown } from '../Home/components/Countdown';
-import { createEffect, createSignal, onCleanup } from 'solid-js';
-import { Hourglass } from '../../icons/Hourglass';
-import { Laptop } from '../../icons/Laptop';
-import { Magnifier } from '../../icons/Magnifier';
+import { Hourglass, Laptop, Magnifier } from '~/icons';
 
 export function Invitation() {
   const codingStart = new Date('2024-10-18T19:00:00.000-07:00').toISOString();

@@ -1,6 +1,5 @@
 import { useAutoAnimate } from 'solid-auto-animate';
 import { createSignal, onCleanup, For, Show } from 'solid-js';
-import ago from 's-ago';
 import { Authenticated, Input } from '~/components';
 import { trpc, mutate, type RouterOutput } from '~/trpc';
 
