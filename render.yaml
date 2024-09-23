@@ -10,15 +10,12 @@ services:
       paths:
         - client/**/*
         - server/**/*
-    # domains:
-    # - example.com
+    domains:
+      - hackvegas.lol
     runtime: static
     envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: hackathon-server
-          envVarKey: RENDER_EXTERNAL_URL
+        value: 'https://api.hackvegas.lol'
       - key: SKIP_INSTALL_DEPS
         value: 'true'
     headers:
