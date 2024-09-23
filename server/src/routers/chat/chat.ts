@@ -19,7 +19,7 @@ export const chatRouter = router({
   sendMessage: authedProcedure
     .input(
       z.object({
-        text: z.string(),
+        text: z.string().max(128),
         isAnonymous: z.boolean(),
       }),
     )

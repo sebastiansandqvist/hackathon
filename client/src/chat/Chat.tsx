@@ -100,7 +100,7 @@ export function Chat() {
       <div
         class="fixed right-0 bottom-0 z-10 grid gap-2 border border-indigo-300/50 border-r-transparent border-b-transparent"
         classList={{
-          'text-indigo-200 hover:text-white hover:bg-indigo-900': collapsed(),
+          'text-indigo-200 hover:text-white hover:bg-indigo-900 backdrop-blur-2xl': collapsed(),
           'transition-all': collapsed() || isAnimating(),
         }}
         style={{
@@ -152,9 +152,9 @@ export function Chat() {
               initialPointerY = e.clientY;
             }}
           />
-          <div class="grid gap-2 backdrop-blur-2xl">
+          <div class="flex flex-col gap-2 backdrop-blur-2xl">
             <div
-              class="grid min-h-8 gap-3 overflow-auto overscroll-contain px-4"
+              class="flex min-h-8 flex-col gap-3 overflow-auto overscroll-contain px-4"
               style={{
                 height: `${height() - 51}px`,
               }}
@@ -197,6 +197,7 @@ export function Chat() {
                 type="text"
                 class="w-full text-sm"
                 placeholder="enter message"
+                maxLength={128}
                 onInput={(e) => setInput(e.currentTarget.value)}
                 value={input()}
               />
