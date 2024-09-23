@@ -11,9 +11,9 @@ function randomGlitchChar() {
 export const Glitch: Component<{ children: string; loopFrequency?: number }> = (props) => {
   const [glitchText, setGlitchText] = createSignal(props.children);
 
+  // this value is not actually the loop frequency due to randomization,
+  // but it is the basis for the frequency of the glitch effect
   const loopFrequency = props.loopFrequency ?? 2000;
-  const loopDuration = 1000;
-  const glitchFrequency = 100;
 
   const glitchify = async () => {
     // slightly randomize, randomly, to avoid synchronization
@@ -31,6 +31,7 @@ export const Glitch: Component<{ children: string; loopFrequency?: number }> = (
 
     if (glitchCharIndex === undefined) return;
 
+    const glitchFrequency = 100;
     const iterations = 10;
     for (let i = 0; i < iterations; i++) {
       await wait(glitchFrequency);
@@ -39,6 +40,7 @@ export const Glitch: Component<{ children: string; loopFrequency?: number }> = (
       setGlitchText(newText.join(''));
     }
 
+    const loopDuration = 1000;
     await wait(loopDuration - glitchFrequency * iterations);
     setGlitchText(props.children);
     return glitchText();
