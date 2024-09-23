@@ -10,7 +10,7 @@ const ProjectContent: Component<RouterOutput['projectById']> = (props) => (
       <div class="flex items-center gap-4">
         <Title>{props.name}</Title>
         <Show when={props.canEdit}>
-          <A href="/submit">
+          <A href="/submit" class="relative top-2">
             <ButtonPrimary>edit</ButtonPrimary>
           </A>
         </Show>
