@@ -15,11 +15,10 @@ services:
     runtime: static
     envVars:
       - key: VITE_API_URL
-        value: http://localhost:3000
-        # fromService:
-        #   type: web
-        #   name: hackathon-server
-        #   envVarKey: RENDER_EXTERNAL_URL
+        fromService:
+          type: web
+          name: hackathon-server
+          envVarKey: RENDER_EXTERNAL_URL
       - key: SKIP_INSTALL_DEPS
         value: 'true'
     headers:
@@ -73,3 +72,15 @@ services:
         value: public, max-age=31536000
     pullRequestPreviewsEnabled: false
     staticPublishPath: ./client/dist
+  - type: web
+    runtime: node
+    name: hackathon-server
+    buildCommand: bun i
+    # domains:
+    #   - api.smudge.ai
+    # healthCheckPath: /healthz
+    plan: free
+    pullRequestPreviewsEnabled: false
+    region: oregon
+    rootDir: server
+    startCommand: bun start
