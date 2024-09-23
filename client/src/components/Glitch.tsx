@@ -1,4 +1,5 @@
-import { type Component, createSignal, onCleanup } from 'solid-js';
+import { createQuery } from '@tanstack/solid-query';
+import { type Component, createSignal } from 'solid-js';
 import { shuffle, wait } from '~/util';
 
 function randomGlitchChar() {
@@ -14,7 +15,7 @@ export const Glitch: Component<{ children: string; loopFrequency?: number }> = (
   const loopDuration = 1000;
   const glitchFrequency = 100;
 
-  const interval = setInterval(async () => {
+  const glitchify = async () => {
     // slightly randomize, randomly, to avoid synchronization
     if (Math.random() > 0.5) {
       await wait((Math.random() * loopFrequency) / 2);
@@ -40,11 +41,14 @@ export const Glitch: Component<{ children: string; loopFrequency?: number }> = (
 
     await wait(loopDuration - glitchFrequency * iterations);
     setGlitchText(props.children);
-  }, loopFrequency);
+    return glitchText();
+  };
 
-  onCleanup(() => {
-    clearInterval(interval);
-  });
+  createQuery(() => ({
+    queryKey: ['glitch', props.children],
+    queryFn: glitchify,
+    refetchInterval: loopFrequency,
+  }));
 
   return <span>{glitchText()}</span>;
 };
