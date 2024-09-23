@@ -11,7 +11,7 @@ export function Chat() {
   const [collapsed, setCollapsed] = createSignal(false);
 
   let chatMesssagesContainer: HTMLDivElement;
-  useAutoAnimate(() => chatMesssagesContainer!, { disrespectUserMotionPreference: true, duration: animationDuration });
+  useAutoAnimate(() => chatMesssagesContainer!, { duration: animationDuration });
 
   const [input, setInput] = createSignal('');
   const [isAnonymous, setIsAnonymous] = createSignal(false);

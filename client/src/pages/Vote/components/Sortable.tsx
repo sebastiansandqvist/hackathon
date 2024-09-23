@@ -10,7 +10,7 @@ export const Sortable: Component<{
   const [draggedElement, setDraggedElement] = createSignal<HTMLLIElement | null>(null);
   const [draggedId, setDraggedId] = createSignal<string | null>(null);
 
-  useAutoAnimate(() => parent!, { disrespectUserMotionPreference: true });
+  useAutoAnimate(() => parent!, {});
 
   return (
     <ol class="grid text-white" ref={parent!}>

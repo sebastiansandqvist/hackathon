@@ -107,7 +107,7 @@ const LeaderboardResult: Component<{
   let parent: HTMLDivElement;
   const defaultSlice = 3;
   const [slice, setSlice] = createSignal(defaultSlice);
-  useAutoAnimate(() => parent!, { disrespectUserMotionPreference: true });
+  useAutoAnimate(() => parent!, {});
   return (
     <InnerLayout>
       <SectionHeading>leaderboard</SectionHeading>
