@@ -1,8 +1,12 @@
-import { createSignal, onCleanup, For, Show } from 'solid-js';
-import { Authenticated, Input } from '~/components';
+import { createSignal, onCleanup, For, Show, onMount } from 'solid-js';
+import { Authenticated, flashMessage, Input } from '~/components';
 import { trpc, mutate, type RouterOutput } from '~/trpc';
 
 type Message = (RouterOutput['subscribeToChat'] & { kind: 'onMessage' })['message'];
+
+function clamp(props: { min: number; max: number; value: number }) {
+  return Math.max(Math.min(props.value, props.max), props.min);
+}
 
 export function Chat() {
   const [unreadMessages, setUnreadMessages] = createSignal(0);
@@ -28,6 +32,7 @@ export function Chat() {
       if (response.kind === 'onMessage') {
         setMessages((prev) => [...prev, response.message]);
         if (collapsed()) {
+          flashMessage(response.message.text, 'indigo');
           setUnreadMessages((prev) => prev + 1);
         }
         if (container) {
@@ -45,8 +50,49 @@ export function Chat() {
     onError: console.error,
   });
 
+  let initialPointerX = 0;
+  let initialPointerY = 0;
+  let isResizing = false;
+
+  const [isAnimating, setIsAnimating] = createSignal(false);
+  const [height, setHeight] = createSignal(500);
+  const [width, setWidth] = createSignal(320);
+
+  const handlePointerUp = () => {
+    isResizing = false;
+  };
+
+  const handlePointerMove = (e: PointerEvent) => {
+    if (!isResizing) return;
+    const deltaX = e.clientX - initialPointerX;
+    const deltaY = e.clientY - initialPointerY;
+    initialPointerX = e.clientX;
+    initialPointerY = e.clientY;
+    setWidth((w) =>
+      clamp({
+        min: 200,
+        max: window.innerWidth - 20,
+        value: w - deltaX,
+      }),
+    );
+    setHeight((h) =>
+      clamp({
+        min: 180,
+        max: window.innerHeight - 20,
+        value: h - deltaY,
+      }),
+    );
+    // setWidth((w) => Math.max(Math.min(w - deltaX, window.innerWidth - 20), 200));
+    // setHeight((h) => Math.max(Math.min(h - deltaY, window.innerHeight - 20), 180));
+  };
+
+  window.addEventListener('pointermove', handlePointerMove);
+  window.addEventListener('pointerup', handlePointerUp);
+
   onCleanup(() => {
     chat.unsubscribe();
+    window.removeEventListener('pointermove', handlePointerMove);
+    window.removeEventListener('pointerup', handlePointerUp);
   });
 
   return (
@@ -54,14 +100,22 @@ export function Chat() {
       <div
         class="fixed right-0 bottom-0 z-10 grid gap-2 border border-indigo-300/50 border-r-transparent border-b-transparent"
         classList={{
-          'w-80': !collapsed(),
-          'w-auto text-indigo-200 hover:text-white hover:bg-indigo-900 transition': collapsed(),
+          'text-indigo-200 hover:text-white hover:bg-indigo-900': collapsed(),
+          'transition-all': collapsed() || isAnimating(),
+        }}
+        style={{
+          width: collapsed() ? `96px` : `${width()}px`,
+          height: collapsed() ? `40px` : `${height()}px`,
+        }}
+        onTransitionEnd={() => {
+          setIsAnimating(false);
         }}
       >
         <Show when={collapsed()}>
           <button
-            class="cursor-pointer py-2 px-4"
+            class="cursor-pointer py-2 text-sm"
             onClick={() => {
+              setIsAnimating(true);
               setCollapsed(false);
               setUnreadMessages(0);
               const container = chatMessagesContainer();
@@ -69,9 +123,9 @@ export function Chat() {
               container.scrollTop = container.scrollHeight;
             }}
           >
-            chat
+            <strong>chat</strong>
             <Show when={unreadMessages() > 0}>
-              : <span class="text-rose-500">({unreadMessages()})</span>
+              : <span class="text-blue-500">({unreadMessages()})</span>
             </Show>
           </button>
         </Show>
@@ -81,7 +135,7 @@ export function Chat() {
           }}
         >
           <button
-            class="masked-blur absolute top-0 right-0 left-0 z-10 flex cursor-pointer items-center justify-between py-2 px-4 text-indigo-300/75 backdrop-blur transition hover:text-indigo-100"
+            class="masked-blur absolute top-0 right-0 left-0 z-10 flex cursor-pointer items-center justify-between py-2 px-4 text-indigo-300/75 backdrop-blur transition select-none hover:text-indigo-100"
             onClick={() => {
               setCollapsed(true);
             }}
@@ -89,9 +143,21 @@ export function Chat() {
             <strong class="text-sm text-white">chat</strong>
             <div class="font-dot w-min rotate-90 transform text-2xl">&gt;</div>
           </button>
+          <div
+            class="absolute top-0 left-0 z-20 h-6 w-6 cursor-nw-resize"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              isResizing = true;
+              initialPointerX = e.clientX;
+              initialPointerY = e.clientY;
+            }}
+          />
           <div class="grid gap-2 backdrop-blur-2xl">
             <div
-              class="grid max-h-96 min-h-8 gap-3 overflow-auto overscroll-contain px-4"
+              class="grid min-h-8 gap-3 overflow-auto overscroll-contain px-4"
+              style={{
+                height: `${height() - 51}px`,
+              }}
               ref={(el) => {
                 setChatMessagesContainer(el);
                 el.scrollTop = el.scrollHeight;
