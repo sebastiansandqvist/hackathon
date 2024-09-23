@@ -79,7 +79,7 @@ services:
       - key: CLIENT_URL
         value: 'https://hackvegas.lol'
     healthCheckPath: /healthz
-    plan: free
+    plan: starter
     pullRequestPreviewsEnabled: false
     region: oregon
     rootDir: server
