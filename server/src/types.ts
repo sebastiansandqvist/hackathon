@@ -14,6 +14,7 @@ export type User = {
     puzzles: { easy: number | null; hard: number | null };
   };
   renameCounter: number;
+  themeSuggestions: string[];
 };
 
 export type PublicMessage = {

@@ -40,6 +40,7 @@ try {
           logic: { easy: null, hard: null },
           puzzles: { easy: null, hard: null },
         },
+        themeSuggestions: [],
       },
     ],
     visibleSections: [],
