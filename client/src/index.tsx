@@ -21,6 +21,7 @@ import { Chat } from './chat/Chat';
 import { queryClient } from './trpc';
 
 import './main.css';
+import { Authenticated } from './components';
 
 render(
   () => (
@@ -41,7 +42,9 @@ render(
         <Route path="/projects/:id" component={Project} />
         <Route path="*404" component={NotFound} />
       </Router>
-      <Chat />
+      <Authenticated>
+        <Chat />
+      </Authenticated>
       <HomepageMessageFlasher />
       <FlashMessageContainer />
     </QueryClientProvider>
