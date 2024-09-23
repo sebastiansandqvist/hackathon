@@ -77,9 +77,11 @@ export function Invitation() {
         <AuthForm />
       </Unauthenticated>
       <div class="grid gap-2">
-        <SectionHeading>hackathon info</SectionHeading>
+        <SectionHeading>
+          <Glitch loopFrequency={20000}>hackathon info</Glitch>
+        </SectionHeading>
         <Uppercase as="h3" class="mt-4">
-          logistics
+          <Glitch loopFrequency={30000}>logistics</Glitch>
         </Uppercase>
         <ul class="grid list-outside list-disc gap-4 py-4 pl-10 text-indigo-100 marker:text-indigo-300/75">
           <li>bring your own laptop</li>
@@ -95,14 +97,14 @@ export function Invitation() {
           <li>food tbd</li>
         </ul>
         <Uppercase as="h3" class="mt-2">
-          side quests
+          <Glitch loopFrequency={45000}>side quests</Glitch>
         </Uppercase>
         <ul class="grid list-outside list-disc gap-4 py-4 pl-10 text-indigo-100 marker:text-indigo-300/75">
           <li>optional puzzles that include logic, programming, and hacking</li>
           <li>similar to advent of code and capture the flag problems</li>
         </ul>
         <Uppercase as="h3" class="mt-2">
-          projects
+          <Glitch loopFrequency={25000}>projects</Glitch>
         </Uppercase>
         <ul class="grid list-outside list-disc gap-4 py-4 pl-10 text-indigo-100 marker:text-indigo-300/75">
           <li>work solo or in teams, or just contribute to random projects</li>
@@ -111,7 +113,7 @@ export function Invitation() {
           <li>libraries, scaffolding commands, ai codegen, and game engines are allowed</li>
         </ul>
         <Uppercase as="h3" class="mt-2">
-          voting
+          <Glitch loopFrequency={38000}>voting</Glitch>
         </Uppercase>
         <ul class="grid list-outside list-disc gap-4 py-4 pl-10 text-indigo-100 marker:text-indigo-300/75">
           <li>after demos, voting opens on this site</li>
