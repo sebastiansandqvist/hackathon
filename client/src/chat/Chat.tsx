@@ -8,7 +8,7 @@ const animationDuration = 300;
 
 export function Chat() {
   const [unreadMessages, setUnreadMessages] = createSignal(0);
-  const [collapsed, setCollapsed] = createSignal(true);
+  const [collapsed, setCollapsed] = createSignal(false);
 
   let chatMesssagesContainer: HTMLDivElement;
   useAutoAnimate(() => chatMesssagesContainer!, { disrespectUserMotionPreference: true, duration: animationDuration });
