@@ -75,6 +75,9 @@ services:
     buildCommand: bun i
     domains:
       - api.hackvegas.lol
+    envVars:
+      - key: CLIENT_URL
+        value: 'https://hackvegas.lol'
     healthCheckPath: /healthz
     plan: free
     pullRequestPreviewsEnabled: false

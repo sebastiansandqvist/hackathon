@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
+  CLIENT_URL: z.string().url(),
   ALGORITHMS_EASY: z.string(),
   ALGORITHMS_HARD: z.string(),
   FORENSICS_EASY: z.string(),
