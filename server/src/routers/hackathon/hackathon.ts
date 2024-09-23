@@ -21,7 +21,12 @@ function calculateCheckpoints() {
   };
 }
 
+const rootRoute = '';
 export const hackathonRouter = router({
+  [rootRoute]: publicProcedure.query(() => ({
+    uptime: process.uptime(),
+    version: process.version,
+  })),
   healthz: publicProcedure.query(() => 'ok'), // for zero downtime deploys
   homepage: publicProcedure.query(() => {
     const message = db.publicMessages.at(-1)!;
