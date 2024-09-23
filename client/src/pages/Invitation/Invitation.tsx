@@ -1,8 +1,9 @@
-import { createEffect, createSignal, onCleanup, Show } from 'solid-js';
+import { Show } from 'solid-js';
 import {
   Authenticated,
   AuthForm,
   CanvasGridBg,
+  Glitch,
   Layout,
   RerollAnonymousNameButton,
   SectionHeading,
@@ -10,8 +11,8 @@ import {
   Unauthenticated,
   Uppercase,
 } from '~/components';
-import { Countdown } from '../Home/components/Countdown';
 import { Hourglass, Laptop, Magnifier } from '~/icons';
+import { Countdown } from '../Home/components/Countdown';
 
 export function Invitation() {
   const codingStart = new Date('2024-10-18T19:00:00.000-07:00').toISOString();
@@ -20,7 +21,7 @@ export function Invitation() {
       <Countdown time={new Date(codingStart)} />
       <hr class="border-indigo-500/30" />
       <h1 class="font-pixel text-xl sm:text-2xl md:text-3xl">
-        <GlitchText text="you are invited!" />
+        <Glitch>you are invited!</Glitch>
       </h1>
       <Authenticated>
         {({ anonymousName, username }) => (
@@ -142,46 +143,4 @@ export function Invitation() {
       </Authenticated>
     </Layout>
   );
-}
-
-function GlitchText(props: { text: string }) {
-  const [glitchText, setGlitchText] = createSignal(props.text);
-
-  const loopFrequency = 2000;
-  const glitchFrequency = 100;
-  let outterInterval: ReturnType<typeof setInterval>;
-  let innerInterval: ReturnType<typeof setInterval>;
-  let timeout: ReturnType<typeof setTimeout>;
-  createEffect(() => {
-    outterInterval = setInterval(() => {
-      let charToGlitch = null;
-      while (!charToGlitch) {
-        const letCh = Math.floor(Math.random() * glitchText().length);
-        if (glitchText()[letCh] !== ' ') {
-          charToGlitch = letCh;
-        }
-      }
-
-      innerInterval = setInterval(() => {
-        const newText = glitchText().split('');
-        const possibilites =
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+{}|:<>?~`-=[];',./".split('');
-        newText[charToGlitch] = possibilites[Math.floor(Math.random() * possibilites.length)] || 'A';
-        setGlitchText(newText.join(''));
-      }, glitchFrequency);
-
-      timeout = setTimeout(() => {
-        clearInterval(innerInterval);
-        setGlitchText(props.text);
-      }, loopFrequency / 2);
-    }, loopFrequency);
-  });
-
-  onCleanup(() => {
-    clearInterval(outterInterval);
-    clearInterval(innerInterval);
-    clearTimeout(timeout);
-  });
-
-  return <span>{glitchText()}</span>;
 }

@@ -14,6 +14,7 @@ import {
   Layout,
   SectionHeading,
   Uppercase,
+  Glitch,
 } from '~/components';
 import {
   Countdown,
@@ -40,7 +41,9 @@ export function Home() {
           <Show when={home.data} keyed>
             {(data) => (
               <div class="grid gap-2">
-                <h1 class="font-pixel text-2xl">{data.publicMessage.text}</h1>
+                <h1 class="font-pixel text-2xl">
+                  <Glitch loopFrequency={8000}>{data.publicMessage.text}</Glitch>
+                </h1>
                 <Show when={data.publicMessage.imgUrl}>
                   <img src={data.publicMessage.imgUrl} class="max-h-64 max-w-full" />
                 </Show>
@@ -95,7 +98,9 @@ export function Home() {
         <AuthForm />
       </Unauthenticated>
       <BlurrySection section="timeline">
-        <SectionHeading>timel1ne</SectionHeading>
+        <SectionHeading>
+          <Glitch loopFrequency={30000}>timel1ne</Glitch>
+        </SectionHeading>
         <Show when={home.data} fallback="..." keyed>
           {(data) => (
             <div class="grid gap-2">
@@ -128,7 +133,9 @@ export function Home() {
         </Show>
       </BlurrySection>
       <BlurrySection section="leaderboard">
-        <SectionHeading>lead3rboard</SectionHeading>
+        <SectionHeading>
+          <Glitch loopFrequency={30000}>lead3rboard</Glitch>
+        </SectionHeading>
         <Show when={home.data} fallback="..." keyed>
           {(data) => (
             <div class="grid gap-4">
@@ -149,7 +156,9 @@ export function Home() {
       </BlurrySection>
       <NotTv>
         <BlurrySection section="side quests">
-          <SectionHeading>side que5ts</SectionHeading>
+          <SectionHeading>
+            <Glitch loopFrequency={30000}>side que5ts</Glitch>
+          </SectionHeading>
           <ul>
             <li>
               <A href="/algorithms" class="text-indigo-300 transition hover:text-indigo-200">
@@ -203,7 +212,9 @@ export function Home() {
 
       <TvOnly>
         <BlurrySection section="food game">
-          <SectionHeading>f0od game!</SectionHeading>
+          <SectionHeading>
+            <Glitch loopFrequency={30000}>f0od game!</Glitch>
+          </SectionHeading>
           <FoodGame title={home.data?.foodGame.title ?? ''} items={home.data?.foodGame.items ?? []} tv />
         </BlurrySection>
       </TvOnly>
@@ -211,7 +222,9 @@ export function Home() {
       <NotTv>
         <Show when={home.data && home.data!.foodGame.items.length > 0}>
           <BlurrySection section="food game">
-            <SectionHeading>f0od game!</SectionHeading>
+            <SectionHeading>
+              <Glitch loopFrequency={30000}>f0od game!</Glitch>
+            </SectionHeading>
             <FoodGame title={home.data?.foodGame.title ?? ''} items={home.data?.foodGame.items ?? []} />
           </BlurrySection>
         </Show>
@@ -220,7 +233,9 @@ export function Home() {
       <NotTv>
         <div class="grid gap-2">
           <BlurrySection section="logistics">
-            <SectionHeading>hackathon 1nfo</SectionHeading>
+            <SectionHeading>
+              <Glitch loopFrequency={30000}>hackathon 1nfo</Glitch>
+            </SectionHeading>
             <Uppercase as="h3" class="mt-2">
               logistics
             </Uppercase>

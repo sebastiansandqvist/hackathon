@@ -2,7 +2,16 @@ import { createSignal, For, Match, Show, Switch, type Component } from 'solid-js
 import { A } from '@solidjs/router';
 import { useAutoAnimate } from 'solid-auto-animate';
 import { Transition } from 'solid-transition-group';
-import { ButtonPrimary, BlurrySection, Dots, InnerLayout, SectionHeading, Title, Uppercase } from '~/components';
+import {
+  ButtonPrimary,
+  BlurrySection,
+  Dots,
+  InnerLayout,
+  SectionHeading,
+  Title,
+  Uppercase,
+  Glitch,
+} from '~/components';
 import { query, trpc, type RouterOutput } from '~/trpc';
 import { commaSeparatedList } from '~/util';
 import { LeaderboardCanvas, LeaderboardCanvasMetadata } from '../Home/components';
@@ -78,12 +87,14 @@ const ProjectResult: Component<{
     <section class="grid gap-6">
       <BlurrySection section={`results-project-${props.place}`}>
         <Uppercase class="!text-indigo-200">
-          in {props.place} place with {props.project.votes.total} points...
+          <Glitch loopFrequency={16000}>{`in ${props.place} place with ${props.project.votes.total} points...`}</Glitch>
         </Uppercase>
       </BlurrySection>
       <BlurrySection section={`results-project-${props.project.id}`}>
         <div class="grid gap-6">
-          <SectionHeading>{props.project.name}</SectionHeading>
+          <SectionHeading>
+            <Glitch loopFrequency={10000}>{props.project.name}</Glitch>
+          </SectionHeading>
           <p class="text-indigo-200">
             congrats, <strong>{commaSeparatedList([props.project.createdBy, ...props.project.contributors])}</strong>!
           </p>
@@ -110,7 +121,9 @@ const LeaderboardResult: Component<{
   useAutoAnimate(() => parent!, {});
   return (
     <InnerLayout>
-      <SectionHeading>leaderboard</SectionHeading>
+      <SectionHeading>
+        <Glitch loopFrequency={10000}>leaderboard</Glitch>
+      </SectionHeading>
       <div class="grid gap-6" ref={parent!}>
         <For each={props.sideQuestProgress.slice(0, slice())}>
           {(progress) => (
@@ -158,7 +171,10 @@ const UsernameResult: Component<{ usernames: RouterOutput['results']['mostPerfec
           <section class="flex flex-wrap items-center gap-4">
             <p class="text-2xl font-bold">{props.usernames[0]?.username ?? '???'}!</p>
             <Uppercase class="!text-indigo-200">
-              the <q>{props.usernames[0]?.anonymousName}</q>
+              the{' '}
+              <q>
+                <Glitch loopFrequency={10000}>{props.usernames[0]?.anonymousName ?? ''}</Glitch>
+              </q>
             </Uppercase>
           </section>
         </BlurrySection>

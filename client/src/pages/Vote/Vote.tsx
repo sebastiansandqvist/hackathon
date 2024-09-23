@@ -1,17 +1,9 @@
 import { createSignal, For, Show } from 'solid-js';
 import { useNavigate } from '@solidjs/router';
-import { ButtonPrimary, flashMessage, Layout, SectionHeading, Title, Uppercase } from '~/components';
+import { ButtonPrimary, flashMessage, Glitch, Layout, SectionHeading, Title, Uppercase } from '~/components';
 import { mutate, query, trpc } from '~/trpc';
+import { shuffle } from '~/util';
 import { Sortable } from './components/Sortable';
-
-function shuffle<T>(items: T[]) {
-  const itemsCopy = [...items];
-  for (let i = itemsCopy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [itemsCopy[i], itemsCopy[j]] = [itemsCopy[j]!, itemsCopy[i]!];
-  }
-  return itemsCopy;
-}
 
 export function Vote() {
   const navigate = useNavigate();
@@ -42,20 +34,26 @@ export function Vote() {
         </p>
         <dl class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
           <dt>
-            <SectionHeading class="text-base">creativity</SectionHeading>
+            <SectionHeading class="text-base">
+              <Glitch loopFrequency={10000}>creativity</Glitch>
+            </SectionHeading>
           </dt>
           <dd class="text-indigo-200">
             how would you rank the project's originality and aesthetics? does it demonstrate creative thinking and
             ingenuity?
           </dd>
           <dt>
-            <SectionHeading class="text-base">technical merit</SectionHeading>
+            <SectionHeading class="text-base">
+              <Glitch loopFrequency={10000}>technical merit</Glitch>
+            </SectionHeading>
           </dt>
           <dd class="text-indigo-200">
             does the project exhibit technical difficulty or complexity? was it executed with a high degree of skill?
           </dd>
           <dt>
-            <SectionHeading class="text-base">user experience</SectionHeading>
+            <SectionHeading class="text-base">
+              <Glitch loopFrequency={10000}>user experience</Glitch>
+            </SectionHeading>
           </dt>
           <dd class="text-indigo-200">
             how would you rate the experience of using this project? if it looks fun, useful, or polished, it should

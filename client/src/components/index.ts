@@ -5,6 +5,7 @@ export * from './Canvas';
 export * from './CanvasGridBg';
 export * from './CopyButton';
 export * from './FlashMessage';
+export * from './Glitch';
 export * from './Input';
 export * from './Layout';
 export * from './Text';

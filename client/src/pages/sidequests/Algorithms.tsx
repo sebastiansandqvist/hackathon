@@ -1,6 +1,15 @@
 import { Show } from 'solid-js';
 import { A } from '@solidjs/router';
-import { Authenticated, CopyButton, Unauthenticated, ButtonPrimary, Layout, Title, Uppercase } from '~/components';
+import {
+  Authenticated,
+  CopyButton,
+  Unauthenticated,
+  ButtonPrimary,
+  Layout,
+  Title,
+  Uppercase,
+  Glitch,
+} from '~/components';
 import { AnswerForm } from './components/AnswerForm';
 
 function EasyAlgorithms() {
