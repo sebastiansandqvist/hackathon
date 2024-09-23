@@ -49,35 +49,29 @@ export function Invitation() {
         <time class="font-bold text-white">friday, october 18th @7pm</time> ending in the afternoon on{' '}
         <time class="font-bold text-white">sunday, october 20th</time>.
       </p>
-      <ul class="my-4 grid gap-4 sm:grid-cols-3">
-        <li>
-          <CanvasGridBg>
-            <div class="flex flex-col items-center gap-4 p-4">
-              <Hourglass class="h-12 w-12 text-indigo-200" />
-              <p class="text-center font-bold">create a project over one weekend</p>
-            </div>
-          </CanvasGridBg>
-        </li>
-        <li>
-          <CanvasGridBg>
-            <div class="flex flex-col items-center gap-4 p-4">
-              <Laptop class="h-12 w-12 text-indigo-200" />
-              <p class="text-center font-bold">
-                work solo <br />
-                or in teams
-              </p>
-            </div>
-          </CanvasGridBg>
-        </li>
-        <li>
-          <CanvasGridBg>
-            <div class="flex flex-col items-center gap-4 p-4">
-              <Magnifier class="h-12 w-12 text-indigo-200" />
-              <p class="text-center font-bold">solve side quest puzzles</p>
-            </div>
-          </CanvasGridBg>
-        </li>
-      </ul>
+      <div class="my-4 grid gap-4 sm:grid-cols-3">
+        <CanvasGridBg>
+          <div class="flex flex-col items-center gap-4 p-4">
+            <Hourglass class="h-12 w-12 text-indigo-200" />
+            <p class="text-center font-bold">create a project over one weekend</p>
+          </div>
+        </CanvasGridBg>
+        <CanvasGridBg>
+          <div class="flex flex-col items-center gap-4 p-4">
+            <Laptop class="h-12 w-12 text-indigo-200" />
+            <p class="text-center font-bold">
+              work solo <br />
+              or in teams
+            </p>
+          </div>
+        </CanvasGridBg>
+        <CanvasGridBg>
+          <div class="flex flex-col items-center gap-4 p-4">
+            <Magnifier class="h-12 w-12 text-indigo-200" />
+            <p class="text-center font-bold">solve side quest puzzles</p>
+          </div>
+        </CanvasGridBg>
+      </div>
       <hr class="border-indigo-500/30" />
       <Unauthenticated>
         <AuthForm />
