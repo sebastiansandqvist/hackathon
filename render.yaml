@@ -73,8 +73,8 @@ services:
     runtime: node
     name: hackathon-server
     buildCommand: bun i
-    # domains:
-    #   - api.smudge.ai
+    domains:
+      - api.hackvegas.lol
     # healthCheckPath: /healthz
     plan: free
     pullRequestPreviewsEnabled: false
