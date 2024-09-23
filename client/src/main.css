@@ -96,6 +96,14 @@ body,
   mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
 }
 
+.scroll-anchor-bottom > * {
+  overflow-anchor: none;
+}
+
+.scroll-anchor-bottom .anchor {
+  overflow-anchor: auto;
+}
+
 @keyframes flash {
   0%,
   10% {

@@ -5,6 +5,7 @@ import {
   CanvasGridBg,
   Layout,
   RerollAnonymousNameButton,
+  SectionHeading,
   SignOutButton,
   Unauthenticated,
   Uppercase,
@@ -81,7 +82,8 @@ export function Invitation() {
         <AuthForm />
       </Unauthenticated>
       <div class="grid gap-2">
-        <Uppercase as="h3" class="mt-2">
+        <SectionHeading>hackathon info</SectionHeading>
+        <Uppercase as="h3" class="mt-4">
           logistics
         </Uppercase>
         <ul class="grid list-outside list-disc gap-4 py-4 pl-10 text-indigo-100 marker:text-indigo-300/75">
@@ -142,7 +144,7 @@ export function Invitation() {
   );
 }
 
-function GlitchText(props: { text: string; class?: string }) {
+function GlitchText(props: { text: string }) {
   const [glitchText, setGlitchText] = createSignal(props.text);
 
   const loopFrequency = 2000;
@@ -181,5 +183,5 @@ function GlitchText(props: { text: string; class?: string }) {
     clearTimeout(timeout);
   });
 
-  return <span class={props.class}>{glitchText()}</span>;
+  return <span>{glitchText()}</span>;
 }

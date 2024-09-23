@@ -1,17 +1,13 @@
-import { useAutoAnimate } from 'solid-auto-animate';
-import { createSignal, onCleanup, For, Show, onMount } from 'solid-js';
+import { createSignal, onCleanup, For, Show } from 'solid-js';
 import { Authenticated, Input } from '~/components';
 import { trpc, mutate, type RouterOutput } from '~/trpc';
 
 type Message = (RouterOutput['subscribeToChat'] & { kind: 'onMessage' })['message'];
-const animationDuration = 300;
 
 export function Chat() {
   const [unreadMessages, setUnreadMessages] = createSignal(0);
   const [collapsed, setCollapsed] = createSignal(false);
-
-  let chatMesssagesContainer: HTMLDivElement;
-  useAutoAnimate(() => chatMesssagesContainer!, { duration: animationDuration });
+  const [chatMessagesContainer, setChatMessagesContainer] = createSignal<HTMLDivElement>();
 
   const [input, setInput] = createSignal('');
   const [isAnonymous, setIsAnonymous] = createSignal(false);
@@ -19,27 +15,26 @@ export function Chat() {
 
   const chat = trpc.subscribeToChat.subscribe(undefined, {
     onData(response) {
+      const container = chatMessagesContainer();
+
       // the initial subscribe returns an array of prior messages
       if (response.kind === 'onSubscribe') {
         setMessages(response.messages);
-        if (chatMesssagesContainer) {
-          chatMesssagesContainer.scrollTop = chatMesssagesContainer.scrollHeight;
-        }
+        if (container) container.scrollTop = container.scrollHeight;
         return;
       }
+
       // subsequent onMessage data events are just individual new messages
       if (response.kind === 'onMessage') {
         setMessages((prev) => [...prev, response.message]);
         if (collapsed()) {
           setUnreadMessages((prev) => prev + 1);
         }
-        if (chatMesssagesContainer) {
-          setTimeout(() => {
-            chatMesssagesContainer.scrollTo({
-              behavior: 'smooth',
-              top: chatMesssagesContainer.scrollHeight,
-            });
-          }, animationDuration);
+        if (container) {
+          container.scrollTo({
+            behavior: 'smooth',
+            top: container.scrollHeight,
+          });
         }
       }
     },
@@ -63,23 +58,27 @@ export function Chat() {
           'w-auto text-indigo-200 hover:text-white hover:bg-indigo-900 transition': collapsed(),
         }}
       >
-        <Show
-          when={!collapsed()}
-          fallback={
-            <div
-              class="cursor-pointer py-2 px-4"
-              onClick={() => {
-                setCollapsed(false);
-                setUnreadMessages(0);
-                chatMesssagesContainer.scrollTop = chatMesssagesContainer.scrollHeight;
-              }}
-            >
-              chat
-              <Show when={unreadMessages() > 0}>
-                : <span class="text-rose-500">({unreadMessages()})</span>
-              </Show>
-            </div>
-          }
+        <Show when={collapsed()}>
+          <button
+            class="cursor-pointer py-2 px-4"
+            onClick={() => {
+              setCollapsed(false);
+              setUnreadMessages(0);
+              const container = chatMessagesContainer();
+              if (!container) return;
+              container.scrollTop = container.scrollHeight;
+            }}
+          >
+            chat
+            <Show when={unreadMessages() > 0}>
+              : <span class="text-rose-500">({unreadMessages()})</span>
+            </Show>
+          </button>
+        </Show>
+        <div
+          classList={{
+            hidden: collapsed(),
+          }}
         >
           <button
             class="masked-blur absolute top-0 right-0 left-0 z-10 flex cursor-pointer items-center justify-between py-2 px-4 text-indigo-300/75 backdrop-blur transition hover:text-indigo-100"
@@ -91,7 +90,13 @@ export function Chat() {
             <div class="font-dot w-min rotate-90 transform text-2xl">&gt;</div>
           </button>
           <div class="grid gap-2 backdrop-blur-2xl">
-            <div class="grid max-h-96 min-h-8 gap-3 overflow-auto px-4" ref={chatMesssagesContainer!}>
+            <div
+              class="grid max-h-96 min-h-8 gap-3 overflow-auto overscroll-contain px-4"
+              ref={(el) => {
+                setChatMessagesContainer(el);
+                el.scrollTop = el.scrollHeight;
+              }}
+            >
               <For each={messages()}>
                 {(message) => (
                   <div class="grid first:pt-10">
@@ -140,7 +145,7 @@ export function Chat() {
               </label>
             </form>
           </div>
-        </Show>
+        </div>
       </div>
     </Authenticated>
   );
