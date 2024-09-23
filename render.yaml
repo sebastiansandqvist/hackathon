@@ -21,7 +21,7 @@ services:
     headers:
       - path: /*
         name: Content-Security-Policy
-        value: "default-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data: api.hackvegas.lol; connect-src 'self' api.hackvegas.lol; object-src 'none'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; frame-ancestors 'none'; upgrade-insecure-requests; block-all-mixed-content"
+        value: "default-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data: api.hackvegas.lol; connect-src 'self' api.hackvegas.lol; object-src 'none'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com; frame-ancestors 'none'; upgrade-insecure-requests; block-all-mixed-content"
       - path: /*
         name: Cross-Origin-Embedder-Policy
         value: unsafe-none
