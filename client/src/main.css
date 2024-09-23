@@ -92,6 +92,10 @@ body,
   }
 }
 
+.masked-blur {
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+}
+
 @keyframes flash {
   0%,
   10% {

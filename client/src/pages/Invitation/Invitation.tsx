@@ -1,5 +1,14 @@
-import { createEffect, createSignal, onCleanup } from 'solid-js';
-import { Authenticated, AuthForm, CanvasGridBg, Layout, SignOutButton, Unauthenticated, Uppercase } from '~/components';
+import { createEffect, createSignal, onCleanup, Show } from 'solid-js';
+import {
+  Authenticated,
+  AuthForm,
+  CanvasGridBg,
+  Layout,
+  RerollAnonymousNameButton,
+  SignOutButton,
+  Unauthenticated,
+  Uppercase,
+} from '~/components';
 import { Countdown } from '../Home/components/Countdown';
 import { Hourglass, Laptop, Magnifier } from '~/icons';
 
@@ -8,39 +17,69 @@ export function Invitation() {
   return (
     <Layout>
       <Countdown time={new Date(codingStart)} />
-      <CanvasGridBg>
-        <div class="p-4">
-          <h1 class="font-pixel py-12 text-center text-xl sm:text-2xl md:text-3xl">
-            <GlitchText text="you are invited!" />
-          </h1>
-        </div>
-      </CanvasGridBg>
-      <div>
-        <p class="text-indigo-200">
-          <b class="text-white">hackathon</b> starting{' '}
-          <time class="font-bold text-white">Friday, October 18th evening</time> and ending{' '}
-          <time class="font-bold text-white">Sunday, October 20th day</time>
-        </p>
-        <ul class="my-4 grid gap-4 sm:grid-cols-3">
-          <li class="flex flex-col items-center gap-4 border border-indigo-300/50 p-4 backdrop-blur">
-            <Hourglass class="h-12 w-12 text-indigo-300" />
-            <p class="text-center">create a project over one weekend</p>
-          </li>
-          <li class="flex flex-col items-center gap-4 border border-indigo-300/50 p-4 backdrop-blur">
-            <Laptop class="h-12 w-12 text-indigo-300" />
-            <p class="text-center">work solo or in teams</p>
-          </li>
-          <li class="flex flex-col items-center gap-4 border border-indigo-300/50 p-4 backdrop-blur">
-            <Magnifier class="h-12 w-12 text-indigo-300" />
-            <p class="text-center">solve side quest puzzles</p>
-          </li>
-        </ul>
-      </div>
-
+      <hr class="border-indigo-500/30" />
+      <h1 class="font-pixel text-xl sm:text-2xl md:text-3xl">
+        <GlitchText text="you are invited!" />
+      </h1>
+      <Authenticated>
+        {({ anonymousName, username }) => (
+          <Show when={username !== 'tv'}>
+            <section class="flex flex-col gap-4">
+              <p>
+                <span class="text-indigo-300">welcome, </span>
+                <strong>{username}</strong>
+                <span class="font-bold text-indigo-300">!</span>
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <div>
+                  <span class="text-indigo-300">your anonymous username is</span> <strong>{anonymousName}</strong>.{' '}
+                  <br />
+                  <RerollAnonymousNameButton />
+                  <span class="text-indigo-300"> until you are happy with it.</span>
+                </div>
+              </div>
+            </section>
+          </Show>
+        )}
+      </Authenticated>
+      <p class="text-indigo-300">
+        you are cordially invited to a <strong class="text-white">hackathon</strong> starting{' '}
+        <time class="font-bold text-white">friday, october 18th @7pm</time> ending in the afternoon on{' '}
+        <time class="font-bold text-white">sunday, october 20th</time>.
+      </p>
+      <ul class="my-4 grid gap-4 sm:grid-cols-3">
+        <li>
+          <CanvasGridBg>
+            <div class="flex flex-col items-center gap-4 p-4">
+              <Hourglass class="h-12 w-12 text-indigo-200" />
+              <p class="text-center font-bold">create a project over one weekend</p>
+            </div>
+          </CanvasGridBg>
+        </li>
+        <li>
+          <CanvasGridBg>
+            <div class="flex flex-col items-center gap-4 p-4">
+              <Laptop class="h-12 w-12 text-indigo-200" />
+              <p class="text-center font-bold">
+                work solo <br />
+                or in teams
+              </p>
+            </div>
+          </CanvasGridBg>
+        </li>
+        <li>
+          <CanvasGridBg>
+            <div class="flex flex-col items-center gap-4 p-4">
+              <Magnifier class="h-12 w-12 text-indigo-200" />
+              <p class="text-center font-bold">solve side quest puzzles</p>
+            </div>
+          </CanvasGridBg>
+        </li>
+      </ul>
+      <hr class="border-indigo-500/30" />
       <Unauthenticated>
         <AuthForm />
       </Unauthenticated>
-
       <div class="grid gap-2">
         <Uppercase as="h3" class="mt-2">
           logistics
@@ -94,6 +133,7 @@ export function Invitation() {
         </ul>
       </div>
       <Authenticated>
+        <hr class="border-indigo-500/30" />
         <div>
           <SignOutButton />
         </div>

@@ -1,7 +1,17 @@
-import { createSignal, Match, Show, Switch, type Component, type JSX, type ParentComponent } from 'solid-js';
+import {
+  createEffect,
+  createSignal,
+  Match,
+  Show,
+  Switch,
+  type Component,
+  type JSX,
+  type ParentComponent,
+} from 'solid-js';
 import { mutate, trpc, invalidate, query, type RouterOutput } from '../trpc';
 import { Button, ButtonPrimary } from './Button';
 import { Input } from './Input';
+import { flashMessage } from './FlashMessage';
 
 export function SignOutButton() {
   const logout = mutate(trpc.signOut, {
@@ -30,12 +40,65 @@ export function RerollAnonymousNameButton() {
   );
 }
 
-export function AuthForm() {
-  const [username, setUsername] = createSignal('');
-  const [password, setPassword] = createSignal('');
+const BitInput: Component<{
+  disabled: boolean;
+  onStateChange: (valid: boolean) => void;
+}> = (props) => {
   const bitsAmount = 8;
   const randomNumber = Math.floor(Math.random() * 50 + 50);
   const [bitState, setBitState] = createSignal(Array.from({ length: bitsAmount }, () => false));
+  const bitStateNumber = () =>
+    parseInt(
+      bitState()
+        .map((bit) => (bit ? '1' : '0'))
+        .join(''),
+      2,
+    );
+
+  const bitsMatchNumber = () => bitStateNumber() === randomNumber;
+
+  createEffect(() => {
+    if (bitsMatchNumber()) {
+      flashMessage('hacker');
+    }
+  });
+
+  return (
+    <div class="flex flex-wrap items-center gap-4">
+      <p class="text-indigo-200">
+        Enter <data class="font-bold text-white">{randomNumber}</data> to prove you are a hacker:
+      </p>
+      <div class="flex items-center gap-2">
+        {bitState().map((bit, i) => (
+          <input
+            class="h-4 w-4 accent-indigo-500"
+            type="checkbox"
+            disabled={props.disabled}
+            checked={bit}
+            onChange={(e) => {
+              setBitState((prev) => {
+                const next = [...prev];
+                next[i] = e.currentTarget.checked;
+                return next;
+              });
+              props.onStateChange(bitsMatchNumber());
+            }}
+          />
+        ))}
+        <p>
+          = <output class="font-bold">{bitStateNumber()}</output>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export function AuthForm() {
+  const [username, setUsername] = createSignal('');
+  const [password, setPassword] = createSignal('');
+  const [inviteCode, setInviteCode] = createSignal('');
+  const [bitsAreValid, setBitsAreValid] = createSignal(false);
+
   const authenticate = mutate(trpc.authenticate, {
     onError(err: Error) {
       alert(err.message ?? 'Unable to authenticate');
@@ -44,25 +107,17 @@ export function AuthForm() {
       invalidate('status');
     },
   });
-  const bitStateNumber = () =>
-    parseInt(
-      bitState()
-        .map((bit) => (bit ? '1' : '0'))
-        .join(''),
-      2,
-    );
-  const bitsMatchNumber = () => bitStateNumber() === randomNumber;
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
     authenticate.mutate({ username: username(), password: password() });
   };
 
-  const isSubmitDisabled = () => !bitsMatchNumber() || authenticate.isPending || !username() || !password();
+  const isSubmitDisabled = () => !bitsAreValid() || authenticate.isPending || !username() || !password();
 
   return (
     <div class="grid">
-      <h2 class="font-pixel text-2xl leading-loose">sign up</h2>
+      <h2 class="font-pixel text-2xl leading-loose">register</h2>
       <form onSubmit={handleSubmit} class="grid gap-4">
         <div class="flex flex-wrap gap-4">
           <Input
@@ -81,33 +136,21 @@ export function AuthForm() {
             value={password()}
             onInput={(e) => setPassword(e.currentTarget.value)}
           />
+          <Input
+            class="w-28"
+            type="text"
+            placeholder="invite code"
+            disabled={authenticate.isPending}
+            value={inviteCode()}
+            onInput={(e) => setInviteCode(e.currentTarget.value)}
+          />
         </div>
-        <p>
-          Enter <b>{randomNumber}</b> to prove you are a hacker:
-        </p>
-        <div class="flex items-center gap-2">
-          {bitState().map((bit, i) => (
-            <input
-              class="h-4 w-4 accent-indigo-500"
-              type="checkbox"
-              disabled={authenticate.isPending}
-              checked={bit}
-              onChange={(e) => {
-                setBitState((prev) => {
-                  const next = [...prev];
-                  next[i] = e.currentTarget.checked;
-                  return next;
-                });
-              }}
-            />
-          ))}
-          <p>
-            = <b>{bitStateNumber()}</b>{' '}
-          </p>
+        <BitInput disabled={authenticate.isPending} onStateChange={(valid) => setBitsAreValid(valid)} />
+        <div>
+          <ButtonPrimary type="submit" disabled={isSubmitDisabled()}>
+            submit
+          </ButtonPrimary>
         </div>
-        <ButtonPrimary type="submit" disabled={isSubmitDisabled()}>
-          submit
-        </ButtonPrimary>
       </form>
     </div>
   );
