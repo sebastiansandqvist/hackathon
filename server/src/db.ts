@@ -1,7 +1,9 @@
+import { env } from './env';
 import type { FoodGame, Project, PublicMessage, User } from './types';
 import { wait } from './util';
 
 type Db = {
+  version: 1;
   users: User[];
   times: {
     codingStart: string;
@@ -18,11 +20,13 @@ type Db = {
 };
 
 let dbText = '';
+const dbFileLocation = env.NODE_ENV === 'development' ? './db.json' : '/var/data/db.json';
 try {
-  const dbFile = Bun.file('./db.json');
+  const dbFile = Bun.file(dbFileLocation);
   dbText = await dbFile.text();
 } catch (err) {
   const seedDbState: Db = {
+    version: 1,
     users: [
       {
         anonymousName: 'tv',
@@ -66,7 +70,7 @@ try {
     projects: [],
   };
   dbText = JSON.stringify(seedDbState, null, 2);
-  await Bun.write('./db.json', dbText);
+  await Bun.write(dbFileLocation, dbText);
 }
 
 export const db = JSON.parse(dbText) as Db;
@@ -77,7 +81,7 @@ async function saveDbState() {
   if (lastDbState !== dbState) {
     lastDbState = dbState;
     console.log('Saving db state to disk');
-    await Bun.write('./db.json', dbState);
+    await Bun.write(dbFileLocation, dbState);
   }
 }
 
