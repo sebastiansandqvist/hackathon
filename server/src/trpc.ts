@@ -4,6 +4,7 @@ import type { CreateHTTPContextOptions } from '@trpc/server/adapters/standalone'
 import type { IncomingMessageWithBody } from '@trpc/server/adapters/node-http';
 import type { User } from './types';
 import { createLimiter } from './ratelimit';
+import { env } from './env';
 
 const t = initTRPC.context<Context>().create();
 
@@ -101,7 +102,7 @@ export const basicAuthedProcedure = t.procedure
     }
 
     const [username, password] = Buffer.from(authHeader.slice('Basic '.length), 'base64').toString().split(':');
-    if (username !== 'abc' && password !== '123') {
+    if (username !== env.BASICAUTH_USERNAME && password !== env.BASICAUTH_PASSWORD) {
       ctx.res.setHeader('WWW-Authenticate', 'Basic');
       throw new TRPCError({
         code: 'UNAUTHORIZED',
