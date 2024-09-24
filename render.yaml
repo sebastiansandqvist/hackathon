@@ -19,6 +19,8 @@ services:
       - path: /*
         name: Cache-Control
         value: public, max-age=300
+    staticPublishPath: ./client/dist
+
   - type: web
     name: hackathon-client
     buildCommand: cd server &&
@@ -89,6 +91,7 @@ services:
         value: public, max-age=31536000
     pullRequestPreviewsEnabled: false
     staticPublishPath: ./client/dist
+
   - type: web
     runtime: node
     name: hackathon-server
