@@ -66,7 +66,17 @@ const BitInput: Component<{
   return (
     <div class="flex flex-wrap items-center gap-4">
       <p class="text-indigo-200">
-        Enter <data class="font-bold text-white">{randomNumber}</data> to prove you are a hacker:
+        Enter{' '}
+        <data
+          class="font-bold"
+          classList={{
+            'text-white': !bitsMatchNumber(),
+            'text-emerald-400': bitsMatchNumber(),
+          }}
+        >
+          {randomNumber}
+        </data>{' '}
+        to prove you are a hacker:
       </p>
       <div class="flex items-center gap-2">
         {bitState().map((bit, i) => (
@@ -86,7 +96,16 @@ const BitInput: Component<{
           />
         ))}
         <p>
-          = <output class="font-bold">{bitStateNumber()}</output>
+          ={' '}
+          <output
+            class="font-bold"
+            classList={{
+              'text-white': !bitsMatchNumber(),
+              'text-emerald-400': bitsMatchNumber(),
+            }}
+          >
+            {bitStateNumber()}
+          </output>
         </p>
       </div>
     </div>
