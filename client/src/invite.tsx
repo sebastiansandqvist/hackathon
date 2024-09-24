@@ -18,7 +18,7 @@ render(
         <Route path="*404" component={NotFound} />
       </Router>
       <Authenticated>
-      <Chat />
+        <Chat />
       </Authenticated>
       <HomepageMessageFlasher />
       <FlashMessageContainer />
