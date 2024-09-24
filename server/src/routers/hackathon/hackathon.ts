@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { authedProcedure, maybeAuthedProcedure, publicProcedure, router } from '../../trpc';
+import { authedProcedure, basicAuthedProcedure, maybeAuthedProcedure, publicProcedure, router } from '../../trpc';
 import { db } from '../../db';
 import { nanoid } from '../../util';
 
@@ -288,4 +288,5 @@ export const hackathonRouter = router({
       canEdit,
     };
   }),
+  db: basicAuthedProcedure.query(() => db),
 });

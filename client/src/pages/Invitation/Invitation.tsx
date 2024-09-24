@@ -54,10 +54,10 @@ const SuggestTheme: Component<{ initialThemeSuggestion: string }> = (props) => {
 };
 
 export function Invitation() {
-  const codingStart = new Date('2024-10-18T19:00:00.000-07:00').toISOString();
+  const codingStart = new Date('2024-10-18T19:00:00.000-07:00');
   return (
     <Layout>
-      <Countdown time={new Date(codingStart)} />
+      <Countdown time={codingStart} />
       <hr class="border-indigo-500/30" />
       <h1 class="font-pixel text-xl sm:text-2xl md:text-3xl">
         <Glitch>you are invited!</Glitch>

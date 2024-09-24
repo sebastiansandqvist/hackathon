@@ -1,8 +1,9 @@
-import { initTRPC } from '@trpc/server';
+import { initTRPC, TRPCError } from '@trpc/server';
 import { db } from './db';
 import type { CreateHTTPContextOptions } from '@trpc/server/adapters/standalone';
 import type { IncomingMessageWithBody } from '@trpc/server/adapters/node-http';
 import type { User } from './types';
+import { createLimiter } from './ratelimit';
 
 const t = initTRPC.context<Context>().create();
 
@@ -51,11 +52,11 @@ function parseCookie(cookie: string) {
 
 function getUserFromCookie(req: IncomingMessageWithBody) {
   const cookie = req.headers.cookie;
-  if (!cookie) throw new Error('Missing cookie');
+  if (!cookie) throw new Error('unauthorized');
   const sessionId = parseCookie(cookie)['Session-Id'];
-  if (!sessionId) throw new Error('Missing session ID');
+  if (!sessionId) throw new Error('unauthorized');
   const user = db.users.find((user) => user.sessions.find((session) => session.id === sessionId));
-  if (!user) throw new Error('Unauthorized');
+  if (!user) throw new Error('user not found');
   return { user, sessionId };
 }
 
@@ -74,5 +75,40 @@ export const maybeAuthedProcedure = t.procedure
     } catch (err) {
       return next();
     }
+  })
+  .use(logger);
+
+const limiter = createLimiter({ limit: 2, windowDuration: 60 * 1000 });
+export const basicAuthedProcedure = t.procedure
+  .use(async ({ ctx, next }) => {
+    const ip = ctx.req.socket.remoteAddress;
+    console.log(`ip ${ip} attempting basic auth`);
+    const { limited, retryAfter } = limiter(ip ?? 'unknown');
+    if (limited) {
+      throw new TRPCError({
+        code: 'TOO_MANY_REQUESTS',
+        message: `rate limit exceeded! retry in ${Math.floor((retryAfter ?? 0) / 1000)}s`,
+      });
+    }
+
+    const authHeader = ctx.req.headers.authorization;
+    if (!authHeader) {
+      ctx.res.setHeader('WWW-Authenticate', 'Basic');
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'unauthorized',
+      });
+    }
+
+    const [username, password] = Buffer.from(authHeader.slice('Basic '.length), 'base64').toString().split(':');
+    if (username !== 'abc' && password !== '123') {
+      ctx.res.setHeader('WWW-Authenticate', 'Basic');
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'unauthorized',
+      });
+    }
+
+    return next();
   })
   .use(logger);
