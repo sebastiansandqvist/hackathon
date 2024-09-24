@@ -2,10 +2,31 @@ import EventEmitter, { on } from 'node:events';
 import { z } from 'zod';
 import { authedProcedure, router } from '../../trpc';
 import { db } from '../../db';
+import { env } from '../../env';
 
 const ee = new EventEmitter<{ message: Message[] }>();
 type Message = { text: string; sentBy: string; timestamp: number; isAnonymous: boolean };
-const messages: Message[] = [];
+let messages: Message[] = [];
+
+const chatFileLocation = env.NODE_ENV === 'development' ? './chat.json' : '/var/data/chat.json';
+try {
+  const chatFile = Bun.file(chatFileLocation);
+  const chatFileTextText = await chatFile.text();
+  messages = JSON.parse(chatFileTextText);
+}
+catch (err) {
+  messages = [];
+}
+
+async function saveChatState() {
+  console.log('Saving chat state to disk');
+  await Bun.write(chatFileLocation, JSON.stringify(messages, null, 2));
+}
+
+process.on('beforeExit', async () => {
+  await saveChatState();
+});
+
 
 // prevent warnings about memory leaks since we expect more than 10 (the default)
 // concurrent listeners on the message event emitter
