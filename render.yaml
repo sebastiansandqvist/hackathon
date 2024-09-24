@@ -5,6 +5,9 @@ services:
       - hackvegas.lol
       - www.hackvegas.lol
     runtime: static
+    buildFilter:
+      paths:
+        - redirect/**/*
     routes:
       - type: redirect
         source: /
