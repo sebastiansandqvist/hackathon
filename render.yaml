@@ -15,13 +15,13 @@ services:
     runtime: static
     envVars:
       - key: VITE_API_URL
-        value: 'https://api.hackvegas.lol'
+        value: 'https://api-2024.hackvegas.lol'
       - key: SKIP_INSTALL_DEPS
         value: 'true'
     headers:
       - path: /*
         name: Content-Security-Policy
-        value: "default-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data: api.hackvegas.lol; connect-src 'self' api.hackvegas.lol; object-src 'none'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com; frame-ancestors 'none'; upgrade-insecure-requests; block-all-mixed-content"
+        value: "default-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data: *.hackvegas.lol; connect-src 'self' *.hackvegas.lol; object-src 'none'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com; frame-ancestors 'none'; upgrade-insecure-requests; block-all-mixed-content"
       - path: /*
         name: Cross-Origin-Embedder-Policy
         value: unsafe-none
@@ -74,11 +74,10 @@ services:
     name: hackathon-server
     buildCommand: bun i
     domains:
-      - api.hackvegas.lol
+      - api-2024.hackvegas.lol
     envVars:
       - key: CLIENT_URL
         value: 'https://hackvegas.lol'
-    healthCheckPath: /healthz
     plan: starter
     pullRequestPreviewsEnabled: false
     region: oregon

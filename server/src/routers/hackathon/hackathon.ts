@@ -24,10 +24,12 @@ function calculateCheckpoints() {
 const rootRoute = '';
 export const hackathonRouter = router({
   [rootRoute]: publicProcedure.query(() => ({
+    env: process.env.NODE_ENV,
     uptime: process.uptime(),
-    version: process.version,
+    users: db.users.length,
+    projects: db.projects.length,
+    client: process.env.CLIENT_URL,
   })),
-  healthz: publicProcedure.query(() => 'ok'), // for zero downtime deploys
   homepage: publicProcedure.query(() => {
     const message = db.publicMessages.at(-1)!;
     const sideQuestProgress = db.users.map((user) => ({
