@@ -3,6 +3,7 @@ import type { FoodGame, Project, PublicMessage, User } from './types';
 import { wait } from './util';
 
 type Db = {
+  version: 1;
   users: User[];
   times: {
     codingStart: string;
@@ -25,6 +26,7 @@ try {
   dbText = await dbFile.text();
 } catch (err) {
   const seedDbState: Db = {
+    version: 1,
     users: [
       {
         anonymousName: 'tv',
