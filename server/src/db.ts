@@ -1,9 +1,9 @@
-import { env } from './env';
-import type { FoodGame, Project, PublicMessage, User } from './types';
+import type { FoodGame, Message, Project, PublicMessage, User } from './types';
 import { wait } from './util';
+import { env } from './env';
 
 type Db = {
-  version: 1;
+  version: 1 | 2;
   users: User[];
   times: {
     codingStart: string;
@@ -17,6 +17,7 @@ type Db = {
   publicMessages: PublicMessage[];
   visibleSections: string[];
   projects: Project[];
+  chat: Message[];
 };
 
 let dbText = '';
@@ -26,7 +27,7 @@ try {
   dbText = await dbFile.text();
 } catch (err) {
   const seedDbState: Db = {
-    version: 1,
+    version: 2,
     users: [
       {
         anonymousName: 'tv',
@@ -68,12 +69,20 @@ try {
     },
     publicMessages: [{ createdAt: Date.now(), text: 'Welcome!', userId: '' }],
     projects: [],
+    chat: [],
   };
   dbText = JSON.stringify(seedDbState, null, 2);
   await Bun.write(dbFileLocation, dbText);
 }
 
 export const db = JSON.parse(dbText) as Db;
+
+(function migration() {
+  if (db.version === 1) {
+    db.version = 2;
+    db.chat = [];
+  }
+})();
 
 let lastDbState = dbText;
 async function saveDbState() {

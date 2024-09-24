@@ -2,10 +2,9 @@ import EventEmitter, { on } from 'node:events';
 import { z } from 'zod';
 import { authedProcedure, router } from '../../trpc';
 import { db } from '../../db';
+import type { Message } from '../../types';
 
 const ee = new EventEmitter<{ message: Message[] }>();
-type Message = { text: string; sentBy: string; timestamp: number; isAnonymous: boolean };
-const messages: Message[] = [];
 
 // prevent warnings about memory leaks since we expect more than 10 (the default)
 // concurrent listeners on the message event emitter
@@ -34,11 +33,12 @@ export const chatRouter = router({
         timestamp: Date.now(),
         isAnonymous: input.isAnonymous,
       };
-      messages.push(message);
+      db.chat.push(message);
+      if (db.chat.length > 100) db.chat.shift();
       ee.emit('message', message);
     }),
   subscribeToChat: authedProcedure.subscription(async function* () {
-    yield { kind: 'onSubscribe' as const, messages: messages.map(mapMessageSender).slice(-100) };
+    yield { kind: 'onSubscribe' as const, messages: db.chat.map(mapMessageSender) };
     for await (const [message] of on(ee, 'message') as AsyncIterableIterator<[Message]>) {
       yield { kind: 'onMessage' as const, message: mapMessageSender(message) };
     }

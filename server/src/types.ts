@@ -46,3 +46,10 @@ export type Project = {
     };
   }[];
 };
+
+export type Message = {
+  text: string;
+  sentBy: string;
+  timestamp: number;
+  isAnonymous: boolean;
+};
