@@ -7,6 +7,10 @@ const ee = new EventEmitter<{ message: Message[] }>();
 type Message = { text: string; sentBy: string; timestamp: number; isAnonymous: boolean };
 const messages: Message[] = [];
 
+// prevent warnings about memory leaks since we expect more than 10 (the default)
+// concurrent listeners on the message event emitter
+ee.setMaxListeners(100);
+
 function mapMessageSender(message: Message) {
   const field = message.isAnonymous ? 'anonymousName' : 'username';
   return {
