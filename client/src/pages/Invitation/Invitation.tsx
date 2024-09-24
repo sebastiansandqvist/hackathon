@@ -1,9 +1,12 @@
-import { Show } from 'solid-js';
+import { createSignal, Show, type Component } from 'solid-js';
 import {
   Authenticated,
   AuthForm,
+  ButtonPrimary,
   CanvasGridBg,
+  flashMessage,
   Glitch,
+  Input,
   Layout,
   RerollAnonymousNameButton,
   SectionHeading,
@@ -12,7 +15,43 @@ import {
   Uppercase,
 } from '~/components';
 import { Hourglass, Laptop, Magnifier } from '~/icons';
+import { invalidate, mutate, trpc } from '~/trpc';
 import { Countdown } from '../Home/components/Countdown';
+
+const SuggestTheme: Component<{ initialThemeSuggestion: string }> = (props) => {
+  const [themeSuggestion, setThemeSuggestion] = createSignal(props.initialThemeSuggestion);
+  const suggestTheme = mutate(trpc.suggestTheme, {
+    onSuccess() {
+      flashMessage('saved!');
+      invalidate('status');
+    },
+  });
+
+  return (
+    <form
+      class="flex items-center gap-2"
+      onSubmit={(e) => {
+        e.preventDefault();
+        suggestTheme.mutate({ theme: themeSuggestion() });
+      }}
+    >
+      <Input
+        type="text"
+        placeholder="your suggestion..."
+        value={themeSuggestion()}
+        onInput={(e) => setThemeSuggestion(e.currentTarget.value)}
+      />
+      <ButtonPrimary
+        type="submit"
+        disabled={
+          suggestTheme.isPending || themeSuggestion() === '' || themeSuggestion() === props.initialThemeSuggestion
+        }
+      >
+        save
+      </ButtonPrimary>
+    </form>
+  );
+};
 
 export function Invitation() {
   const codingStart = new Date('2024-10-18T19:00:00.000-07:00').toISOString();
@@ -76,7 +115,34 @@ export function Invitation() {
       <Unauthenticated>
         <AuthForm />
       </Unauthenticated>
-      <div class="grid gap-2">
+      <Authenticated>
+        {({ themeSuggestion }) => (
+          <>
+            <section class="grid gap-4">
+              <SectionHeading>
+                <Glitch loopFrequency={40000}>theme</Glitch>
+              </SectionHeading>
+              <p class="text-indigo-300">
+                help us pick this year's hackathon theme! we're looking for something that works for{' '}
+                <strong>apps</strong>, <strong>websites</strong>, and
+                <strong>games</strong>. some ideas to get you started:
+              </p>
+              <ul class="grid list-outside list-disc gap-4 py-4 pl-10 text-indigo-100 marker:text-indigo-300/75">
+                <li>cooperation / asymmetry</li>
+                <li>technologize your non-tech hobby</li>
+                <li>impermanent</li>
+                <li>limited information</li>
+                <li>randomness</li>
+                <li>
+                  <SuggestTheme initialThemeSuggestion={themeSuggestion} />
+                </li>
+              </ul>
+            </section>
+            <hr class="border-indigo-500/30" />
+          </>
+        )}
+      </Authenticated>
+      <section class="grid gap-2">
         <SectionHeading>
           <Glitch loopFrequency={20000}>hackathon info</Glitch>
         </SectionHeading>
@@ -130,7 +196,7 @@ export function Invitation() {
             </li>
           </ul>
         </ul>
-      </div>
+      </section>
       <Authenticated>
         <hr class="border-indigo-500/30" />
         <div>

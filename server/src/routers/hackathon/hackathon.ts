@@ -51,6 +51,9 @@ export const hackathonRouter = router({
   revealHomepageSection: authedProcedure.input(z.object({ section: z.string() })).mutation(({ input }) => {
     db.visibleSections.push(input.section);
   }),
+  suggestTheme: authedProcedure.input(z.object({ theme: z.string() })).mutation(({ input, ctx }) => {
+    ctx.user.themeSuggestions.push(input.theme);
+  }),
   updateFoodGame: authedProcedure
     .input(
       z.object({

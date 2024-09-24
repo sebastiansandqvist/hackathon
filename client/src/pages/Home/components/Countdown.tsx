@@ -25,7 +25,7 @@ export const Countdown: Component<{ time: Date }> = (props) => {
   return (
     <div class="font-dot relative mx-auto text-6xl sm:text-8xl md:text-9xl">
       <time class="bg-gradient-to-b from-white to-violet-500 bg-clip-text text-transparent">{countdownValue()}</time>
-      <p class="pointer-events-none absolute top-0 text-blue-400 blur-lg">{countdownValue()}</p>
+      <p class="pointer-events-none absolute top-0 text-blue-400 blur-lg select-none">{countdownValue()}</p>
     </div>
   );
 };

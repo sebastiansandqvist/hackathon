@@ -15,7 +15,7 @@ function generateUsername() {
 }
 
 for (let i = 0; i < 10; i++) {
-  // console.log(generateUsername());
+  console.log(generateUsername());
 }
 
 export const authRouter = router({
@@ -28,6 +28,7 @@ export const authRouter = router({
         anonymousName: user.anonymousName,
         sideQuests: user.sideQuests,
         hintDeductions: user.hintDeductions,
+        themeSuggestion: user.themeSuggestions[user.themeSuggestions.length - 1] ?? '',
       };
     }
     return { isAuthed: false as const };
@@ -58,6 +59,7 @@ export const authRouter = router({
         sessions: [{ id: sessionId, created: Date.now() }],
         renameCounter: 0,
         hintDeductions: 0,
+        themeSuggestions: [],
         sideQuests: {
           algorithms: { easy: null, hard: null },
           forensics: { easy: null, hard: null },
@@ -68,7 +70,6 @@ export const authRouter = router({
         },
       });
       ctx.res.setHeader('Set-Cookie', cookie(sessionId));
-      return { foo: 'bar' };
     }),
   signOut: authedProcedure.mutation(({ ctx }) => {
     ctx.user.sessions = ctx.user.sessions.filter((session) => session.id !== ctx.sessionId);
