@@ -129,7 +129,10 @@ export function AuthForm() {
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
-    authenticate.mutate({ username: username(), password: password() });
+    authenticate.mutate({
+      username: username(),
+      password: password(),
+    });
   };
 
   const isSubmitDisabled = () => !bitsAreValid() || authenticate.isPending || !username() || !password();
@@ -155,14 +158,14 @@ export function AuthForm() {
             value={password()}
             onInput={(e) => setPassword(e.currentTarget.value)}
           />
-          <Input
+          {/* <Input
             class="w-28"
             type="text"
             placeholder="invite code"
             disabled={authenticate.isPending}
             value={inviteCode()}
             onInput={(e) => setInviteCode(e.currentTarget.value)}
-          />
+          /> */}
         </div>
         <BitInput disabled={authenticate.isPending} onStateChange={(valid) => setBitsAreValid(valid)} />
         <div>

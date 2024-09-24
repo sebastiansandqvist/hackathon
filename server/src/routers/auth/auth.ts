@@ -34,7 +34,10 @@ export const authRouter = router({
     return { isAuthed: false as const };
   }),
   authenticate: publicProcedure
-    .input(z.object({ username: z.string().min(1), password: z.string().min(1) }))
+    .input(z.object({
+      username: z.string().min(1),
+      password: z.string().min(1),
+    }))
     .mutation(async ({ input, ctx }) => {
       const user = db.users.find((user) => user.username === input.username);
       const sessionId = crypto.randomUUID();
@@ -42,7 +45,7 @@ export const authRouter = router({
       // if a user exists, try to sign in
       if (user) {
         if (!(await Bun.password.verify(input.password, user.password))) {
-          throw new Error('Incorrect password');
+          throw new Error('incorrect password');
         }
         user.sessions.push({ id: sessionId, created: Date.now() });
         if (user.sessions.length > 3) user.sessions.shift(); // support up to 3 concurrent sessions
