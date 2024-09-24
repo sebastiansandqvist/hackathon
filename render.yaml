@@ -12,6 +12,7 @@ services:
         - server/**/*
     domains:
       - hackvegas.lol
+      - 2024.hackvegas.lol
     runtime: static
     envVars:
       - key: VITE_API_URL
