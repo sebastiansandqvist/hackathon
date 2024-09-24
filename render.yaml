@@ -78,7 +78,7 @@ services:
       - api-2024.hackvegas.lol
     envVars:
       - key: CLIENT_URL
-        value: 'https://hackvegas.lol'
+        value: 'https://2024.hackvegas.lol'
     plan: starter
     pullRequestPreviewsEnabled: false
     region: oregon
