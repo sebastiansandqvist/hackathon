@@ -124,8 +124,8 @@ export function Invitation() {
               </SectionHeading>
               <p class="text-indigo-300">
                 help us pick this year's hackathon theme! we're looking for something that works for{' '}
-                <strong>apps</strong>, <strong>websites</strong>, and
-                <strong>games</strong>. some ideas to get you started:
+                <strong>apps</strong>, <strong>websites</strong>, and <strong>games</strong>. some ideas to get you
+                started:
               </p>
               <ul class="grid list-outside list-disc gap-4 py-4 pl-10 text-indigo-100 marker:text-indigo-300/75">
                 <li>cooperation / asymmetry</li>
