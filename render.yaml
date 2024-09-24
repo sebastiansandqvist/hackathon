@@ -5,6 +5,20 @@ services:
       - hackvegas.lol
       - www.hackvegas.lol
     runtime: static
+    buildCommand: cd server &&
+      bun i &&
+      cd ../client &&
+      bun i &&
+      bun run build
+    buildFilter:
+      paths:
+        - client/**/*
+        - server/**/*
+    envVars:
+      - key: VITE_API_URL
+        value: 'https://api-2024.hackvegas.lol'
+      - key: SKIP_INSTALL_DEPS
+        value: 'true'
     routes:
       - type: redirect
         source: /
