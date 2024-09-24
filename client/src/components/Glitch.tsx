@@ -1,6 +1,6 @@
 import { createQuery } from '@tanstack/solid-query';
 import { type Component, createSignal } from 'solid-js';
-import { shuffle, wait } from '~/util';
+import { randomInRange, shuffle, wait } from '~/util';
 
 function randomGlitchChar() {
   const possibilites =
@@ -32,7 +32,7 @@ export const Glitch: Component<{ children: string; loopFrequency?: number }> = (
     if (glitchCharIndex === undefined) return;
 
     const glitchFrequency = 100;
-    const iterations = 10;
+    const iterations = randomInRange(5, 15);
     for (let i = 0; i < iterations; i++) {
       await wait(glitchFrequency);
       const newText = glitchText().split('');

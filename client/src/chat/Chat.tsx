@@ -68,29 +68,26 @@ export function Chat() {
     const deltaY = e.clientY - initialPointerY;
     initialPointerX = e.clientX;
     initialPointerY = e.clientY;
-    setWidth((w) =>
-      clamp({
-        min: 200,
-        max: window.innerWidth - 20,
-        value: w - deltaX,
-      }),
-    );
-    setHeight((h) =>
-      clamp({
-        min: 180,
-        max: window.innerHeight - 20,
-        value: h - deltaY,
-      }),
-    );
-    // setWidth((w) => Math.max(Math.min(w - deltaX, window.innerWidth - 20), 200));
-    // setHeight((h) => Math.max(Math.min(h - deltaY, window.innerHeight - 20), 180));
+    setWidth((w) => clamp({ min: 208, max: window.innerWidth - 20, value: w - deltaX }));
+    setHeight((h) => clamp({ min: 120, max: window.innerHeight - 20, value: h - deltaY }));
   };
 
+  const handleResize = () => {
+    setWidth((w) => clamp({ min: 208, max: window.innerWidth - 20, value: w }));
+    setHeight((h) => clamp({ min: 120, max: window.innerHeight - 20, value: h }));
+  };
+
+  onMount(() => {
+    handleResize();
+  });
+
+  window.addEventListener('resize', handleResize);
   window.addEventListener('pointermove', handlePointerMove);
   window.addEventListener('pointerup', handlePointerUp);
 
   onCleanup(() => {
     chat.unsubscribe();
+    window.removeEventListener('resize', handleResize);
     window.removeEventListener('pointermove', handlePointerMove);
     window.removeEventListener('pointerup', handlePointerUp);
   });
@@ -98,10 +95,13 @@ export function Chat() {
   return (
     <Authenticated>
       <div
-        class="fixed right-0 bottom-0 z-10 grid gap-2 border border-indigo-300/50 border-r-transparent border-b-transparent"
+        class="fixed right-0 bottom-0 z-10 grid gap-2 border border-r-transparent border-b-transparent"
         classList={{
-          'text-indigo-200 hover:text-white hover:bg-indigo-900 backdrop-blur-2xl': collapsed(),
+          'text-indigo-200 hover:text-white backdrop-blur-2xl': collapsed(),
           'transition-all': collapsed() || isAnimating(),
+          'border-indigo-300/50': unreadMessages() === 0,
+          'hover:bg-indigo-900': collapsed() && unreadMessages() === 0,
+          'border-blue-500 hover:border-blue-400': unreadMessages() > 0,
         }}
         style={{
           width: collapsed() ? `96px` : `${width()}px`,
@@ -114,6 +114,9 @@ export function Chat() {
         <Show when={collapsed()}>
           <button
             class="cursor-pointer py-2 text-sm"
+            classList={{
+              'bg-blue-700 hover:bg-blue-600': unreadMessages() > 0,
+            }}
             onClick={() => {
               setIsAnimating(true);
               setCollapsed(false);
@@ -125,7 +128,7 @@ export function Chat() {
           >
             <strong>chat</strong>
             <Show when={unreadMessages() > 0}>
-              : <span class="text-blue-500">({unreadMessages()})</span>
+              : <span class="text-white">({unreadMessages()})</span>
             </Show>
           </button>
         </Show>
