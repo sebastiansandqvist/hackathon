@@ -1,5 +1,24 @@
 services:
   - type: web
+    name: hackathon-client-redirect
+    domains:
+      - hackvegas.lol
+    runtime: static
+    routes:
+      - type: redirect
+        source: /
+        destination: https://2024.hackvegas.lol
+      - type: redirect
+        source: /*
+        destination: https://2024.hackvegas.lol/*
+    headers:
+      - path: /
+        name: Cache-Control
+        value: public, max-age=300
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=300
+  - type: web
     name: hackathon-client
     buildCommand: cd server &&
       bun i &&
@@ -11,7 +30,6 @@ services:
         - client/**/*
         - server/**/*
     domains:
-      - hackvegas.lol
       - 2024.hackvegas.lol
     runtime: static
     envVars:
