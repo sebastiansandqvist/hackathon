@@ -3,6 +3,7 @@ services:
     name: hackathon-client-redirect
     domains:
       - hackvegas.lol
+      - www.hackvegas.lol
     runtime: static
     routes:
       - type: redirect
