@@ -82,15 +82,6 @@ export const maybeAuthedProcedure = t.procedure
 const limiter = createLimiter({ limit: 2, windowDuration: 60 * 1000 });
 export const basicAuthedProcedure = t.procedure
   .use(async ({ ctx, next }) => {
-    const ip = ctx.req.socket.remoteAddress;
-    console.log(`ip ${ip} attempting basic auth`);
-    const { limited, retryAfter } = limiter(ip ?? 'unknown');
-    if (limited) {
-      throw new TRPCError({
-        code: 'TOO_MANY_REQUESTS',
-        message: `rate limit exceeded! retry in ${Math.floor((retryAfter ?? 0) / 1000)}s`,
-      });
-    }
 
     const authHeader = ctx.req.headers.authorization;
     if (!authHeader) {
@@ -98,6 +89,16 @@ export const basicAuthedProcedure = t.procedure
       throw new TRPCError({
         code: 'UNAUTHORIZED',
         message: 'unauthorized',
+      });
+    }
+
+    const ip = ctx.req.socket.remoteAddress;
+    console.log(`ip ${ip} attempting basic auth`);
+    const { limited, retryAfter } = limiter(ip ?? 'unknown');
+    if (limited) {
+      throw new TRPCError({
+        code: 'TOO_MANY_REQUESTS',
+        message: `rate limit exceeded! retry in ${Math.floor((retryAfter ?? 0) / 1000)}s`,
       });
     }
 
