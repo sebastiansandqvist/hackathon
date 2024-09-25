@@ -1,11 +1,18 @@
 import { createQuery } from '@tanstack/solid-query';
 import { type Component, createSignal } from 'solid-js';
-import { randomInRange, shuffle, wait } from '~/util';
+import { randomInRange, shuffle, shuffleInPlace, wait } from '~/util';
+
+let glitchI = 0;
+let glitchChars = shuffle(
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+{}|:<>?~`-=[];',./".split(''),
+);
 
 function randomGlitchChar() {
-  const possibilites =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+{}|:<>?~`-=[];',./".split('');
-  return possibilites[Math.floor(Math.random() * possibilites.length)] || 'A';
+  if (glitchI >= glitchChars.length) {
+    shuffleInPlace(glitchChars);
+    glitchI = 0;
+  }
+  return glitchChars[glitchI++]!;
 }
 
 export const Glitch: Component<{ children: string; loopFrequency?: number }> = (props) => {
@@ -18,7 +25,7 @@ export const Glitch: Component<{ children: string; loopFrequency?: number }> = (
   const glitchify = async () => {
     // slightly randomize, randomly, to avoid synchronization
     if (Math.random() > 0.5) {
-      await wait((Math.random() * loopFrequency) / 2);
+      await wait((Math.random() * loopFrequency) / 8);
     } else {
       await wait((Math.random() * loopFrequency) / 5);
     }
@@ -40,8 +47,6 @@ export const Glitch: Component<{ children: string; loopFrequency?: number }> = (
       setGlitchText(newText.join(''));
     }
 
-    const loopDuration = 1000;
-    await wait(loopDuration - glitchFrequency * iterations);
     setGlitchText(props.children);
     return glitchText();
   };

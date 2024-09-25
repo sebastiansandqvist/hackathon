@@ -7,13 +7,17 @@ export function commaSeparatedList(input: string[]) {
   return list.join(', ');
 }
 
-export function shuffle<T>(items: T[]) {
-  const itemsCopy = [...items];
-  for (let i = itemsCopy.length - 1; i > 0; i--) {
+// shuffle that mutates the array
+export function shuffleInPlace<T>(items: T[]) {
+  for (let i = items.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [itemsCopy[i], itemsCopy[j]] = [itemsCopy[j]!, itemsCopy[i]!];
+    [items[i], items[j]] = [items[j]!, items[i]!];
   }
-  return itemsCopy;
+  return items;
+}
+
+export function shuffle<T>(items: T[]) {
+  return shuffleInPlace([...items]);
 }
 
 export function wait(ms: number) {
