@@ -1,11 +1,6 @@
 import { createSignal, onCleanup, For, createEffect } from 'solid-js';
 import { Canvas } from '~/components';
 
-// let frequency = 261.626; // Middle C frequency
-// setInterval(() => {
-//   frequency *= 2;
-// }, 1000);
-
 function makeSquareWaveBuffer(ctx: AudioContext, bufferFrequency: number) {
   const bufferSize = ctx.sampleRate * 0.001; // 1ms of sound
   const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
@@ -47,33 +42,35 @@ function makeSineWaveBuffer(ctx: AudioContext, bufferFrequency: number) {
   return buffer;
 }
 
-function tick(ctx: AudioContext, noiseBuffer: AudioBuffer, startTime: number) {
+function tick(ctx: AudioContext, noiseBuffer: AudioBuffer, startTime: number, analyser: AnalyserNode) {
   const noise = ctx.createBufferSource();
   noise.buffer = noiseBuffer;
 
   const envelope = ctx.createGain();
   noise.connect(envelope);
-  envelope.connect(ctx.destination);
+  envelope.connect(analyser);
+  analyser.connect(ctx.destination);
 
   envelope.gain.setValueAtTime(0.3, startTime);
-  envelope.gain.exponentialRampToValueAtTime(0.01, startTime + 0.001);
+  envelope.gain.exponentialRampToValueAtTime(0.005, startTime + 0.001);
 
   noise.start(startTime);
   noise.stop(startTime + 0.001);
 }
 
-function startTicking(ctx: AudioContext, noiseBuffer: AudioBuffer, frequency: number) {
+function startTicking(ctx: AudioContext, noiseBuffer: AudioBuffer, frequency: number, analyser: AnalyserNode) {
   let nextTickTime = ctx.currentTime;
   let frame: number;
 
   function scheduleTicks() {
     while (nextTickTime < ctx.currentTime + 0.1) {
-      // Schedule ahead for 100ms
-      tick(ctx, noiseBuffer, nextTickTime);
+      // schedule ahead for 100ms
+      tick(ctx, noiseBuffer, nextTickTime, analyser);
       nextTickTime += 1 / frequency;
     }
 
-    // Use requestAnimationFrame for continuous scheduling
+    // use requestAnimationFrame for continuous scheduling
+    // (also makes it so that switching tabs pauses the sound)
     frame = requestAnimationFrame(scheduleTicks);
   }
 
@@ -104,14 +101,13 @@ export function Synth() {
       audioCtx = new window.AudioContext();
       analyser = audioCtx.createAnalyser();
       analyser.connect(audioCtx.destination);
-      analyser.fftSize = 256;
-      // analyser.minDecibels = -100;
-      // analyser.maxDecibels = -30;
-      // analyser.smoothingTimeConstant = 1;
-      console.log(analyser.frequencyBinCount);
+      analyser.fftSize = 2048;
+      // analyser.minDecibels = -80;
+      analyser.maxDecibels = -60;
+      analyser.smoothingTimeConstant = 0.4;
     }
     const tickSound = makeSquareWaveBuffer(audioCtx, frequency);
-    stop = startTicking(audioCtx, tickSound, frequency);
+    stop = startTicking(audioCtx, tickSound, frequency, analyser);
   });
 
   onCleanup(() => {
@@ -154,32 +150,47 @@ export function Synth() {
       </fieldset>
       <div class="h-32 w-full">
         <Canvas
+          class="bg-blue-800/10"
           draw={(canvas, ctx) => {
             const rect = canvas.getBoundingClientRect();
             ctx.clearRect(0, 0, rect.width, rect.height);
 
             if (!analyser) return;
 
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, rect.width, rect.height);
+            const bufferLength = analyser.fftSize;
+            const dataArrayOriginal = new Uint8Array(bufferLength);
+            analyser.getByteFrequencyData(dataArrayOriginal);
+            // analyser.getByteTimeDomainData(dataArrayOriginal);
 
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            // analyser.getByteFrequencyData(dataArray);
-            analyser.getByteTimeDomainData(dataArray);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'rgb(0, 255, 0)';
+            ctx.beginPath();
 
-            const barWidth = (rect.width / bufferLength) * 2.5;
-            let barHeight;
+            const dataArray = dataArrayOriginal.slice(300, 1200);
+            const sliceWidth = canvas.width / dataArray.length;
             let x = 0;
 
-            for (let i = 0; i < bufferLength; i++) {
-              barHeight = dataArray[i]! / 2;
+            const max = Math.max(...dataArray);
+            const min = Math.min(...dataArray);
 
-              ctx.fillStyle = `rgb(${barHeight + 100} 50 50)`;
-              ctx.fillRect(x, rect.height - barHeight / 2, barWidth, barHeight);
-
-              x += barWidth + 1;
+            function scale(min: number, max: number, value: number) {
+              return (value - min) / (max - min);
             }
+
+            for (let i = 0; i < bufferLength; i++) {
+              const v = scale(min, max, dataArray[i]!);
+              const y = v * rect.height;
+
+              if (i === 0) {
+                ctx.moveTo(x, y);
+              } else {
+                ctx.lineTo(x, y);
+              }
+
+              x += sliceWidth;
+            }
+
+            ctx.stroke();
           }}
         />
       </div>
