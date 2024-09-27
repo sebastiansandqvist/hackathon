@@ -1,4 +1,5 @@
 import { createSignal, onCleanup, For, createEffect } from 'solid-js';
+import { Canvas } from '~/components';
 
 // let frequency = 261.626; // Middle C frequency
 // setInterval(() => {
@@ -91,21 +92,31 @@ export function Synth() {
   // const noiseBuffer = makeSineWaveBuffer(ctx, 261.626);
   const [freq, setFreq] = createSignal(0);
 
-  let ctx: AudioContext;
+  let audioCtx: AudioContext;
+  let analyser: AnalyserNode;
   let stop = () => {};
 
   createEffect(() => {
     const frequency = freq();
     stop();
     if (frequency === 0) return;
-    if (!ctx) ctx = new window.AudioContext();
-    const noiseBuffer = makeSquareWaveBuffer(ctx, frequency);
-    stop = startTicking(ctx, noiseBuffer, frequency);
+    if (!audioCtx) {
+      audioCtx = new window.AudioContext();
+      analyser = audioCtx.createAnalyser();
+      analyser.connect(audioCtx.destination);
+      analyser.fftSize = 256;
+      // analyser.minDecibels = -100;
+      // analyser.maxDecibels = -30;
+      // analyser.smoothingTimeConstant = 1;
+      console.log(analyser.frequencyBinCount);
+    }
+    const tickSound = makeSquareWaveBuffer(audioCtx, frequency);
+    stop = startTicking(audioCtx, tickSound, frequency);
   });
 
   onCleanup(() => {
     stop();
-    ctx?.close();
+    audioCtx?.close();
   });
 
   return (
@@ -141,6 +152,37 @@ export function Synth() {
           )}
         </For>
       </fieldset>
+      <div class="h-32 w-full">
+        <Canvas
+          draw={(canvas, ctx) => {
+            const rect = canvas.getBoundingClientRect();
+            ctx.clearRect(0, 0, rect.width, rect.height);
+
+            if (!analyser) return;
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, rect.width, rect.height);
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            // analyser.getByteFrequencyData(dataArray);
+            analyser.getByteTimeDomainData(dataArray);
+
+            const barWidth = (rect.width / bufferLength) * 2.5;
+            let barHeight;
+            let x = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+              barHeight = dataArray[i]! / 2;
+
+              ctx.fillStyle = `rgb(${barHeight + 100} 50 50)`;
+              ctx.fillRect(x, rect.height - barHeight / 2, barWidth, barHeight);
+
+              x += barWidth + 1;
+            }
+          }}
+        />
+      </div>
     </div>
   );
 }
