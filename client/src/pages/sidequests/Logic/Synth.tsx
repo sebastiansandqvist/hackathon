@@ -42,6 +42,20 @@ function makeSineWaveBuffer(ctx: AudioContext, bufferFrequency: number) {
   return buffer;
 }
 
+function makeTriangleWaveBuffer(ctx: AudioContext, bufferFrequency: number) {
+  const bufferSize = ctx.sampleRate * 0.001; // 1ms of sound
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+
+  // Fill the buffer with a triangle wave at the buffer frequency
+  for (let i = 0; i < bufferSize; i++) {
+    const time = i / ctx.sampleRate;
+    data[i] = Math.abs(Math.sin(2 * Math.PI * bufferFrequency * time));
+  }
+
+  return buffer;
+}
+
 function tick(ctx: AudioContext, noiseBuffer: AudioBuffer, startTime: number, analyser: AnalyserNode) {
   const noise = ctx.createBufferSource();
   noise.buffer = noiseBuffer;
@@ -52,7 +66,7 @@ function tick(ctx: AudioContext, noiseBuffer: AudioBuffer, startTime: number, an
   analyser.connect(ctx.destination);
 
   envelope.gain.setValueAtTime(0.3, startTime);
-  envelope.gain.exponentialRampToValueAtTime(0.005, startTime + 0.001);
+  envelope.gain.exponentialRampToValueAtTime(0.01, startTime + 0.001);
 
   noise.start(startTime);
   noise.stop(startTime + 0.001);
@@ -101,11 +115,15 @@ export function Synth() {
       audioCtx = new window.AudioContext();
       analyser = audioCtx.createAnalyser();
       analyser.connect(audioCtx.destination);
-      analyser.fftSize = 2048;
+      analyser.fftSize = 1024;
+
+      // analyser.fftSize = 2048;
       // analyser.minDecibels = -80;
-      analyser.maxDecibels = -60;
-      analyser.smoothingTimeConstant = 0.4;
+      // analyser.maxDecibels = -60;
+      // analyser.smoothingTimeConstant = 0.3;
+      analyser.smoothingTimeConstant = 0;
     }
+    // const tickSound = makeTriangleWaveBuffer(audioCtx, frequency);
     const tickSound = makeSquareWaveBuffer(audioCtx, frequency);
     stop = startTicking(audioCtx, tickSound, frequency, analyser);
   });
@@ -166,9 +184,9 @@ export function Synth() {
             ctx.strokeStyle = 'rgb(0, 255, 0)';
             ctx.beginPath();
 
-            const dataArray = dataArrayOriginal.slice(300, 1200);
+            const dataArray = dataArrayOriginal.slice(0, -10);
+            // const dataArray = dataArrayOriginal.slice(64, 128);
             const sliceWidth = canvas.width / dataArray.length;
-            let x = 0;
 
             const max = Math.max(...dataArray);
             const min = Math.min(...dataArray);
@@ -180,14 +198,10 @@ export function Synth() {
             for (let i = 0; i < bufferLength; i++) {
               const v = scale(min, max, dataArray[i]!);
               const y = v * rect.height;
+              const x = i * sliceWidth;
 
-              if (i === 0) {
-                ctx.moveTo(x, y);
-              } else {
-                ctx.lineTo(x, y);
-              }
-
-              x += sliceWidth;
+              if (i === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
             }
 
             ctx.stroke();
