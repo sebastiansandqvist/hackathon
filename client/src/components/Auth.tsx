@@ -1,6 +1,7 @@
 import {
   createEffect,
   createSignal,
+  For,
   Match,
   Show,
   Switch,
@@ -78,23 +79,25 @@ const BitInput: Component<{
         </data>{' '}
         to prove you are a hacker:
       </p>
-      <div class="flex items-center gap-2">
-        {bitState().map((bit, i) => (
-          <input
-            class="h-4 w-4 accent-indigo-500"
-            type="checkbox"
-            disabled={props.disabled}
-            checked={bit}
-            onChange={(e) => {
-              setBitState((prev) => {
-                const next = [...prev];
-                next[i] = e.currentTarget.checked;
-                return next;
-              });
-              props.onStateChange(bitsMatchNumber());
-            }}
-          />
-        ))}
+      <fieldset class="flex items-center gap-2">
+        <For each={bitState()}>
+          {(bit, i) => (
+            <input
+              class="h-4 w-4 accent-indigo-500"
+              type="checkbox"
+              disabled={props.disabled}
+              checked={bit}
+              onChange={(e) => {
+                setBitState((prev) => {
+                  const next = [...prev];
+                  next[i()] = e.currentTarget.checked;
+                  return next;
+                });
+                props.onStateChange(bitsMatchNumber());
+              }}
+            />
+          )}
+        </For>
         <p>
           ={' '}
           <output
@@ -107,7 +110,7 @@ const BitInput: Component<{
             {bitStateNumber()}
           </output>
         </p>
-      </div>
+      </fieldset>
     </div>
   );
 };

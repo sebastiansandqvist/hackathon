@@ -1,7 +1,8 @@
 import { Show } from 'solid-js';
 import { A } from '@solidjs/router';
 import { Layout, ButtonPrimary, Authenticated, Unauthenticated, Title, Uppercase } from '~/components';
-import { AnswerForm } from './components/AnswerForm';
+import { AnswerForm } from '../components/AnswerForm';
+import { Synth } from './Synth';
 
 function EasyLogic() {
   return (
@@ -9,8 +10,7 @@ function EasyLogic() {
       <Title>Logic – Part 1</Title>
       <Uppercase>heading:</Uppercase>
       <p class="text-indigo-100">(backstory)</p>
-      <Uppercase>another heading:</Uppercase>
-      <p class="text-indigo-100">(prompt)</p>
+      <Synth />
     </>
   );
 }
