@@ -1,14 +1,30 @@
-import { createSignal, onCleanup, For } from 'solid-js';
+import { createSignal, onCleanup, For, createEffect } from 'solid-js';
 
-// const frequency = 261.626;
+// let frequency = 261.626; // Middle C frequency
+// setInterval(() => {
+//   frequency *= 2;
+// }, 1000);
 
-function makeNoiseBuffer(ctx: AudioContext) {
-  // if buffer size is the sample rate, it's 1 second of noise
-  const bufferSize = ctx.sampleRate * 0.001;
+function makeSquareWaveBuffer(ctx: AudioContext, bufferFrequency: number) {
+  const bufferSize = ctx.sampleRate * 0.001; // 1ms of sound
   const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
   const data = buffer.getChannelData(0);
 
-  // fill the buffer with white noise
+  // Fill the buffer with a square wave at the buffer frequency
+  for (let i = 0; i < bufferSize; i++) {
+    const time = i / ctx.sampleRate;
+    data[i] = Math.sign(Math.sin(2 * Math.PI * bufferFrequency * time)); // Generates a square wave
+  }
+
+  return buffer;
+}
+
+function makeNoiseBuffer(ctx: AudioContext) {
+  const bufferSize = ctx.sampleRate * 0.001; // 1ms of noise
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+
+  // Fill the buffer with white noise
   for (let i = 0; i < bufferSize; i++) {
     data[i] = Math.random() * 2 - 1;
   }
@@ -16,47 +32,96 @@ function makeNoiseBuffer(ctx: AudioContext) {
   return buffer;
 }
 
-function tick(ctx: AudioContext, noiseBuffer: AudioBuffer) {
+function makeSineWaveBuffer(ctx: AudioContext, bufferFrequency: number) {
+  const bufferSize = ctx.sampleRate * 0.001; // 1ms of sound
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+
+  // Fill the buffer with a sine wave at the buffer frequency
+  for (let i = 0; i < bufferSize; i++) {
+    const time = i / ctx.sampleRate;
+    data[i] = Math.sin(2 * Math.PI * bufferFrequency * time);
+  }
+
+  return buffer;
+}
+
+function tick(ctx: AudioContext, noiseBuffer: AudioBuffer, startTime: number) {
   const noise = ctx.createBufferSource();
   noise.buffer = noiseBuffer;
 
-  // Create an envelope
   const envelope = ctx.createGain();
   noise.connect(envelope);
   envelope.connect(ctx.destination);
 
-  // Short "tick" envelope
-  envelope.gain.setValueAtTime(1, ctx.currentTime);
-  envelope.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.01);
+  envelope.gain.setValueAtTime(0.3, startTime);
+  envelope.gain.exponentialRampToValueAtTime(0.01, startTime + 0.001);
 
-  noise.start();
-  noise.stop(ctx.currentTime + 0.01); // Stop the noise after 10ms
+  noise.start(startTime);
+  noise.stop(startTime + 0.001);
+}
+
+function startTicking(ctx: AudioContext, noiseBuffer: AudioBuffer, frequency: number) {
+  let nextTickTime = ctx.currentTime;
+  let frame: number;
+
+  function scheduleTicks() {
+    while (nextTickTime < ctx.currentTime + 0.1) {
+      // Schedule ahead for 100ms
+      tick(ctx, noiseBuffer, nextTickTime);
+      nextTickTime += 1 / frequency;
+    }
+
+    // Use requestAnimationFrame for continuous scheduling
+    frame = requestAnimationFrame(scheduleTicks);
+  }
+
+  scheduleTicks();
+
+  return () => cancelAnimationFrame(frame);
+}
+
+function bitsToInt(bits: boolean[]) {
+  return parseInt(bits.map((bit) => (bit ? '1' : '0')).join(''), 2);
 }
 
 export function Synth() {
-  const [bits, setBits] = createSignal([false, false, false, false, false, false, false, false, false, true]);
-  const ctx = new window.AudioContext();
-  const noise = makeNoiseBuffer(ctx);
+  const [bits, setBits] = createSignal([false, false, false, false, false, false, false, false, false]);
+  // const noiseBuffer = makeNoiseBuffer(ctx);
+  // const noiseBuffer = makeSineWaveBuffer(ctx, 261.626);
+  const [freq, setFreq] = createSignal(0);
 
-  function startTicking() {
-    const interval = setInterval(() => {
-      tick(ctx, noise);
-    }, 1000 / 10);
-    return () => clearInterval(interval);
-  }
+  let ctx: AudioContext;
+  let stop = () => {};
 
-  const bitsInt = () =>
-    parseInt(
-      bits()
-        .map((bit) => (bit ? '1' : '0'))
-        .join(''),
-      2,
-    );
+  createEffect(() => {
+    const frequency = freq();
+    stop();
+    if (frequency === 0) return;
+    if (!ctx) ctx = new window.AudioContext();
+    const noiseBuffer = makeSquareWaveBuffer(ctx, frequency);
+    stop = startTicking(ctx, noiseBuffer, frequency);
+  });
 
-  // const tickBuffer = createTickBuffer(audioContext);
+  onCleanup(() => {
+    stop();
+    ctx?.close();
+  });
 
   return (
     <div>
+      <input
+        type="range"
+        class="w-full"
+        min={1}
+        max={512}
+        step={2}
+        value={freq()}
+        onInput={(e) => {
+          const frequency = e.currentTarget.valueAsNumber;
+          setFreq(frequency);
+        }}
+      />
       <fieldset class="flex items-center gap-2">
         <For each={bits()}>
           {(bit, i) => (
@@ -68,8 +133,7 @@ export function Synth() {
                 setBits((prev) => {
                   const next = [...prev];
                   next[i()] = e.currentTarget.checked;
-                  // stopTicking();
-                  // startTicking();
+                  setFreq(bitsToInt(next));
                   return next;
                 });
               }}
