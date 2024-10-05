@@ -3,6 +3,7 @@ import { A } from '@solidjs/router';
 import { Layout, ButtonPrimary, Authenticated, Unauthenticated, Title, Uppercase } from '~/components';
 import { AnswerForm } from '../components/AnswerForm';
 import { Synth } from './Synth';
+import { SlidePuzzle } from './SlidePuzzle';
 
 function EasyLogic() {
   return (
@@ -10,7 +11,7 @@ function EasyLogic() {
       <Title>Logic – Part 1</Title>
       <Uppercase>heading:</Uppercase>
       <p class="text-indigo-100">(backstory)</p>
-      <Synth />
+      <SlidePuzzle />
     </>
   );
 }
@@ -39,6 +40,7 @@ export function Logic() {
                 <Uppercase>heading:</Uppercase>
                 <p class="text-indigo-100">(background)</p>
                 <Uppercase>heading:</Uppercase>
+                <Synth />
                 <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
                   <li>more info</li>
                   <li>
