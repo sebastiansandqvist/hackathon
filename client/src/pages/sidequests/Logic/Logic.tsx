@@ -9,8 +9,7 @@ function EasyLogic() {
   return (
     <>
       <Title>Logic – Part 1</Title>
-      <Uppercase>heading:</Uppercase>
-      <p class="text-indigo-100">(backstory)</p>
+      <Uppercase>self-reflection:</Uppercase>
       <SlidePuzzle />
     </>
   );
@@ -32,10 +31,7 @@ export function Logic() {
                   <hr class="border-indigo-500/30" />
                 </Show>
               </Show>
-              <Show
-                when={sideQuests.logic.easy}
-                fallback={<AnswerForm answerCharCount={4} difficulty="easy" category="logic" />}
-              >
+              <Show when={sideQuests.logic.easy}>
                 <Title>Logic – Part 2</Title>
                 <Uppercase>heading:</Uppercase>
                 <p class="text-indigo-100">(background)</p>
