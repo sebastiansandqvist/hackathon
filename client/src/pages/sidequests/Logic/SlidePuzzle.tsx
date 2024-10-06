@@ -1,20 +1,41 @@
 import { onCleanup, onMount } from 'solid-js';
 import { createSignal, For } from 'solid-js';
+import { flashMessage } from '~/components';
+import { invalidate, mutate, trpc } from '~/trpc';
+import { wait } from '~/util';
 
 declare global {
   interface Document {
     startViewTransition(updateCallback: () => Promise<void> | void): void;
   }
+  interface Window {
+    validMoves: () => number[];
+    getBoard: () => number[];
+    attemptMove: (item: number) => boolean;
+    attemptMoveByIndex: (index: number) => boolean;
+    isSorted: () => boolean;
+    wait: (ms: number) => Promise<unknown>;
+  }
 }
 
-function shuffle(array: number[]) {
-  const clone = [...array];
-  for (let i = clone.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [clone[i], clone[j]] = [clone[j]!, clone[i]!];
-  }
-  return clone;
-}
+const inputItems: [number, string][] = [
+  [3, 'j'],
+  [1, 'o'],
+  [0, 'g'],
+  [11, 'd'],
+  [4, 'ob'],
+  [15, '!'],
+  [6, 'a'],
+  [7, 'ck'],
+  [2, 'od'],
+  [5, 'h'],
+  [14, 't'],
+  [10, 'ou'],
+  [13, 'di'],
+  [12, 'i'],
+  [8, 'er'],
+  [9, 'y'],
+];
 
 function findValidMoves(board: number[], slotIndex: number) {
   const possibilities = [slotIndex - 4, slotIndex + 4];
@@ -28,11 +49,42 @@ function findValidMoves(board: number[], slotIndex: number) {
 }
 
 export function SlidePuzzle() {
+  const [items, setItems] = createSignal(inputItems.map(([i]) => i));
+
+  const submitPuzzle = mutate(trpc.submitSolution, {
+    onError(err: Error) {
+      if (err.message === 'incorrect') {
+        flashMessage('incorrect', 'red');
+      } else {
+        alert(err.message ?? 'Unable to submit solution');
+      }
+    },
+    async onSuccess() {
+      await flashMessage('correct!');
+      invalidate('homepage');
+      invalidate('status');
+    },
+  });
+
+  const submit = (values: number[]) => {
+    const solution = values
+      .map((i) => {
+        const [, letter] = inputItems.find(([j]) => j === i)!;
+        return letter;
+      })
+      .join('');
+    submitPuzzle.mutate({
+      category: 'logic',
+      difficulty: 'easy',
+      solution,
+    });
+  };
+
   let preview: HTMLVideoElement;
   let canvas: HTMLCanvasElement;
   let container: HTMLDivElement;
 
-  const [items, setItems] = createSignal(shuffle(Array.from({ length: 16 }, (_, i) => i)));
+  const [videoStream, setStream] = createSignal<MediaStream>();
   const slotItem = items()[0]!;
   const updateBoard = (newBoard: number[]) => {
     if ('startViewTransition' in document) {
@@ -43,14 +95,44 @@ export function SlidePuzzle() {
       setItems(newBoard);
     }
   };
+
+  const isSorted = () => {
+    const cells = items();
+    for (let i = 0; i < cells.length - 1; i++) {
+      if (cells[i] !== i) return false;
+    }
+    return true;
+  };
+
+  const attemptMoveByIndex = (index: number) => {
+    if (!validMoves().includes(index)) return false;
+    const prev = items();
+    const item = prev[index]!;
+    const newItems = [...prev];
+    [newItems[index], newItems[prev.indexOf(slotItem)]] = [slotItem, item];
+    updateBoard(newItems);
+    if (!isSorted()) return true;
+    submit(newItems);
+    return true;
+  };
+
+  const attemptMove = (item: number) => {
+    const itemAttemptingToMove = items().indexOf(item);
+    return attemptMoveByIndex(itemAttemptingToMove);
+  };
+
   const validMoves = () => findValidMoves(items(), items().indexOf(slotItem));
+  window['validMoves'] = validMoves;
+  window['getBoard'] = () => items();
+  window['attemptMove'] = attemptMoveByIndex;
+  window['isSorted'] = isSorted;
+  window['wait'] = wait;
 
   let raf: number;
 
   onMount(async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-    });
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    setStream(stream);
     preview.srcObject = stream;
     const chunkCanvases = container.querySelectorAll('canvas');
     chunkCanvases.forEach((canvas) => {
@@ -99,8 +181,6 @@ export function SlidePuzzle() {
             128,
             128,
           );
-
-          chunkCtx.font = '40px sans-serif';
         }
       }
       raf = requestAnimationFrame(render);
@@ -110,6 +190,9 @@ export function SlidePuzzle() {
 
   onCleanup(() => {
     cancelAnimationFrame(raf);
+    const stream = videoStream();
+    if (!stream) return;
+    stream.getTracks().forEach((track) => track.stop());
   });
 
   return (
@@ -120,7 +203,7 @@ export function SlidePuzzle() {
         <For each={items()}>
           {(item, i) => (
             <button
-              disabled={item === slotItem}
+              disabled={item === slotItem || !validMoves().includes(i())}
               class="bg-videocamera relative h-32 w-32 cursor-pointer disabled:cursor-default"
               classList={{
                 'outline-8 outline-indigo-500': validMoves().includes(i()),
@@ -130,18 +213,7 @@ export function SlidePuzzle() {
                 'view-transition-name': `slidepuzzle-${item}`,
               }}
               onClick={() => {
-                const itemAttemptingToMove = items().indexOf(item);
-                if (!validMoves().includes(itemAttemptingToMove)) {
-                  return;
-                }
-                const prev = items();
-                const newItems = [...prev];
-                newItems[prev.indexOf(item)] = slotItem;
-                newItems[prev.indexOf(slotItem)] = item;
-                updateBoard(newItems);
-                // if (newItems is sorted) {
-                //   send result to server
-                // }
+                attemptMove(item);
               }}
             >
               <canvas data-item={item} />

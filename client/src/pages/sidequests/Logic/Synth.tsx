@@ -137,7 +137,7 @@ export function Synth() {
     <div>
       <input
         type="range"
-        class="w-full"
+        class="w-full accent-indigo-500"
         min={1}
         max={512}
         step={2}

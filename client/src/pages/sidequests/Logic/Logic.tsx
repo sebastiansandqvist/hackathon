@@ -2,15 +2,13 @@ import { Show } from 'solid-js';
 import { A } from '@solidjs/router';
 import { Layout, ButtonPrimary, Authenticated, Unauthenticated, Title, Uppercase } from '~/components';
 import { AnswerForm } from '../components/AnswerForm';
-import { Synth } from './Synth';
 import { SlidePuzzle } from './SlidePuzzle';
 
 function EasyLogic() {
   return (
     <>
       <Title>Logic – Part 1</Title>
-      <Uppercase>self-reflection:</Uppercase>
-      <SlidePuzzle />
+      <Uppercase>title:</Uppercase>
     </>
   );
 }
@@ -27,33 +25,48 @@ export function Logic() {
             <>
               <Show when={sideQuests.logic.hard || !sideQuests.logic.easy}>
                 <EasyLogic />
-                <Show when={sideQuests.logic.easy}>
+                <Show
+                  when={sideQuests.logic.easy}
+                  fallback={<AnswerForm answerCharCount={4} difficulty="easy" category="logic" />}
+                >
                   <hr class="border-indigo-500/30" />
                 </Show>
               </Show>
               <Show when={sideQuests.logic.easy}>
                 <Title>Logic – Part 2</Title>
-                <Uppercase>heading:</Uppercase>
-                <p class="text-indigo-100">(background)</p>
-                <Uppercase>heading:</Uppercase>
-                <Synth />
+                <Uppercase>
+                  <q>self-reflection</q>:
+                </Uppercase>
+                <SlidePuzzle />
+                <Uppercase>tip:</Uppercase>
+                <p>
+                  you may find the following functions on the <code>window</code> object helpful!
+                </p>
                 <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
-                  <li>more info</li>
                   <li>
-                    an example with code:
-                    <pre class="italic text-indigo-300">
-                      <code>
-                        {`
-function foo() {
-  return 'bar';
-}`}
-                      </code>
-                    </pre>
+                    <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
+                      getBoard()
+                    </code>
+                    <p class="text-sm italic">(the current order of the tiles on the board)</p>
+                  </li>
+                  <li>
+                    <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
+                      isSorted()
+                    </code>
+                  </li>
+                  <li>
+                    <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
+                      validMoves()
+                    </code>
+                    <p class="text-sm italic">(an array of valid move indexes)</p>
+                  </li>
+                  <li>
+                    <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
+                      attemptMove(n: number)
+                    </code>
+                    <p class="text-sm italic">(attempt to move the tile at a given index)</p>
                   </li>
                 </ul>
-                <Show when={!sideQuests.logic.hard}>
-                  <AnswerForm answerCharCount={4} difficulty="hard" category="logic" />
-                </Show>
               </Show>
             </>
           )}

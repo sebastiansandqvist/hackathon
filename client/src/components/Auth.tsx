@@ -132,7 +132,7 @@ export function AuthForm() {
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
-    authenticate.mutate({
+    authenticate.mutateAsync({
       username: username(),
       password: password(),
     });
