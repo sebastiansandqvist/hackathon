@@ -1,3 +1,4 @@
+import { makePersisted } from '@solid-primitives/storage';
 import { onCleanup, onMount } from 'solid-js';
 import { createSignal, For } from 'solid-js';
 import { flashMessage } from '~/components';
@@ -49,7 +50,7 @@ function findValidMoves(board: number[], slotIndex: number) {
 }
 
 export function SlidePuzzle() {
-  const [items, setItems] = createSignal(inputItems.map(([i]) => i));
+  const [items, setItems] = makePersisted(createSignal(inputItems.map(([i]) => i)));
 
   const submitPuzzle = mutate(trpc.submitSolution, {
     onError(err: Error) {
