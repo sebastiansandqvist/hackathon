@@ -3,16 +3,16 @@ import { A } from '@solidjs/router';
 import { Layout, ButtonPrimary, Authenticated, Unauthenticated, Title, Uppercase } from '~/components';
 import { AnswerForm } from '../components/AnswerForm';
 import { SlidePuzzle } from './SlidePuzzle';
-import { Synth } from './Synth';
+import { SoundPuzzle } from './Synth';
 
 function EasyLogic() {
   return (
     <>
       <Title>Logic – Part 1</Title>
       <Uppercase>
-        <q>Play middle C</q>:
+        <q>.NET lullaby</q>:
       </Uppercase>
-      <Synth />
+      <SoundPuzzle />
     </>
   );
 }
