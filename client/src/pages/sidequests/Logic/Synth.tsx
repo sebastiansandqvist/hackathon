@@ -306,7 +306,13 @@ export function SoundPuzzle() {
 
   return (
     <div>
-      <fieldset class="flex items-center gap-2">
+      <div class="h-32 w-full">
+        <Synth frequency={freq()} />
+      </div>
+      <div class="h-16 w-full bg-blue-800/10 pb-2">
+        <PitchVisualizer frequency={freq()} />
+      </div>
+      <fieldset class="mt-4 flex items-center gap-2">
         <For each={bits()}>
           {(bit, i) => (
             <Toggle
@@ -323,12 +329,6 @@ export function SoundPuzzle() {
           )}
         </For>
       </fieldset>
-      <div class="h-32 w-full">
-        <Synth frequency={freq()} />
-      </div>
-      <div class="h-16 w-full bg-blue-800/10 pb-2">
-        <PitchVisualizer frequency={freq()} />
-      </div>
     </div>
   );
 }
