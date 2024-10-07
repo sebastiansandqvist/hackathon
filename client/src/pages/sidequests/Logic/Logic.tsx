@@ -3,12 +3,16 @@ import { A } from '@solidjs/router';
 import { Layout, ButtonPrimary, Authenticated, Unauthenticated, Title, Uppercase } from '~/components';
 import { AnswerForm } from '../components/AnswerForm';
 import { SlidePuzzle } from './SlidePuzzle';
+import { Synth } from './Synth';
 
 function EasyLogic() {
   return (
     <>
       <Title>Logic – Part 1</Title>
-      <Uppercase>title:</Uppercase>
+      <Uppercase>
+        <q>Play middle C</q>:
+      </Uppercase>
+      <Synth />
     </>
   );
 }
@@ -40,7 +44,7 @@ export function Logic() {
                 <SlidePuzzle />
                 <Uppercase>tip:</Uppercase>
                 <p>
-                  you may find the following functions on the <code>window</code> object helpful!
+                  we've left you a few functions on the <code>window</code> object!
                 </p>
                 <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
                   <li>
@@ -64,7 +68,7 @@ export function Logic() {
                     <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
                       attemptMove(n: number)
                     </code>
-                    <p class="text-sm italic">(attempt to move the tile at a given index)</p>
+                    <p class="text-sm italic">(attempt to move the tile at a given index into the empty slot)</p>
                   </li>
                 </ul>
               </Show>

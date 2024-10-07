@@ -1,6 +1,13 @@
 import { createSignal, onCleanup, For, createEffect } from 'solid-js';
 import { Canvas } from '~/components';
 
+// sound puzzle:
+// "play C:"
+// Flip? reverse bits
+// Offset/shift (by whole notes)
+// Tune (bits)
+// - display current note on a 2? octave scale
+
 function makeSquareWaveBuffer(ctx: AudioContext, bufferFrequency: number) {
   const bufferSize = ctx.sampleRate * 0.001; // 1ms of sound
   const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
@@ -97,11 +104,51 @@ function bitsToInt(bits: boolean[]) {
   return parseInt(bits.map((bit) => (bit ? '1' : '0')).join(''), 2);
 }
 
+const notes = [
+  { note: 'C', octave: 3, hz: 130.813 },
+  { note: 'C#', octave: 3, hz: 138.591 },
+  { note: 'D', octave: 3, hz: 146.832 },
+  { note: 'D#', octave: 3, hz: 155.563 },
+  { note: 'E', octave: 3, hz: 164.814 },
+  { note: 'F', octave: 3, hz: 174.614 },
+  { note: 'F#', octave: 3, hz: 184.997 },
+  { note: 'G', octave: 3, hz: 195.998 },
+  { note: 'G#', octave: 3, hz: 207.652 },
+  { note: 'A', octave: 3, hz: 220.0 },
+  { note: 'A#', octave: 3, hz: 233.082 },
+  { note: 'B', octave: 3, hz: 246.942 },
+  { note: 'C', octave: 4, hz: 261.626 },
+  { note: 'C#', octave: 4, hz: 277.183 },
+  { note: 'D', octave: 4, hz: 293.665 },
+  { note: 'D#', octave: 4, hz: 311.127 },
+  { note: 'E', octave: 4, hz: 329.628 },
+  { note: 'F', octave: 4, hz: 349.228 },
+  { note: 'F#', octave: 4, hz: 369.994 },
+  { note: 'G', octave: 4, hz: 391.995 },
+  { note: 'G#', octave: 4, hz: 415.305 },
+  { note: 'A', octave: 4, hz: 440.0 },
+  { note: 'A#', octave: 4, hz: 466.164 },
+  { note: 'B', octave: 4, hz: 493.883 },
+  { note: 'C', octave: 5, hz: 523.251 },
+  { note: 'C#', octave: 5, hz: 554.365 },
+  { note: 'D', octave: 5, hz: 587.33 },
+  { note: 'D#', octave: 5, hz: 622.254 },
+  { note: 'E', octave: 5, hz: 659.255 },
+  { note: 'F', octave: 5, hz: 698.456 },
+  { note: 'F#', octave: 5, hz: 739.989 },
+  { note: 'G', octave: 5, hz: 783.991 },
+  { note: 'G#', octave: 5, hz: 830.609 },
+  { note: 'A', octave: 5, hz: 880.0 },
+  { note: 'A#', octave: 5, hz: 932.328 },
+  { note: 'B', octave: 5, hz: 987.767 },
+];
+
 export function Synth() {
   const [bits, setBits] = createSignal([false, false, false, false, false, false, false, false, false]);
   // const noiseBuffer = makeNoiseBuffer(ctx);
   // const noiseBuffer = makeSineWaveBuffer(ctx, 261.626);
   const [freq, setFreq] = createSignal(0);
+  const [freqOffset, setFreqOffset] = createSignal(0);
 
   let audioCtx: AudioContext;
   let analyser: AnalyserNode;

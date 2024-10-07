@@ -1,7 +1,8 @@
-import { makePersisted } from '@solid-primitives/storage';
+import { makePersisted, storageSync } from '@solid-primitives/storage';
 import { onCleanup, onMount } from 'solid-js';
+import { Show } from 'solid-js';
 import { createSignal, For } from 'solid-js';
-import { flashMessage } from '~/components';
+import { Button, flashMessage } from '~/components';
 import { invalidate, mutate, trpc } from '~/trpc';
 import { wait } from '~/util';
 
@@ -19,30 +20,30 @@ declare global {
   }
 }
 
-const inputItems: [number, string][] = [
-  [3, 'j'],
-  [1, 'o'],
+const inputTiles: [number, string][] = [
   [0, 'g'],
   [11, 'd'],
-  [4, 'ob'],
+  [1, 'o'],
   [15, '!'],
   [6, 'a'],
-  [7, 'ck'],
   [2, 'od'],
+  [7, 'ck'],
+  [4, 'ob'],
   [5, 'h'],
   [14, 't'],
   [10, 'ou'],
   [13, 'di'],
+  [3, 'j'],
   [12, 'i'],
   [8, 'er'],
   [9, 'y'],
 ];
 
-function findValidMoves(board: number[], slotIndex: number) {
-  const possibilities = [slotIndex - 4, slotIndex + 4];
-  const x = slotIndex % 4;
-  if (x !== 0) possibilities.push(slotIndex - 1);
-  if (x !== 3) possibilities.push(slotIndex + 1);
+function findValidMoves(board: number[], blankTileIndex: number) {
+  const possibilities = [blankTileIndex - 4, blankTileIndex + 4];
+  const x = blankTileIndex % 4;
+  if (x !== 0) possibilities.push(blankTileIndex - 1);
+  if (x !== 3) possibilities.push(blankTileIndex + 1);
   const validMoves = possibilities.filter((index) => {
     return index >= 0 && index < board.length;
   });
@@ -50,7 +51,10 @@ function findValidMoves(board: number[], slotIndex: number) {
 }
 
 export function SlidePuzzle() {
-  const [items, setItems] = makePersisted(createSignal(inputItems.map(([i]) => i)));
+  const [items, setItems] = makePersisted(createSignal(inputTiles.map(([i]) => i)), {
+    sync: storageSync,
+    name: 'slide-puzzle',
+  });
 
   const submitPuzzle = mutate(trpc.submitSolution, {
     onError(err: Error) {
@@ -61,7 +65,7 @@ export function SlidePuzzle() {
       }
     },
     async onSuccess() {
-      await flashMessage('correct!');
+      await flashMessage('impressive!');
       invalidate('homepage');
       invalidate('status');
     },
@@ -70,13 +74,14 @@ export function SlidePuzzle() {
   const submit = (values: number[]) => {
     const solution = values
       .map((i) => {
-        const [, letter] = inputItems.find(([j]) => j === i)!;
+        const [, letter] = inputTiles.find(([j]) => j === i)!;
         return letter;
       })
       .join('');
+    console.log(solution);
     submitPuzzle.mutate({
       category: 'logic',
-      difficulty: 'easy',
+      difficulty: 'hard',
       solution,
     });
   };
@@ -85,8 +90,10 @@ export function SlidePuzzle() {
   let canvas: HTMLCanvasElement;
   let container: HTMLDivElement;
 
+  const [showNumbers, setShowNumbers] = createSignal(false);
+
   const [videoStream, setStream] = createSignal<MediaStream>();
-  const slotItem = items()[0]!;
+  const blankTile = 0;
   const updateBoard = (newBoard: number[]) => {
     if ('startViewTransition' in document) {
       document.startViewTransition(() => {
@@ -97,8 +104,8 @@ export function SlidePuzzle() {
     }
   };
 
-  const isSorted = () => {
-    const cells = items();
+  const isSorted = (tiles?: number[]) => {
+    const cells = tiles ?? items();
     for (let i = 0; i < cells.length - 1; i++) {
       if (cells[i] !== i) return false;
     }
@@ -110,9 +117,9 @@ export function SlidePuzzle() {
     const prev = items();
     const item = prev[index]!;
     const newItems = [...prev];
-    [newItems[index], newItems[prev.indexOf(slotItem)]] = [slotItem, item];
+    [newItems[index], newItems[prev.indexOf(blankTile)]] = [blankTile, item];
     updateBoard(newItems);
-    if (!isSorted()) return true;
+    if (!isSorted(newItems)) return true;
     submit(newItems);
     return true;
   };
@@ -122,7 +129,7 @@ export function SlidePuzzle() {
     return attemptMoveByIndex(itemAttemptingToMove);
   };
 
-  const validMoves = () => findValidMoves(items(), items().indexOf(slotItem));
+  const validMoves = () => findValidMoves(items(), items().indexOf(blankTile));
   window['validMoves'] = validMoves;
   window['getBoard'] = () => items();
   window['attemptMove'] = attemptMoveByIndex;
@@ -136,9 +143,13 @@ export function SlidePuzzle() {
     setStream(stream);
     preview.srcObject = stream;
     const chunkCanvases = container.querySelectorAll('canvas');
-    chunkCanvases.forEach((canvas) => {
-      canvas.height = 128;
-      canvas.width = 128;
+    chunkCanvases.forEach((chunkCanvas) => {
+      chunkCanvas.style.height = '128px';
+      chunkCanvas.style.width = '128px';
+      chunkCanvas.width = 128 * devicePixelRatio;
+      chunkCanvas.height = 128 * devicePixelRatio;
+      const ctx = chunkCanvas.getContext('2d')!;
+      ctx.scale(devicePixelRatio, devicePixelRatio);
     });
 
     function render() {
@@ -182,6 +193,15 @@ export function SlidePuzzle() {
             128,
             128,
           );
+          if (showNumbers()) {
+            chunkCtx.fillStyle = '#312e81aa';
+            chunkCtx.fillRect(0, 0, 128, 128);
+            chunkCtx.font = '30px Zed';
+            chunkCtx.textAlign = 'center';
+            chunkCtx.textBaseline = 'middle';
+            chunkCtx.fillStyle = '#fff';
+            chunkCtx.fillText(`${item}`, chunkRectSize.width / 2, chunkRectSize.height / 2);
+          }
         }
       }
       raf = requestAnimationFrame(render);
@@ -198,17 +218,17 @@ export function SlidePuzzle() {
 
   return (
     <>
-      <video muted autoplay ref={preview!} class="t-0 l-0 fixed h-0 w-0" />
+      <video muted autoplay ref={preview!} class="fixed h-0 w-0" />
       <canvas ref={canvas!} class="h-0 w-0" />
       <div class="grid w-fit grid-flow-dense grid-cols-4 gap-2" ref={container!}>
         <For each={items()}>
           {(item, i) => (
             <button
-              disabled={item === slotItem || !validMoves().includes(i())}
+              disabled={item === blankTile || !validMoves().includes(i())}
               class="bg-videocamera relative h-32 w-32 cursor-pointer disabled:cursor-default"
               classList={{
                 'outline-8 outline-indigo-500': validMoves().includes(i()),
-                'opacity-0': item === slotItem,
+                'opacity-0': item === blankTile,
               }}
               style={{
                 'view-transition-name': `slidepuzzle-${item}`,
@@ -221,6 +241,24 @@ export function SlidePuzzle() {
             </button>
           )}
         </For>
+      </div>
+      <div class="flex gap-2">
+        <Button
+          onClick={() => {
+            setShowNumbers((prev) => !prev);
+          }}
+        >
+          <Show when={showNumbers()} fallback="show guides">
+            hide guides
+          </Show>
+        </Button>
+        <Button
+          onClick={() => {
+            setItems(inputTiles.map(([i]) => i));
+          }}
+        >
+          restart
+        </Button>
       </div>
     </>
   );
