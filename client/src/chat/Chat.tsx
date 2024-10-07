@@ -10,7 +10,7 @@ function clamp(props: { min: number; max: number; value: number }) {
 
 export function Chat() {
   const [unreadMessages, setUnreadMessages] = createSignal(0);
-  const [collapsed, setCollapsed] = createSignal(false);
+  const [collapsed, setCollapsed] = createSignal(true);
   const [chatMessagesContainer, setChatMessagesContainer] = createSignal<HTMLDivElement>();
 
   const [input, setInput] = createSignal('');
