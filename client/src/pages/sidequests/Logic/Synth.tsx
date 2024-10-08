@@ -265,9 +265,14 @@ const Synth: Component<{ frequency: number }> = (props) => {
   );
 };
 
+// 001000101 = 69
+// 010001010 = 138 // actual is ~138.5
+// 010001011 = 139
+// 100010101 = 277
 const validCombos = [
   [false, false, true, false, false, false, true, false, true],
   [false, true, false, false, false, true, false, true, false],
+  [false, true, false, false, false, true, false, true, true],
   [true, false, false, false, true, false, true, false, true],
 ];
 
