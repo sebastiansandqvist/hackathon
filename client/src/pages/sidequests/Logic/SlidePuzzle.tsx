@@ -1,4 +1,5 @@
 import { makePersisted, storageSync } from '@solid-primitives/storage';
+import { createUndoHistory } from '@solid-primitives/history';
 import { onCleanup, onMount } from 'solid-js';
 import { Show } from 'solid-js';
 import { createSignal, For } from 'solid-js';
@@ -24,6 +25,14 @@ declare global {
     };
     isSorted: () => boolean;
     wait: (ms: number) => Promise<unknown>;
+  }
+}
+
+function transition(fn: () => void) {
+  if ('startViewTransition' in document) {
+    document.startViewTransition(fn);
+  } else {
+    fn();
   }
 }
 
@@ -61,6 +70,11 @@ export function SlidePuzzle() {
   const [items, setItems] = makePersisted(createSignal(inputTiles.map(([i]) => i)), {
     sync: storageSync,
     name: 'slide-puzzle',
+  });
+
+  const history = createUndoHistory(() => {
+    const v = items();
+    return () => setItems(v);
   });
 
   const submitPuzzle = mutate(trpc.submitSolution, {
@@ -102,13 +116,9 @@ export function SlidePuzzle() {
   const [videoStream, setStream] = createSignal<MediaStream>();
   const blankTile = 0;
   const updateBoard = (newBoard: number[]) => {
-    if ('startViewTransition' in document) {
-      document.startViewTransition(() => {
-        setItems(newBoard);
-      });
-    } else {
+    transition(() => {
       setItems(newBoard);
-    }
+    });
   };
 
   const isSorted = (tiles?: number[]) => {
@@ -291,6 +301,26 @@ export function SlidePuzzle() {
         </For>
       </div>
       <div class="flex gap-2">
+        <Button
+          disabled={!history.canUndo()}
+          onClick={() => {
+            transition(() => {
+              history.undo();
+            });
+          }}
+        >
+          Undo
+        </Button>
+        <Button
+          disabled={!history.canRedo()}
+          onClick={() => {
+            transition(() => {
+              history.redo();
+            });
+          }}
+        >
+          Redo
+        </Button>
         <Button
           onClick={() => {
             setShowNumbers((prev) => !prev);

@@ -4,7 +4,7 @@ import { CanvasGridBg } from './CanvasGridBg';
 export const Button: Component<JSX.ButtonHTMLAttributes<HTMLButtonElement>> = (props) => (
   <button
     {...props}
-    class="h-fit cursor-pointer whitespace-nowrap border border-indigo-500/30 py-0.5 px-2 font-bold italic text-indigo-300 transition hover:bg-indigo-800/75 hover:text-white"
+    class="h-fit cursor-pointer whitespace-nowrap border border-indigo-500/30 py-0.5 px-2 font-bold italic text-indigo-300 transition enabled:hover:bg-indigo-800/75 enabled:hover:text-white disabled:cursor-default disabled:border-indigo-500/30 disabled:opacity-50"
   >
     {props.children}
   </button>

@@ -12,6 +12,7 @@
     "@formkit/auto-animate": "0.8.2",
     "@solid-primitives/autofocus": "0.0.111",
     "@solid-primitives/clipboard": "1.5.10",
+    "@solid-primitives/history": "0.1.5",
     "@solid-primitives/mouse": "2.0.19",
     "@solid-primitives/resize-observer": "2.0.26",
     "@solid-primitives/storage": "4.2.1",
