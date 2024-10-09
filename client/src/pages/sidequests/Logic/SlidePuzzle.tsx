@@ -332,7 +332,7 @@ export function SlidePuzzle() {
         </Button>
         <Button
           onClick={() => {
-            setItems(inputTiles.map(([i]) => i));
+            updateBoard(inputTiles.map(([i]) => i));
           }}
         >
           restart
