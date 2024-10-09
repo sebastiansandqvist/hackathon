@@ -1,7 +1,6 @@
 import { Show } from 'solid-js';
 import { A } from '@solidjs/router';
 import { Layout, ButtonPrimary, Authenticated, Unauthenticated, Title, Uppercase } from '~/components';
-import { AnswerForm } from '../components/AnswerForm';
 import { SlidePuzzle } from './SlidePuzzle';
 import { SoundPuzzle } from './Synth';
 
@@ -29,10 +28,7 @@ export function Logic() {
             <>
               <Show when={sideQuests.logic.hard || !sideQuests.logic.easy}>
                 <EasyLogic />
-                <Show
-                  when={sideQuests.logic.easy}
-                  fallback={<AnswerForm answerCharCount={4} difficulty="easy" category="logic" />}
-                >
+                <Show when={sideQuests.logic.easy}>
                   <hr class="border-indigo-500/30" />
                 </Show>
               </Show>
