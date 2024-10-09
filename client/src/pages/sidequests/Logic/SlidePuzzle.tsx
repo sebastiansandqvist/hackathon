@@ -11,10 +11,17 @@ declare global {
     startViewTransition(updateCallback: () => Promise<void> | void): void;
   }
   interface Window {
+    validMovesByIndex: () => number[];
     validMoves: () => number[];
     getBoard: () => number[];
-    attemptMove: (item: number) => boolean;
-    attemptMoveByIndex: (index: number) => boolean;
+    move: {
+      down: () => boolean;
+      up: () => boolean;
+      left: () => boolean;
+      right: () => boolean;
+      toTileNumber: (tileNumber: number) => boolean;
+      toIndex: (index: number) => boolean;
+    };
     isSorted: () => boolean;
     wait: (ms: number) => Promise<unknown>;
   }
@@ -113,7 +120,7 @@ export function SlidePuzzle() {
   };
 
   const attemptMoveByIndex = (index: number) => {
-    if (!validMoves().includes(index)) return false;
+    if (!validMovesByIndex().includes(index)) return false;
     const prev = items();
     const item = prev[index]!;
     const newItems = [...prev];
@@ -129,12 +136,53 @@ export function SlidePuzzle() {
     return attemptMoveByIndex(itemAttemptingToMove);
   };
 
-  const validMoves = () => findValidMoves(items(), items().indexOf(blankTile));
-  window['validMoves'] = validMoves;
+  const moveUp = () => {
+    const blankTileIndex = items().indexOf(blankTile);
+    const targetTile = items()[blankTileIndex - 4];
+    if (targetTile === undefined) return false;
+    return attemptMove(targetTile);
+  };
+
+  const moveDown = () => {
+    const blankTileIndex = items().indexOf(blankTile);
+    const targetTile = items()[blankTileIndex + 4];
+    if (targetTile === undefined) return false;
+    return attemptMove(targetTile);
+  };
+
+  const moveRight = () => {
+    const blankTileIndex = items().indexOf(blankTile);
+    if (blankTileIndex % 4 === 3) return false; // prevent wrapping
+    const targetTile = items()[blankTileIndex + 1];
+    if (targetTile === undefined) return false;
+    return attemptMove(targetTile);
+  };
+
+  const moveLeft = () => {
+    const blankTileIndex = items().indexOf(blankTile);
+    if (blankTileIndex % 4 === 0) return false; // prevent wrapping
+    const targetTile = items()[blankTileIndex - 1];
+    if (targetTile === undefined) return false;
+    return attemptMove(targetTile);
+  };
+
+  const validMovesByIndex = () => findValidMoves(items(), items().indexOf(blankTile));
+  const validMovesByTile = () => validMovesByIndex().map((i) => items()[i]!);
+
+  window['validMovesByIndex'] = validMovesByIndex;
+  window['validMoves'] = validMovesByTile;
   window['getBoard'] = () => items();
-  window['attemptMove'] = attemptMoveByIndex;
+  window['move'] = {
+    down: moveDown,
+    up: moveUp,
+    left: moveLeft,
+    right: moveRight,
+    toTileNumber: attemptMove,
+    toIndex: attemptMoveByIndex,
+  };
   window['isSorted'] = isSorted;
   window['wait'] = wait;
+  window['move'];
 
   let raf: number;
 
@@ -224,10 +272,10 @@ export function SlidePuzzle() {
         <For each={items()}>
           {(item, i) => (
             <button
-              disabled={item === blankTile || !validMoves().includes(i())}
+              disabled={item === blankTile || !validMovesByIndex().includes(i())}
               class="bg-videocamera relative h-32 w-32 cursor-pointer disabled:cursor-default"
               classList={{
-                'outline-8 outline-indigo-500': validMoves().includes(i()),
+                'outline-8 outline-indigo-500': validMovesByIndex().includes(i()),
                 'opacity-0': item === blankTile,
               }}
               style={{

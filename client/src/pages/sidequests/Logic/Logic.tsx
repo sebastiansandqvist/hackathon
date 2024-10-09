@@ -3,6 +3,7 @@ import { A } from '@solidjs/router';
 import { Layout, ButtonPrimary, Authenticated, Unauthenticated, Title, Uppercase } from '~/components';
 import { SlidePuzzle } from './SlidePuzzle';
 import { SoundPuzzle } from './Synth';
+import { Highlight } from '~/components';
 
 function EasyLogic() {
   return (
@@ -15,6 +16,16 @@ function EasyLogic() {
     </>
   );
 }
+
+const moveDocumentation = `// each movement function returns true if the move was legal. otherwise false.
+move {
+  up: () => boolean;
+  down: () => boolean;
+  left: () => boolean;
+  right: () => boolean;
+  toTileNumber: (tileNumber: number) => boolean;
+  toIndex: (index: number) => boolean;
+}`;
 
 export function Logic() {
   return (
@@ -38,7 +49,7 @@ export function Logic() {
                   <q>self-reflection</q>:
                 </Uppercase>
                 <SlidePuzzle />
-                <Uppercase>tip:</Uppercase>
+                <Uppercase>tips for botters:</Uppercase>
                 <p>
                   we've left you a few functions on the <code>window</code> object!
                 </p>
@@ -47,7 +58,6 @@ export function Logic() {
                     <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
                       getBoard()
                     </code>
-                    <p class="text-sm italic">(the current order of the tiles on the board)</p>
                   </li>
                   <li>
                     <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
@@ -58,13 +68,15 @@ export function Logic() {
                     <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
                       validMoves()
                     </code>
-                    <p class="text-sm italic">(an array of valid move indexes)</p>
+                    <span class="text-sm"> and </span>
+                    <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
+                      validMovesByIndex()
+                    </code>
                   </li>
                   <li>
-                    <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
-                      attemptMove(n: number)
-                    </code>
-                    <p class="text-sm italic">(attempt to move the tile at a given index into the empty slot)</p>
+                    <div class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
+                      <Highlight>{moveDocumentation}</Highlight>
+                    </div>
                   </li>
                 </ul>
               </Show>
