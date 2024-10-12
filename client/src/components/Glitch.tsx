@@ -57,5 +57,5 @@ export const Glitch: Component<{ children: string; loopFrequency?: number }> = (
     refetchInterval: loopFrequency,
   }));
 
-  return <span>{glitchText()}</span>;
+  return <span class="will-change-contents">{glitchText()}</span>;
 };

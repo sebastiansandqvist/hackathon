@@ -111,7 +111,7 @@ export function SlidePuzzle() {
   let canvas: HTMLCanvasElement;
   let container: HTMLDivElement;
 
-  const [showNumbers, setShowNumbers] = createSignal(false);
+  const [showNumbers, setShowNumbers] = makePersisted(createSignal(false));
 
   const [videoStream, setStream] = createSignal<MediaStream>();
   const blankTile = 0;
@@ -267,7 +267,25 @@ export function SlidePuzzle() {
     raf = requestAnimationFrame(render);
   });
 
+  const keyDownHandler = (e: KeyboardEvent) => {
+    if (e.key.startsWith('Arrow')) {
+      e.preventDefault();
+    }
+    if (e.key === 'ArrowUp') {
+      moveUp();
+    } else if (e.key === 'ArrowDown') {
+      moveDown();
+    } else if (e.key === 'ArrowLeft') {
+      moveLeft();
+    } else if (e.key === 'ArrowRight') {
+      moveRight();
+    }
+  };
+
+  window.addEventListener('keydown', keyDownHandler);
+
   onCleanup(() => {
+    window.removeEventListener('keydown', keyDownHandler);
     cancelAnimationFrame(raf);
     const stream = videoStream();
     if (!stream) return;

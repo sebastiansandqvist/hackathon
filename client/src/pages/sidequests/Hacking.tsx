@@ -9,12 +9,12 @@ export function Hacking() {
         <Title>Hacking – Part 1</Title>
         <Uppercase>background:</Uppercase>
         <p class="text-indigo-100">
-          oh no! someone appears to have left the password to the homepage message editor in plain sight. find it, and
-          leave a message for everyone to see.
+          oh no! someone appears to have left the access credential (password) to the homepage message editor in plain
+          sight. find it, and leave a message for everyone to see.
         </p>
         <Uppercase>your objective, for 1 point:</Uppercase>
         <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
-          <li>locate the password</li>
+          <li>locate the access credential</li>
           <li>edit the homepage message</li>
         </ul>
         <Authenticated>
