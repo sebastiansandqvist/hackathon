@@ -3,9 +3,11 @@ import { wait } from './util';
 import { env } from './env';
 
 type Db = {
-  version: 1 | 2;
+  version: 1 | 2 | 3;
   users: User[];
   times: {
+    welcome: string;
+    themeSelection: string;
     codingStart: string;
     codingEnd: string;
     demoStart: string;
@@ -27,7 +29,7 @@ try {
   dbText = await dbFile.text();
 } catch (err) {
   const seedDbState: Db = {
-    version: 2,
+    version: 3,
     users: [
       {
         anonymousName: 'tv',
@@ -50,7 +52,9 @@ try {
     ],
     visibleSections: [],
     times: {
-      codingStart: new Date('2024-10-18T19:00:00.000-07:00').toISOString(),
+      welcome: new Date('2024-10-18T18:00:00.000-07:00').toISOString(),
+      themeSelection: new Date('2024-10-18T19:00:00.000-07:00').toISOString(),
+      codingStart: new Date('2024-10-18T20:00:00.000-07:00').toISOString(),
       codingEnd: new Date('2024-10-20T15:00:00.000-07:00').toISOString(),
       demoStart: new Date('2024-10-20T15:30:00.000-07:00').toISOString(),
       demoEnd: new Date('2024-10-20T16:00:00.000-07:00').toISOString(),
@@ -81,6 +85,12 @@ export const db = JSON.parse(dbText) as Db;
   if (db.version === 1) {
     db.version = 2;
     db.chat = [];
+  }
+  if (db.version === 2) {
+    db.version = 3;
+    db.times.welcome = new Date('2024-10-18T18:00:00.000-07:00').toISOString();
+    db.times.themeSelection = new Date('2024-10-18T19:00:00.000-07:00').toISOString();
+    db.times.codingStart = new Date('2024-10-18T20:00:00.000-07:00').toISOString();
   }
 })();
 

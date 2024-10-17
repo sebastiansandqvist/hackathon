@@ -155,8 +155,7 @@ export function Invitation() {
           <li>
             feel free to spend nights here
             <ul>
-              {' '}
-              <li class="text-indigo-300">(we have air matresses, couches, and spare rooms!)</li>{' '}
+              <li class="text-indigo-300">(we have air matresses, couches, and spare rooms!)</li>
             </ul>
           </li>
           <li>we'll probably take climbing breaks</li>

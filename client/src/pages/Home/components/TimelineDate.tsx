@@ -36,7 +36,7 @@ export const TimelineDate: Component<{ time: string; label: string; isNext: bool
   onCleanup(() => clearInterval(interval));
 
   return (
-    <div class="grid grid-cols-[20ch_30ch] items-baseline">
+    <div class="group grid grid-cols-[22ch_30ch] items-baseline">
       <p
         class="font-bold"
         classList={{
@@ -47,19 +47,23 @@ export const TimelineDate: Component<{ time: string; label: string; isNext: bool
       >
         {props.label}{' '}
         <span class="font-normal text-indigo-300/50">
-          {'·'.repeat(18 - props.label.length - (props.isCurrent ? 1 : 0))}
+          {'·'.repeat(20 - props.label.length - (props.isCurrent ? 1 : 0))}
         </span>
       </p>
       <p class="text-sm">
         <time datetime={props.time} class="text-indigo-100">
           {formatTime(props.time)}
         </time>
-        <Show when={props.isNext || props.isCurrent}>
-          <time class="text-indigo-300/75" datetime={props.time}>
-            {' '}
-            ({ago(new Date(props.time), 'day')})
-          </time>
-        </Show>
+        <time
+          class="text-indigo-300/75 opacity-0 transition-opacity group-hover:opacity-100"
+          classList={{
+            'opacity-100': props.isNext || props.isCurrent,
+          }}
+          datetime={props.time}
+        >
+          {' '}
+          ({ago(new Date(props.time), 'hour')})
+        </time>
       </p>
     </div>
   );

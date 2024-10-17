@@ -105,6 +105,18 @@ export function Home() {
           {(data) => (
             <div class="grid gap-2">
               <TimelineDate
+                time={data.times.welcome}
+                label="welcome! hangout"
+                isNext={data.checkpoints.next === 'welcome'}
+                isCurrent={data.checkpoints.current === 'welcome'}
+              />
+              <TimelineDate
+                time={data.times.themeSelection}
+                label="pick theme"
+                isNext={data.checkpoints.next === 'themeSelection'}
+                isCurrent={data.checkpoints.current === 'themeSelection'}
+              />
+              <TimelineDate
                 time={data.times.codingStart}
                 label="coding"
                 isNext={data.checkpoints.next === 'codingStart'}
@@ -240,7 +252,6 @@ export function Home() {
               logistics
             </Uppercase>
             <ol class="grid list-outside list-decimal gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
-              <li>bring your own laptop</li>
               <li>visit and leave the house as you please</li>
               <li>
                 feel free to spend nights here
@@ -262,7 +273,7 @@ export function Home() {
               <li>similar to advent of code and capture the flag problems</li>
               <li>each easy side quest is worth 1 point.</li>
               <li>each hard side quest is worth 2 points.</li>
-              <li>these points have a separate prize pool. they do not impact your hackathon project score.</li>
+              <li>person with most points wins $25 uber eats!</li>
             </ol>
           </BlurrySection>
           <BlurrySection section="projects">
@@ -270,12 +281,9 @@ export function Home() {
               projects
             </Uppercase>
             <ol class="grid list-outside list-decimal gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
-              <li>you can work solo or in teams, or just contribute to random projects.</li>
-              <li>theme to be announced on the day of the hackathon.</li>
-              <li>
-                all code and assets must be created during the hackathon. libraries, scaffolding commands, ai codegen,
-                and game engines are all ok to use.
-              </li>
+              <li>work solo or in teams, or just contribute to random projects.</li>
+              <li>all code and assets must be created during the hackathon.</li>
+              <li>libraries, scaffolding commands, ai codegen, and game engines are allowed.</li>
             </ol>
           </BlurrySection>
           <BlurrySection section="voting">
@@ -304,7 +312,7 @@ export function Home() {
                 points to that project.
               </li>
               <li>contributors can't vote for their own projects.</li>
-              <li>the project with the most points wins!</li>
+              <li>the project with the most points wins $25 to amazon AND the highly coveted floppy!</li>
             </ol>
           </BlurrySection>
           <BlurrySection section="prizes">

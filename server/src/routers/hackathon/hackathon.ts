@@ -4,9 +4,11 @@ import { db } from '../../db';
 import { nanoid } from '../../util';
 
 function calculateCheckpoints() {
-  const checkpoints = Object.entries(db.times).map(
-    ([checkpoint, time], index) => ({ checkpoint, time, index }) as const,
-  );
+  const checkpoints = Object.entries(db.times)
+    .sort((a, b) => a[1].localeCompare(b[1]))
+    .map(([checkpoint, time], index) => ({ checkpoint, time, index }) as const);
+
+  console.log(checkpoints);
 
   const currentCheckpoint =
     checkpoints.findLast(({ time }) => {
