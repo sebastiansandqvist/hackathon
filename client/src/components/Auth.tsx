@@ -142,7 +142,7 @@ export function AuthForm() {
 
   return (
     <div class="grid">
-      <h2 class="font-pixel text-2xl leading-loose">register</h2>
+      <h2 class="font-pixel text-2xl leading-loose">register / log in</h2>
       <form onSubmit={handleSubmit} class="grid gap-4">
         <div class="flex flex-wrap gap-4">
           <Input

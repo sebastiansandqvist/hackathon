@@ -9,4 +9,6 @@ export * from './Glitch';
 export * from './Highlight';
 export * from './Input';
 export * from './Layout';
+export * from './Sortable';
+export * from './SuggestTheme';
 export * from './Text';

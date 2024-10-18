@@ -8,8 +8,6 @@ function calculateCheckpoints() {
     .sort((a, b) => a[1].localeCompare(b[1]))
     .map(([checkpoint, time], index) => ({ checkpoint, time, index }) as const);
 
-  console.log(checkpoints);
-
   const currentCheckpoint =
     checkpoints.findLast(({ time }) => {
       return new Date(time).getTime() < Date.now();
@@ -32,13 +30,18 @@ export const hackathonRouter = router({
     projects: db.projects.length,
     client: process.env.CLIENT_URL,
   })),
-  homepage: publicProcedure.query(() => {
+  homepage: maybeAuthedProcedure.query(({ ctx }) => {
     const message = db.publicMessages.at(-1)!;
     const sideQuestProgress = db.users.map((user) => ({
       id: user.id,
       anonymousName: user.anonymousName,
       progress: user.sideQuests,
     }));
+    const themeSuggestions = db.users
+      .filter((user) => ctx.user?.id !== user.id)
+      .map((user) => user.themeSuggestions[user.themeSuggestions.length - 1])
+      .filter((suggestion): suggestion is Exclude<typeof suggestion, undefined> => !!suggestion);
+
     return {
       foodGame: db.foodGame,
       times: db.times,
@@ -50,6 +53,9 @@ export const hackathonRouter = router({
         author: db.users.find((user) => user.id === message.userId)?.anonymousName,
       },
       sideQuestProgress,
+      theme: db.theme,
+      themes: [...db.themeIdeas, ...themeSuggestions],
+      ownSuggestion: ctx.user ? ctx.user.themeSuggestions[ctx.user.themeSuggestions.length - 1] : undefined,
     };
   }),
   revealHomepageSection: authedProcedure.input(z.object({ section: z.string() })).mutation(({ input }) => {
@@ -57,6 +63,30 @@ export const hackathonRouter = router({
   }),
   suggestTheme: authedProcedure.input(z.object({ theme: z.string() })).mutation(({ input, ctx }) => {
     ctx.user.themeSuggestions.push(input.theme);
+  }),
+  rankThemes: authedProcedure.input(z.object({ themes: z.array(z.string()) })).mutation(({ input, ctx }) => {
+    ctx.user.themeRankings.length = 0;
+    ctx.user.themeRankings.push(...input.themes);
+  }),
+  lockInTheme: authedProcedure.mutation(({ input, ctx }) => {
+    if (ctx.user.username !== 'tv') throw new Error('only the TV can lock in the theme');
+
+    const themeVotes: Record<string, number> = {};
+    for (const { themeRankings } of db.users) {
+      const len = themeRankings.length;
+      themeRankings.forEach((theme, i) => {
+        const points = len - i;
+        themeVotes[theme] = (themeVotes[theme] ?? 0) + points;
+      });
+    }
+
+    const mostVotedTheme = Object.entries(themeVotes).toSorted(([themeA, pointsA], [themeB, pointsB]) => {
+      return pointsB - pointsA;
+    })[0]![0];
+
+    db.theme = mostVotedTheme;
+
+    return mostVotedTheme;
   }),
   updateFoodGame: authedProcedure
     .input(

@@ -1,6 +1,6 @@
-import { For, Show } from 'solid-js';
+import { createSignal, For, Show, type Component } from 'solid-js';
 import { A } from '@solidjs/router';
-import { query, trpc } from '~/trpc';
+import { invalidate, mutate, query, trpc } from '~/trpc';
 import {
   BlurrySection,
   Authenticated,
@@ -15,6 +15,8 @@ import {
   SectionHeading,
   Uppercase,
   Glitch,
+  ButtonPrimary,
+  flashMessage,
 } from '~/components';
 import {
   Countdown,
@@ -26,6 +28,37 @@ import {
   SideQuestPointCount,
   TimelineDate,
 } from './components';
+import { ThemeRanking } from './components/ThemeRanking';
+import { shuffle, wait } from '~/util';
+
+const LockInThemeButton: Component<{ themes: string[] }> = (props) => {
+  const [displayedTheme, setDisplayedTheme] = createSignal('');
+  const setTheme = mutate(trpc.lockInTheme, {
+    onSuccess(newTheme) {
+      flashMessage(newTheme, 'green');
+      invalidate('homepage');
+    },
+  });
+  return (
+    <Show when={!displayedTheme()} fallback={displayedTheme()}>
+      <ButtonPrimary
+        onClick={async () => {
+          const list = shuffle([...props.themes, ...props.themes, ...props.themes, ...props.themes]);
+          let prevItem = '';
+          for (const theme of list) {
+            if (theme === prevItem) continue; // prevent back-to-back same theme
+            prevItem = theme;
+            setDisplayedTheme(theme);
+            await wait(100);
+          }
+          setTheme.mutate();
+        }}
+      >
+        lock in theme
+      </ButtonPrimary>
+    </Show>
+  );
+};
 
 export function Home() {
   const home = query('homepage', trpc.homepage, {
@@ -97,6 +130,35 @@ export function Home() {
       <Unauthenticated>
         <AuthForm />
       </Unauthenticated>
+      <BlurrySection section="theme-rank">
+        <SectionHeading>
+          <Glitch loopFrequency={30000}>hackathon th3me</Glitch>
+        </SectionHeading>
+        <Show when={home.data && !home.data.theme && home.data} keyed>
+          {(data) => (
+            <NotTv>
+              <Authenticated>
+                <ThemeRanking themes={data.themes} ownSuggestion={data.ownSuggestion ?? ''} />
+              </Authenticated>
+            </NotTv>
+          )}
+        </Show>
+        <Show
+          when={home.data?.theme}
+          fallback={
+            <TvOnly>
+              <LockInThemeButton themes={home.data?.themes ?? []} />
+            </TvOnly>
+          }
+          keyed
+        >
+          {(theme) => (
+            <span class="text-indigo-300">
+              <Glitch loopFrequency={40000}>{theme}</Glitch>
+            </span>
+          )}
+        </Show>
+      </BlurrySection>
       <BlurrySection section="timeline">
         <SectionHeading>
           <Glitch loopFrequency={30000}>timel1ne</Glitch>
@@ -273,7 +335,6 @@ export function Home() {
               <li>similar to advent of code and capture the flag problems</li>
               <li>each easy side quest is worth 1 point.</li>
               <li>each hard side quest is worth 2 points.</li>
-              <li>person with most points wins $25 uber eats!</li>
             </ol>
           </BlurrySection>
           <BlurrySection section="projects">
@@ -312,7 +373,6 @@ export function Home() {
                 points to that project.
               </li>
               <li>contributors can't vote for their own projects.</li>
-              <li>the project with the most points wins $25 to amazon AND the highly coveted floppy!</li>
             </ol>
           </BlurrySection>
           <BlurrySection section="prizes">
@@ -320,7 +380,8 @@ export function Home() {
               prizes
             </Uppercase>
             <ul class="grid list-outside list-disc gap-4 pt-4 px-10 text-indigo-100 marker:text-indigo-300/75">
-              <li>tbd</li>
+              <li>the project with the most points wins $25 to amazon AND the highly coveted floppy trophy!</li>
+              <li>the individual with the most side quest points wins $25 to uber eats!</li>
             </ul>
           </BlurrySection>
         </div>

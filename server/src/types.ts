@@ -15,6 +15,7 @@ export type User = {
   };
   renameCounter: number;
   themeSuggestions: string[];
+  themeRankings: string[];
 };
 
 export type PublicMessage = {

@@ -3,7 +3,8 @@ import { wait } from './util';
 import { env } from './env';
 
 type Db = {
-  version: 1 | 2 | 3;
+  version: 1 | 2 | 3 | 4;
+  theme: string;
   users: User[];
   times: {
     welcome: string;
@@ -20,6 +21,7 @@ type Db = {
   visibleSections: string[];
   projects: Project[];
   chat: Message[];
+  themeIdeas: string[];
 };
 
 let dbText = '';
@@ -29,7 +31,8 @@ try {
   dbText = await dbFile.text();
 } catch (err) {
   const seedDbState: Db = {
-    version: 3,
+    version: 4,
+    theme: '',
     users: [
       {
         anonymousName: 'tv',
@@ -48,6 +51,7 @@ try {
           puzzles: { easy: null, hard: null },
         },
         themeSuggestions: [],
+        themeRankings: [],
       },
     ],
     visibleSections: [],
@@ -62,18 +66,19 @@ try {
       votingEnd: new Date('2024-10-20T16:30:00.000-07:00').toISOString(), // award ceremony begins at this time. but first: show stats. first completed entry. quest for the perfect anonymous username (first show the top renamed anon name, next slide show all the others and their counts). side quest stats. then end with top (3?) projects. powerpoint-like presentation.
     },
     foodGame: {
-      title: 'Pick the hackathon theme',
-      items: [
-        'cooperation / asymmetry',
-        'technologize your non-tech hobby',
-        'impermanent',
-        'limited information',
-        'randomness',
-      ],
+      title: '',
+      items: [],
     },
     publicMessages: [{ createdAt: Date.now(), text: 'Welcome!', userId: '' }],
     projects: [],
     chat: [],
+    themeIdeas: [
+      'cooperation / asymmetry',
+      'technologize your non-tech hobby',
+      'impermanent',
+      'limited information',
+      'randomness',
+    ],
   };
   dbText = JSON.stringify(seedDbState, null, 2);
   await Bun.write(dbFileLocation, dbText);
@@ -91,6 +96,22 @@ export const db = JSON.parse(dbText) as Db;
     db.times.welcome = new Date('2024-10-18T18:00:00.000-07:00').toISOString();
     db.times.themeSelection = new Date('2024-10-18T19:00:00.000-07:00').toISOString();
     db.times.codingStart = new Date('2024-10-18T20:00:00.000-07:00').toISOString();
+  }
+  if (db.version === 3) {
+    db.version = 4;
+    db.theme = '';
+    db.foodGame.title = '';
+    db.foodGame.items = [];
+    db.themeIdeas = [
+      'cooperation / asymmetry',
+      'technologize your non-tech hobby',
+      'impermanent',
+      'limited information',
+      'randomness',
+    ];
+    db.users.forEach((user) => {
+      user.themeRankings = [];
+    });
   }
 })();
 

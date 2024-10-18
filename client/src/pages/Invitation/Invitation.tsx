@@ -1,57 +1,19 @@
-import { createSignal, Show, type Component } from 'solid-js';
+import { Show } from 'solid-js';
 import {
   Authenticated,
   AuthForm,
-  ButtonPrimary,
   CanvasGridBg,
-  flashMessage,
   Glitch,
-  Input,
   Layout,
   RerollAnonymousNameButton,
   SectionHeading,
   SignOutButton,
+  SuggestTheme,
   Unauthenticated,
   Uppercase,
 } from '~/components';
 import { Hourglass, Laptop, Magnifier } from '~/icons';
-import { invalidate, mutate, trpc } from '~/trpc';
 import { Countdown } from '../Home/components/Countdown';
-
-const SuggestTheme: Component<{ initialThemeSuggestion: string }> = (props) => {
-  const [themeSuggestion, setThemeSuggestion] = createSignal(props.initialThemeSuggestion);
-  const suggestTheme = mutate(trpc.suggestTheme, {
-    onSuccess() {
-      flashMessage('saved!');
-      invalidate('status');
-    },
-  });
-
-  return (
-    <form
-      class="flex items-center gap-2"
-      onSubmit={(e) => {
-        e.preventDefault();
-        suggestTheme.mutate({ theme: themeSuggestion() });
-      }}
-    >
-      <Input
-        type="text"
-        placeholder="your suggestion..."
-        value={themeSuggestion()}
-        onInput={(e) => setThemeSuggestion(e.currentTarget.value)}
-      />
-      <ButtonPrimary
-        type="submit"
-        disabled={
-          suggestTheme.isPending || themeSuggestion() === '' || themeSuggestion() === props.initialThemeSuggestion
-        }
-      >
-        save
-      </ButtonPrimary>
-    </form>
-  );
-};
 
 export function Invitation() {
   const codingStart = new Date('2024-10-18T19:00:00.000-07:00');

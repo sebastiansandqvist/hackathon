@@ -1,9 +1,8 @@
 import { createSignal, For, Show } from 'solid-js';
 import { useNavigate } from '@solidjs/router';
-import { ButtonPrimary, flashMessage, Glitch, Layout, SectionHeading, Title, Uppercase } from '~/components';
+import { ButtonPrimary, flashMessage, Glitch, Layout, SectionHeading, Sortable, Title, Uppercase } from '~/components';
 import { mutate, query, trpc } from '~/trpc';
 import { shuffle } from '~/util';
-import { Sortable } from './components/Sortable';
 
 export function Vote() {
   const navigate = useNavigate();
