@@ -106,7 +106,7 @@ export function Home() {
         </header>
       </CanvasGridBg>
 
-      <div class="grid gap-8 lg:grid-cols-2">
+      <div class="grid gap-4 xl:grid-cols-2">
         <div class="flex flex-col gap-12">
           <Authenticated>
             {({ anonymousName, username }) => (
