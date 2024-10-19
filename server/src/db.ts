@@ -3,7 +3,7 @@ import { wait } from './util';
 import { env } from './env';
 
 type Db = {
-  version: 1 | 2 | 3 | 4 | 5 | 6;
+  version: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   theme: string;
   users: User[];
   times: {
@@ -31,14 +31,15 @@ try {
   dbText = await dbFile.text();
 } catch (err) {
   const seedDbState: Db = {
-    version: 6,
+    version: 7,
     theme: '',
     users: [
       {
         anonymousName: 'tv',
         username: 'tv',
         id: '',
-        password: '...',
+        password:
+          '$argon2id$v=19$m=65536,t=2,p=1$M4yxGJORqjsv7OD9OztW4us21RftytMBhZZQfxjuQhs$7h7sPf+Ph0VHLgG+RVQ84aZD/4A+v8Lvd7d904VdOhc',
         renameCounter: 0,
         hintDeductions: 0,
         sessions: [],
@@ -124,6 +125,13 @@ export const db = JSON.parse(dbText) as Db;
   if (db.version === 5) {
     db.version = 6;
     const sebIndex = db.users.findIndex((user) => user.username === 'tv');
+    if (sebIndex !== -1) {
+      db.users.splice(sebIndex, 1);
+    }
+  }
+  if (db.version === 6) {
+    db.version = 7;
+    const sebIndex = db.users.findIndex((user) => user.username === 'seb');
     if (sebIndex !== -1) {
       db.users.splice(sebIndex, 1);
     }
