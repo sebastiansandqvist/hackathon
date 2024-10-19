@@ -1,3 +1,12 @@
+export type SideQuests = {
+  algorithms: { easy: number | null; hard: number | null };
+  forensics: { easy: number | null; hard: number | null };
+  graphics: { easy: number | null; hard: number | null };
+  hacking: { easy: number | null; hard: number | null };
+  logic: { easy: number | null; hard: number | null };
+  puzzles: { easy: number | null; hard: number | null };
+};
+
 export type User = {
   id: string;
   username: string;
@@ -5,14 +14,7 @@ export type User = {
   password: string;
   sessions: { id: string; created: number }[];
   hintDeductions: number;
-  sideQuests: {
-    algorithms: { easy: number | null; hard: number | null };
-    forensics: { easy: number | null; hard: number | null };
-    graphics: { easy: number | null; hard: number | null };
-    hacking: { easy: number | null; hard: number | null };
-    logic: { easy: number | null; hard: number | null };
-    puzzles: { easy: number | null; hard: number | null };
-  };
+  sideQuests: SideQuests;
   renameCounter: number;
   themeSuggestions: string[];
   themeRankings: string[];

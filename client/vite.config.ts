@@ -5,7 +5,7 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [solid(), tailwindcss()],
-  build: { minify: false },
+  build: { minify: false, sourcemap: true },
   define: {
     'import.meta.env.VITE_API_URL': JSON.stringify(process.env['VITE_API_URL'] || 'http://localhost:3000'),
   },

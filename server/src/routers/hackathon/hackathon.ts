@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { authedProcedure, basicAuthedProcedure, maybeAuthedProcedure, publicProcedure, router } from '../../trpc';
 import { db } from '../../db';
 import { nanoid } from '../../util';
+import type { SideQuests } from '../../types';
 
 function calculateCheckpoints() {
   const checkpoints = Object.entries(db.times)
@@ -21,6 +22,24 @@ function calculateCheckpoints() {
   };
 }
 
+function sumSideQuestProgress(sideQuests: SideQuests) {
+  const sum = [
+    sideQuests.algorithms.easy ? 1 : 0,
+    sideQuests.algorithms.hard ? 2 : 0,
+    sideQuests.forensics.easy ? 1 : 0,
+    sideQuests.forensics.hard ? 2 : 0,
+    sideQuests.graphics.easy ? 1 : 0,
+    sideQuests.graphics.hard ? 2 : 0,
+    sideQuests.hacking.easy ? 1 : 0,
+    sideQuests.hacking.hard ? 2 : 0,
+    sideQuests.logic.easy ? 1 : 0,
+    sideQuests.logic.hard ? 2 : 0,
+    sideQuests.puzzles.easy ? 1 : 0,
+    sideQuests.puzzles.hard ? 2 : 0,
+  ].reduce((a, b) => a + b, 0);
+  return sum;
+}
+
 const rootRoute = '';
 export const hackathonRouter = router({
   [rootRoute]: publicProcedure.query(() => ({
@@ -32,11 +51,13 @@ export const hackathonRouter = router({
   })),
   homepage: maybeAuthedProcedure.query(({ ctx }) => {
     const message = db.publicMessages.at(-1)!;
-    const sideQuestProgress = db.users.map((user) => ({
-      id: user.id,
-      anonymousName: user.anonymousName,
-      progress: user.sideQuests,
-    }));
+    const sideQuestProgress = db.users
+      .map((user) => ({
+        id: user.id,
+        anonymousName: user.anonymousName,
+        progress: user.sideQuests,
+      }))
+      .toSorted((a, b) => sumSideQuestProgress(a.progress) - sumSideQuestProgress(b.progress));
     const themeSuggestions = db.users
       .filter((user) => ctx.user?.id !== user.id)
       .map((user) => user.themeSuggestions[user.themeSuggestions.length - 1])
