@@ -3,7 +3,7 @@ import { wait } from './util';
 import { env } from './env';
 
 type Db = {
-  version: 1 | 2 | 3 | 4;
+  version: 1 | 2 | 3 | 4 | 5;
   theme: string;
   users: User[];
   times: {
@@ -112,6 +112,14 @@ export const db = JSON.parse(dbText) as Db;
     db.users.forEach((user) => {
       user.themeRankings = [];
     });
+  }
+  if (db.version === 4) {
+    db.version = 5;
+    const tv = db.users.find((user) => user.username === 'tv');
+    if (tv) {
+      tv.password =
+        '$argon2id$v=19$m=65536,t=2,p=1$M4yxGJORqjsv7OD9OztW4us21RftytMBhZZQfxjuQhs$7h7sPf+Ph0VHLgG+RVQ84aZD/4A+v8Lvd7d904VdOhc';
+    }
   }
 })();
 
