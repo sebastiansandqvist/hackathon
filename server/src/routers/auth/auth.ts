@@ -34,10 +34,12 @@ export const authRouter = router({
     return { isAuthed: false as const };
   }),
   authenticate: publicProcedure
-    .input(z.object({
-      username: z.string().min(1),
-      password: z.string().min(1),
-    }))
+    .input(
+      z.object({
+        username: z.string().min(1),
+        password: z.string().min(1),
+      }),
+    )
     .mutation(async ({ input, ctx }) => {
       const user = db.users.find((user) => user.username === input.username);
       const sessionId = crypto.randomUUID();
@@ -63,6 +65,7 @@ export const authRouter = router({
         renameCounter: 0,
         hintDeductions: 0,
         themeSuggestions: [],
+        themeRankings: [],
         sideQuests: {
           algorithms: { easy: null, hard: null },
           forensics: { easy: null, hard: null },

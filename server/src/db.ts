@@ -3,7 +3,7 @@ import { wait } from './util';
 import { env } from './env';
 
 type Db = {
-  version: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  version: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
   theme: string;
   users: User[];
   times: {
@@ -31,7 +31,7 @@ try {
   dbText = await dbFile.text();
 } catch (err) {
   const seedDbState: Db = {
-    version: 7,
+    version: 8,
     theme: '',
     users: [
       {
@@ -135,6 +135,12 @@ export const db = JSON.parse(dbText) as Db;
     if (sebIndex !== -1) {
       db.users.splice(sebIndex, 1);
     }
+  }
+  if (db.version === 7) {
+    db.version = 8;
+    db.users.forEach((user) => {
+      user.themeRankings = [];
+    });
   }
 })();
 
