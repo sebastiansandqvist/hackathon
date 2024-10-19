@@ -18,3 +18,9 @@ export const Layout: ParentComponent = (props) => (
     <main class="mx-auto flex min-h-full max-w-4xl flex-col gap-12 p-6 sm:p-12">{props.children}</main>
   </Dots>
 );
+
+export const HomepageLayout: ParentComponent = (props) => (
+  <Dots>
+    <main class="mx-auto flex min-h-full flex-col gap-12 p-6 sm:p-12">{props.children}</main>
+  </Dots>
+);
