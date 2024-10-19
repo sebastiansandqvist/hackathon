@@ -67,7 +67,7 @@ export function Home() {
   return (
     <Layout>
       <Show when={home.data} keyed>
-        {(data) => <Countdown time={new Date(data.times.codingStart)} />}
+        {(data) => <Countdown time={new Date(data.times.codingEnd)} />}
       </Show>
       <CanvasGridBg>
         <header class="flex items-center justify-between gap-4 p-8">
