@@ -31,6 +31,10 @@ services:
       cd ../client &&
       bun i &&
       bun run build
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
     buildFilter:
       paths:
         - client/**/*
