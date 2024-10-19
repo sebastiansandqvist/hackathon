@@ -1,5 +1,5 @@
 import { type Component } from 'solid-js';
-import { Sortable } from '~/components';
+import { Sortable, SuggestTheme } from '~/components';
 import { invalidate, mutate, trpc } from '~/trpc';
 
 export const ThemeRanking: Component<{
@@ -25,6 +25,7 @@ export const ThemeRanking: Component<{
           });
         }}
       />
+      <SuggestTheme initialThemeSuggestion={props.ownSuggestion} />
     </div>
   );
 };
