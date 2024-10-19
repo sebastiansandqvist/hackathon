@@ -57,7 +57,7 @@ export const hackathonRouter = router({
         anonymousName: user.anonymousName,
         progress: user.sideQuests,
       }))
-      .toSorted((a, b) => sumSideQuestProgress(a.progress) - sumSideQuestProgress(b.progress));
+      .toSorted((a, b) => sumSideQuestProgress(b.progress) - sumSideQuestProgress(a.progress));
     const themeSuggestions = db.users
       .filter((user) => ctx.user?.id !== user.id)
       .map((user) => user.themeSuggestions[user.themeSuggestions.length - 1])
