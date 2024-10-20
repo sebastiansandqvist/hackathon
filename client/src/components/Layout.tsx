@@ -21,6 +21,6 @@ export const Layout: ParentComponent = (props) => (
 
 export const HomepageLayout: ParentComponent = (props) => (
   <Dots>
-    <main class="mx-auto flex min-h-full flex-col gap-12 p-6 sm:p-12">{props.children}</main>
+    <main class="mx-auto flex min-h-full max-w-[1400px] flex-col gap-12 p-6 sm:p-12">{props.children}</main>
   </Dots>
 );
