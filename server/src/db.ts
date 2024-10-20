@@ -3,7 +3,7 @@ import { wait } from './util';
 import { env } from './env';
 
 type Db = {
-  version: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+  version: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
   theme: string;
   users: User[];
   times: {
@@ -141,6 +141,11 @@ export const db = JSON.parse(dbText) as Db;
     db.users.forEach((user) => {
       user.themeRankings = [];
     });
+  }
+  if (db.version === 8) {
+    db.version = 9;
+    const seb = db.users.find((user) => user.username === 'seb');
+    if (seb) seb.hintDeductions = 18;
   }
 })();
 
