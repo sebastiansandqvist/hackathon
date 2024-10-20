@@ -137,6 +137,7 @@ function parseInlineMarkdown(text: string) {
                 </figure>
               ) : href ? (
                 <a
+                  class="underline transition hover:text-white"
                   href={href}
                   rel="noopener noreferrer"
                   onClick={(e) => {
