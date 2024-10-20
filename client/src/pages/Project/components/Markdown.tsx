@@ -102,7 +102,11 @@ function parseInlineMarkdown(text: string) {
       }
       const closingIndex = text.indexOf('`', i + 1);
       if (closingIndex !== -1) {
-        parts.push(<code>{text.slice(i + 1, closingIndex)}</code>);
+        parts.push(
+          <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
+            {text.slice(i + 1, closingIndex)}
+          </code>,
+        );
         i = closingIndex;
       } else {
         parts.push('`'); // treat as a literal backtick
