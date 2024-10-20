@@ -135,7 +135,7 @@ export function SubmitProject() {
           <SectionHeading class="text-base">project description (markdown)</SectionHeading>
           <TextArea
             placeholder={projectDescriptionPlaceholder}
-            maxLength={2048}
+            maxLength={4096}
             class="w-96 max-w-full"
             disabled={response.isLoading}
             value={description()}
