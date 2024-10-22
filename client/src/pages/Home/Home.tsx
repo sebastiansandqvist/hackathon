@@ -16,7 +16,7 @@ import {
   Glitch,
   ButtonPrimary,
   flashMessage,
-  HomepageLayout,
+  Layout,
 } from '~/components';
 import {
   Countdown,
@@ -65,9 +65,9 @@ export function Home() {
     refetchInterval: 5000,
   });
   return (
-    <HomepageLayout>
+    <Layout>
       <Show when={home.data} keyed>
-        {(data) => <Countdown time={new Date(data.times.codingEnd)} />}
+        {(data) => <Countdown time={new Date(data.times.welcome)} />}
       </Show>
       <CanvasGridBg>
         <header class="flex items-center justify-between gap-4 p-8">
@@ -396,6 +396,6 @@ export function Home() {
       <footer class="border-t border-indigo-500/30 pt-8">
         <Authenticated>{() => <SignOutButton />}</Authenticated>
       </footer>
-    </HomepageLayout>
+    </Layout>
   );
 }

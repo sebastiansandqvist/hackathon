@@ -3,7 +3,7 @@ import { wait } from './util';
 import { env } from './env';
 
 type Db = {
-  version: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+  version: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
   theme: string;
   users: User[];
   times: {
@@ -146,6 +146,10 @@ export const db = JSON.parse(dbText) as Db;
     db.version = 9;
     const seb = db.users.find((user) => user.username === 'seb');
     if (seb) seb.hintDeductions = 18;
+  }
+  if (db.version === 9) {
+    db.version = 10;
+    db.times.welcome = new Date('2025-10-18T18:00:00.000-07:00').toISOString();
   }
 })();
 
