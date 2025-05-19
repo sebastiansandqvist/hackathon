@@ -132,10 +132,11 @@ export function AuthForm() {
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
-    authenticate.mutateAsync({
-      username: username(),
-      password: password(),
-    });
+    alert('The hackathon has ended and registration is now closed. Consider joining us next year!');
+    // authenticate.mutateAsync({
+    //   username: username(),
+    //   password: password(),
+    // });
   };
 
   const isSubmitDisabled = () => !bitsAreValid() || authenticate.isPending || !username() || !password();

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { router, authedProcedure } from '../../trpc';
+import { router, authedProcedure, maybeAuthedProcedure } from '../../trpc';
 import { env } from '../../env';
 import { db } from '../../db';
 import { createLimiter } from '../../ratelimit';
@@ -59,7 +59,7 @@ export const sideQuestRouter = router({
         text: '',
       });
     }),
-  submitSolution: authedProcedure
+  submitSolution: maybeAuthedProcedure
     .input(
       z.object({
         category: z.enum(['algorithms', 'forensics', 'graphics', 'hacking', 'logic', 'puzzles']),
@@ -68,7 +68,7 @@ export const sideQuestRouter = router({
       }),
     )
     .mutation(({ input, ctx }) => {
-      const { limited, retryAfter } = rateLimiter(ctx.user.id);
+      const { limited, retryAfter } = rateLimiter(ctx.user ? ctx.user.id : 'public');
       if (limited) {
         throw new TRPCError({
           code: 'TOO_MANY_REQUESTS',
@@ -99,6 +99,9 @@ export const sideQuestRouter = router({
 
         throw new Error('incorrect');
       }
-      ctx.user.sideQuests[input.category][input.difficulty] = Date.now();
+
+      if (ctx.user) {
+        ctx.user.sideQuests[input.category][input.difficulty] = Date.now();
+      }
     }),
 });

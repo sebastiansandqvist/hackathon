@@ -208,30 +208,6 @@ export function Home() {
               )}
             </Show>
           </BlurrySection>
-        </div>
-        <div class="flex flex-col gap-12">
-          <BlurrySection section="leaderboard">
-            <SectionHeading>
-              <Glitch loopFrequency={30000}>lead3rboard</Glitch>
-            </SectionHeading>
-            <Show when={home.data} fallback="..." keyed>
-              {(data) => (
-                <div class="grid gap-4">
-                  <For each={data.sideQuestProgress}>
-                    {(progress) => (
-                      <div class="grid grid-rows-[auto_20px] gap-1">
-                        <p class="font-bold text-indigo-200">{progress.anonymousName}</p>
-                        <LeaderboardCanvas progress={progress.progress} times={data.times} />
-                      </div>
-                    )}
-                  </For>
-                  <div class="-mt-4 h-8">
-                    <LeaderboardCanvasMetadata times={data.times} />
-                  </div>
-                </div>
-              )}
-            </Show>
-          </BlurrySection>
           <NotTv>
             <BlurrySection section="side quests">
               <SectionHeading>
@@ -287,6 +263,30 @@ export function Home() {
               </ul>
             </BlurrySection>
           </NotTv>
+        </div>
+        <div class="flex flex-col gap-12">
+          <BlurrySection section="leaderboard">
+            <SectionHeading>
+              <Glitch loopFrequency={30000}>lead3rboard</Glitch>
+            </SectionHeading>
+            <Show when={home.data} fallback="..." keyed>
+              {(data) => (
+                <div class="grid gap-4">
+                  <For each={data.sideQuestProgress}>
+                    {(progress) => (
+                      <div class="grid grid-rows-[auto_20px] gap-1">
+                        <p class="font-bold text-indigo-200">{progress.anonymousName}</p>
+                        <LeaderboardCanvas progress={progress.progress} times={data.times} />
+                      </div>
+                    )}
+                  </For>
+                  <div class="-mt-4 h-8">
+                    <LeaderboardCanvasMetadata times={data.times} />
+                  </div>
+                </div>
+              )}
+            </Show>
+          </BlurrySection>
 
           <TvOnly>
             <BlurrySection section="food game">

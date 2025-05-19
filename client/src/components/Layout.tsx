@@ -15,7 +15,7 @@ export const InnerLayout: ParentComponent = (props) => (
 
 export const Layout: ParentComponent = (props) => (
   <Dots>
-    <main class="mx-auto flex min-h-full max-w-4xl flex-col gap-12 p-6 sm:p-12">{props.children}</main>
+    <main class="mx-auto flex min-h-full max-w-6xl flex-col gap-12 p-6 sm:p-12">{props.children}</main>
   </Dots>
 );
 
