@@ -12,9 +12,9 @@ export const BlurrySection: ParentComponent<{ section: string }> = (props) => {
   return (
     <section
       class="transition-all duration-500"
-      classList={{
-        blur: home.data && !home.data.visibleSections.includes(props.section),
-      }}
+      // classList={{
+      //   blur: home.data && !home.data.visibleSections.includes(props.section),
+      // }}
       onClick={() => {
         if (!home.data?.visibleSections.includes(props.section)) {
           reveal.mutate({ section: props.section });
