@@ -6,6 +6,7 @@
     src: url(/fonts/dot.ttf) format('truetype');
     -webkit-font-smoothing: none;
     font-smooth: never;
+    font-display: block;
   }
 
   @font-face {
@@ -13,6 +14,7 @@
     src: url(/fonts/quill.otf) format('opentype');
     -webkit-font-smoothing: none;
     font-smooth: never;
+    font-display: block;
   }
 
   @font-face {
@@ -20,6 +22,7 @@
     src: url(/fonts/pixel.ttf) format('truetype');
     -webkit-font-smoothing: none;
     font-smooth: never;
+    font-display: block;
   }
 
   @font-face {
@@ -27,7 +30,7 @@
     font-style: normal;
     font-weight: 400;
     src: url(/fonts/zed/zed-mono.ttf) format('truetype');
-    font-display: swap;
+    font-display: block;
   }
 
   @font-face {
@@ -35,7 +38,7 @@
     font-style: italic;
     font-weight: 400;
     src: url(/fonts/zed/zed-mono-italic.ttf) format('truetype');
-    font-display: swap;
+    font-display: block;
   }
 
   @font-face {
@@ -43,7 +46,7 @@
     font-style: normal;
     font-weight: 700;
     src: url(/fonts/zed/zed-mono-bold.ttf) format('truetype');
-    font-display: swap;
+    font-display: block;
   }
 
   @font-face {
@@ -51,7 +54,7 @@
     font-style: italic;
     font-weight: 700;
     src: url(/fonts/zed/zed-mono-bolditalic.ttf) format('truetype');
-    font-display: swap;
+    font-display: block;
   }
 }
 
