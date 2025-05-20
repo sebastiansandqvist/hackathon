@@ -263,6 +263,17 @@ export function Home() {
               </ul>
             </BlurrySection>
           </NotTv>
+
+          <NotTv>
+            <Show when={home.data && home.data!.foodGame.items.length > 0}>
+              <BlurrySection section="food game">
+                <SectionHeading>
+                  <Glitch loopFrequency={30000}>f0od game!</Glitch>
+                </SectionHeading>
+                <FoodGame title={home.data?.foodGame.title ?? ''} items={home.data?.foodGame.items ?? []} />
+              </BlurrySection>
+            </Show>
+          </NotTv>
         </div>
         <div class="flex flex-col gap-12">
           <BlurrySection section="leaderboard">
@@ -296,17 +307,6 @@ export function Home() {
               <FoodGame title={home.data?.foodGame.title ?? ''} items={home.data?.foodGame.items ?? []} tv />
             </BlurrySection>
           </TvOnly>
-
-          <NotTv>
-            <Show when={home.data && home.data!.foodGame.items.length > 0}>
-              <BlurrySection section="food game">
-                <SectionHeading>
-                  <Glitch loopFrequency={30000}>f0od game!</Glitch>
-                </SectionHeading>
-                <FoodGame title={home.data?.foodGame.title ?? ''} items={home.data?.foodGame.items ?? []} />
-              </BlurrySection>
-            </Show>
-          </NotTv>
 
           <NotTv>
             <div class="grid gap-2">

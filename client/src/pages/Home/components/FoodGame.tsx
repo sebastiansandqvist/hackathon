@@ -1,6 +1,6 @@
 import { createSignal, For, Show, type Component } from 'solid-js';
 import { invalidate, mutate, trpc } from '~/trpc';
-import { Button, ButtonPrimary, Input } from '~/components';
+import { Button, ButtonPrimary, Input, Uppercase } from '~/components';
 
 function NewFoodGameButton() {
   const update = mutate(trpc.updateFoodGame, {
@@ -47,6 +47,9 @@ export const FoodGame: Component<{ title: string; items: string[]; tv?: boolean 
     >
       <div class="grid gap-2">
         <h3 class="mt-2 uppercase tracking-widest text-indigo-300/75">{props.title}</h3>
+        <Show when={props.items.length === 1}>
+          <span class="text-indigo-300/75">the vote is in. we're ordering...</span>
+        </Show>
         <For each={props.items}>
           {(item, i) => (
             <div class="flex items-center gap-2">
