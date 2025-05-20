@@ -283,7 +283,17 @@ export function Home() {
             <Show when={home.data} fallback="..." keyed>
               {(data) => (
                 <div class="grid gap-4">
-                  <For each={data.sideQuestProgress}>
+                  <For
+                    each={data.sideQuestProgress.filter(
+                      ({ progress }) =>
+                        progress.algorithms.easy ||
+                        progress.forensics.easy ||
+                        progress.graphics.easy ||
+                        progress.hacking.easy ||
+                        progress.logic.easy ||
+                        progress.puzzles.easy,
+                    )}
+                  >
                     {(progress) => (
                       <div class="grid grid-rows-[auto_20px] gap-1">
                         <p class="font-bold text-indigo-200">{progress.anonymousName}</p>
