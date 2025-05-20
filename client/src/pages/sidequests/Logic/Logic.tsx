@@ -33,6 +33,44 @@ export function Logic() {
       <div class="grid gap-4">
         <Unauthenticated>
           <EasyLogic />
+          <>
+            <hr class="border-indigo-500/30" />
+            <Title>Logic – Part 2</Title>
+            <Uppercase>
+              <q>self-reflection</q>:
+            </Uppercase>
+            <SlidePuzzle />
+            <Uppercase>tips for botters:</Uppercase>
+            <p>
+              we've left you a few functions on the <code>window</code> object!
+            </p>
+            <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
+              <li>
+                <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
+                  getBoard()
+                </code>
+              </li>
+              <li>
+                <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
+                  isSorted()
+                </code>
+              </li>
+              <li>
+                <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
+                  validMoves()
+                </code>
+                <span class="text-sm"> and </span>
+                <code class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
+                  validMovesByIndex()
+                </code>
+              </li>
+              <li>
+                <div class="whitespace-nowrap rounded border border-indigo-900 bg-indigo-950 py-0.5 px-1 text-sm">
+                  <Highlight>{moveDocumentation}</Highlight>
+                </div>
+              </li>
+            </ul>
+          </>
         </Unauthenticated>
         <Authenticated>
           {({ sideQuests }) => (

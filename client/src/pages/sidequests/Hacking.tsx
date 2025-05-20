@@ -1,6 +1,6 @@
 import { Show } from 'solid-js';
 import { A } from '@solidjs/router';
-import { Authenticated, ButtonPrimary, Layout, Title, Uppercase } from '~/components';
+import { Authenticated, ButtonPrimary, Layout, Title, Unauthenticated, Uppercase } from '~/components';
 
 export function Hacking() {
   return (
@@ -17,6 +17,34 @@ export function Hacking() {
           <li>locate the access credential</li>
           <li>edit the homepage message</li>
         </ul>
+        <Unauthenticated>
+          <hr class="border-indigo-500/30" />
+          <Title>Hacking – Part 2</Title>
+          <Uppercase>background:</Uppercase>
+          <p class="text-indigo-100">
+            the admins learned a bit about security and used hashing to keep their password safe. but maybe they're not
+            as good as they think. through social engineering, we got them to brag about the security practices they're
+            using to keep their password safe.
+          </p>
+          <Uppercase>here's what we've learned:</Uppercase>
+          <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
+            <li>they rotate their password every week</li>
+            <li>the password is always at least 8 characters long</li>
+            <li>
+              it's picked at random from a{' '}
+              <a href="/dictionary/words.txt" download class="underline transition hover:text-white">
+                list of 479k english words
+              </a>
+            </li>
+          </ul>
+          <Uppercase>your objective, for 2 points:</Uppercase>
+          <ul class="grid list-outside list-disc gap-4 py-4 px-10 text-indigo-100 marker:text-indigo-300/75">
+            <li>locate the hashed admin password</li>
+            <li>identify the hashing algorithm in use</li>
+            <li>crack the password</li>
+            <li>use your admin password to add an image to the homepage</li>
+          </ul>
+        </Unauthenticated>
         <Authenticated>
           {({ sideQuests }) => (
             <Show when={sideQuests.hacking.easy}>

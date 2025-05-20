@@ -40,6 +40,24 @@ export function Algorithms() {
       <div class="grid gap-4">
         <Unauthenticated>
           <EasyAlgorithms />
+          <AnswerForm answerCharCount={11} difficulty="easy" category="algorithms" />
+          <>
+            <hr class="border-indigo-500/30" />
+            <Title>Algorithms – Part 2</Title>
+            <Uppercase>heavy traffic</Uppercase>
+            <p class="text-indigo-100">
+              with all this traffic, we're wondering if we'll need to scale up our servers. to help us figure that out,
+              you'll need to find the 10-minute window from the past day's logs (your{' '}
+              <a href="/log.txt" download class="underline transition hover:text-white">
+                new puzzle input
+              </a>
+              ) that had the most traffic.
+            </p>
+            <p class="text-indigo-100">
+              enter the number of requests that appeared within that high-traffic 10-minute window below.
+            </p>
+            <AnswerForm answerCharCount={3} difficulty="hard" category="algorithms" />
+          </>
         </Unauthenticated>
         <Authenticated>
           {({ sideQuests }) => (

@@ -33,6 +33,31 @@ export function Graphics() {
       <div class="grid gap-4">
         <Unauthenticated>
           <EasyGraphics />
+          <AnswerForm difficulty="easy" category="graphics" />
+          <>
+            <hr class="border-indigo-500/30" />
+            <Title>Graphics – Part 2</Title>
+            <Uppercase>
+              <q>pointillism</q>
+            </Uppercase>
+            <p class="text-indigo-100">what do you make of this? some kind of coding?</p>
+            <div class="group relative">
+              <div class="absolute top-0 right-0 opacity-0 transition group-hover:opacity-100">
+                <CopyButton input={() => getInput()} />
+              </div>
+              <textarea
+                readonly
+                class="h-[320px] w-full resize-y overflow-y-scroll border-indigo-500 p-4 outline-none transition focus:bg-indigo-950/50"
+                value={getInput()}
+                onClick={(e) => {
+                  if (e.currentTarget.selectionStart === e.currentTarget.selectionEnd) {
+                    e.currentTarget.select();
+                  }
+                }}
+              />
+            </div>
+            <AnswerForm answerCharCount={7} difficulty="hard" category="graphics" />
+          </>
         </Unauthenticated>
         <Authenticated>
           {({ sideQuests }) => (

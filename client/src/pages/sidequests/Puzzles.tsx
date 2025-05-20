@@ -46,6 +46,81 @@ export function Puzzles() {
       <Unauthenticated>
         <EasyPuzzle />
       </Unauthenticated>
+      <Unauthenticated>
+        <AnswerForm category="puzzles" answerCharCount={6} difficulty="easy" />
+        <div class="grid gap-4">
+          <Title>Hard Puzzle</Title>
+          <Uppercase>a novice asked the master:</Uppercase>
+          <p class="text-indigo-200">
+            "here is a programmer that never designs, documents or tests his programs. yet all who know him consider him
+            one oF the best progrAmmers in the world. why is this?"
+          </p>
+          <Uppercase>the master replied:</Uppercase>
+          <p class="text-indigo-200">"that programmer has mastered the tao. he has gone beyond the need for design.</p>
+          <div class="group relative border-l-2 border-indigo-500 py-2 pl-4">
+            <div class="absolute top-0 right-0 opacity-0 transition group-hover:opacity-100">
+              <CopyButton input={() => hardPuzzleRawText} />
+            </div>
+            <p>
+              he does not become angry when the{' '}
+              <span class="inline-flex border-b-2 border-b-indigo-500/50">
+                <CanvasGridBg>system c</CanvasGridBg>
+              </span>
+              rashes,
+            </p>
+            <p>
+              but accepts the{' '}
+              <span class="inline-flex border-b-2 border-indigo-500/50">
+                <CanvasGridBg>uniVerse</CanvasGridBg>
+              </span>{' '}
+              wIthout Concern.
+            </p>
+            <p>
+              he has gone beyond the need for{' '}
+              <span class="inline-flex border-b-2 border-b-indigo-500/50">
+                <CanvasGridBg>document</CanvasGridBg>
+              </span>
+              ation;
+            </p>
+            <p>
+              he no longer cares if anyone else{' '}
+              <span class="inline-flex border-b-2 border-b-indigo-500/50">
+                <CanvasGridBg>sees his</CanvasGridBg>
+              </span>{' '}
+              code.
+            </p>
+            <p>
+              he{' '}
+              <span class="inline-flex border-b-2 border-b-indigo-500/50">
+                <CanvasGridBg>has gone</CanvasGridBg>
+              </span>{' '}
+              beyond the need fOr testing;
+            </p>
+            <p>
+              each of his{' '}
+              <span class="inline-flex border-b-2 border-b-indigo-500/50">
+                <CanvasGridBg>programs</CanvasGridBg>
+              </span>{' '}
+              are perfect within themselves,
+            </p>
+            <p>
+              sereNe and elegant, their purpose self
+              <span class="inline-flex border-b-2 border-b-indigo-500/50">
+                <CanvasGridBg>-evident</CanvasGridBg>
+              </span>
+              .
+            </p>
+            <p>
+              truly, he has entered the myste
+              <span class="inline-flex border-b-2 border-b-indigo-500/50">
+                <CanvasGridBg>ry of ta</CanvasGridBg>
+              </span>
+              o."
+            </p>
+          </div>
+        </div>
+        <AnswerForm category="puzzles" difficulty="hard" answerCharCount={12} />
+      </Unauthenticated>
       <Authenticated>
         {({ sideQuests }) => (
           <>
