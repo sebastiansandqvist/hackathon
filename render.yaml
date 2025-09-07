@@ -11,10 +11,10 @@ services:
     routes:
       - type: redirect
         source: /
-        destination: https://2024.hackvegas.lol
+        destination: https://2025.hackvegas.lol
       - type: redirect
         source: /*
-        destination: https://2024.hackvegas.lol/*
+        destination: https://2025.hackvegas.lol/*
     headers:
       - path: /
         name: Cache-Control
